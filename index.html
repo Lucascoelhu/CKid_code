@@ -603,7 +603,7 @@ pre.ref-block {
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sec-label">Saída / Entrada</div>
-    <button class="blk b-show" onclick="ins('mostrar(\"Olá!\");')">
+    <button class="blk b-show" onclick="insSnippet('mostrar')">
       <span class="blk-icon">🖨️</span>
       <div><span class="blk-name">mostrar</span><span class="blk-hint">imprime na tela</span></div>
     </button>
@@ -621,27 +621,27 @@ pre.ref-block {
       <span class="blk-icon">💲</span>
       <div><span class="blk-name">real</span><span class="blk-hint">número decimal</span></div>
     </button>
-    <button class="blk b-text" onclick="ins('texto nome := \"\";')">
+    <button class="blk b-text" onclick="insSnippet('texto')">
       <span class="blk-icon">🔤</span>
       <div><span class="blk-name">texto</span><span class="blk-hint">palavras/frases</span></div>
     </button>
 
     <div class="sec-label">Repetição</div>
-    <button class="blk b-while" onclick="ins('enquanto (x < 5) {\n  mostrar(x);\n  x = x + 1;\n}')">
+    <button class="blk b-while" onclick="ins('enquanto (x < 5) {\n  mostrar(x);\n  x := x + 1;\n}')">
       <span class="blk-icon">🔄</span>
       <div><span class="blk-name">enquanto</span><span class="blk-hint">repete enquanto</span></div>
     </button>
-    <button class="blk b-do" onclick="ins('faca {\n  mostrar(\"Oi!\");\n  x = x + 1;\n} enquanto (x < 3);')">
+    <button class="blk b-do" onclick="insSnippet('faca')">
       <span class="blk-icon">🔁</span>
       <div><span class="blk-name">faça...enq</span><span class="blk-hint">executa 1x antes</span></div>
     </button>
-    <button class="blk b-for" onclick="ins('para (i = 1; i <= 5; i = i + 1) {\n  mostrar(i);\n}')">
+    <button class="blk b-for" onclick="ins('para (i := 1; i <= 5; i := i + 1) {\n  mostrar(i);\n}')">
       <span class="blk-icon">🔂</span>
       <div><span class="blk-name">para</span><span class="blk-hint">conta de X a Y</span></div>
     </button>
 
     <div class="sec-label">Decisão</div>
-    <button class="blk b-if" onclick="ins('se (pontos > 5) {\n  mostrar(\"Ganhou!\");\n} senao {\n  mostrar(\"Tente mais!\");\n}')">
+    <button class="blk b-if" onclick="insSnippet('se')">
       <span class="blk-icon">❓</span>
       <div><span class="blk-name">se...senao</span><span class="blk-hint">decisão</span></div>
     </button>
@@ -1457,6 +1457,14 @@ function switchTab(tab) {
   document.getElementById('tutPanel').classList.toggle('show', tab==='tutorial');
   document.getElementById('refPanel').classList.toggle('show', tab==='ref');
 }
+const SNIPPETS = {
+  mostrar: 'mostrar("Olá!");',
+  texto:   'texto nome := "";',
+  faca:    'faca {\n  mostrar("Oi!");\n  x := x + 1;\n} enquanto (x < 3);',
+  se:      'se (pontos > 5) {\n  mostrar("Ganhou!");\n} senao {\n  mostrar("Tente mais!");\n}',
+};
+function insSnippet(name) { ins(SNIPPETS[name]); }
+
 function ins(code) {
   const ta=document.getElementById('code');
   ta.value+=(ta.value&&!ta.value.endsWith('\n')?'\n':'')+code+'\n';
