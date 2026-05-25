@@ -172,13 +172,16 @@ body {
 .line-nums .ln.has-err { color: #F09595; font-weight: 700; }
 
 .highlight-layer {
-  position: relative;
+  position: absolute;
+  top: 0; left: 0;
   padding: 12px 40px 200px 48px;
   font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75;
   white-space: pre; pointer-events: none;
   color: transparent; background: #1e1e3a;
+  width: max-content;
+  min-width: 100%;
   min-height: 100%;
-  min-width: max-content;
+  z-index: 1;
 }
 .err-line { background: rgba(242,95,95,.18); border-left: 3px solid #F09595; display: block; margin-left: -3px; }
 
@@ -193,6 +196,7 @@ body {
   -webkit-text-fill-color: transparent;
   width: 100%; height: 100%;
   min-width: max-content;
+  cursor: text;
 }
 #code::selection { background: rgba(100,120,255,0.35); }
 #code::-moz-selection { background: rgba(100,120,255,0.35); }
@@ -666,7 +670,7 @@ pre.ref-block {
         <div class="editor-inner" id="editorInner">
           <div class="line-nums" id="lineNums"></div>
           <div class="highlight-layer" id="hlLayer" aria-hidden="true"></div>
-          <textarea id="code" spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off"
+          <textarea id="code" spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" inputmode="text"
             oninput="onEdit()" onkeydown="handleTab(event)"></textarea>
         </div>
       </div>
@@ -1371,8 +1375,8 @@ function highlightTokens(s) {
   while (i < s.length) {
     if (s[i] === '"') {
       let str = '"'; i++;
-      while (i < s.length && s[i] !== '"') str += s[i++];
-      str += '"'; i++;
+      while (i < s.length && s[i] !== '"' && s[i] !== '\n') str += s[i++];
+      if (i < s.length && s[i] === '"') { str += '"'; i++; }
       result += `<span class="t-str">${escHtml(str)}</span>`;
       continue;
     }
@@ -1430,12 +1434,12 @@ function onEdit() {
   errorLines.clear();
   renderHighlight();
   updateLineNums();
-  // ajusta altura do inner para o conteúdo do textarea
   const ta=document.getElementById('code');
   const inner=document.getElementById('editorInner');
   const lines=ta.value.split('\n').length;
   const lineH=1.75*13;
-  inner.style.minHeight=(lines*lineH+24)+'px';
+  const minH=Math.max(lines*lineH+220, document.getElementById('editorScroll').clientHeight);
+  inner.style.minHeight=minH+'px';
   // sincroniza scroll
   const sc=document.getElementById('editorScroll');
   const ln=document.getElementById('lineNums');
@@ -1446,18 +1450,14 @@ function onEdit() {
 
 /* ══ KEYBOARD ══ */
 function handleTab(e) {
-  const ta=e.target, s=ta.selectionStart, e2=ta.selectionEnd;
-  const before=ta.value.slice(0,s), after=ta.value.slice(e2);
-  const charAfter=ta.value[s]||'';
-
   if (e.key==='Tab') {
     e.preventDefault();
+    const ta=e.target, s=ta.selectionStart, e2=ta.selectionEnd;
+    const before=ta.value.slice(0,s), after=ta.value.slice(e2);
     ta.value=before+'  '+after;
     ta.selectionStart=ta.selectionEnd=s+2;
-    onEdit(); return;
+    onEdit();
   }
-
-  /* Auto-fechamento desativado — digitação livre de aspas e parênteses */
 }
 
 /* ══ UI ══ */
@@ -1892,14 +1892,8 @@ document.getElementById('editorScroll').addEventListener('scroll', function() {
   ln.scrollTop=this.scrollTop;
 });
 
-// faz o textarea expandir verticalmente com o conteúdo
 const codeTA = document.getElementById('code');
-function resizeTextarea() {
-  codeTA.style.height = 'auto';
-  codeTA.style.height = codeTA.scrollHeight + 'px';
-}
-codeTA.addEventListener('input', resizeTextarea);
-resizeTextarea();
+codeTA.addEventListener('input', onEdit);
 
 const hdr=document.getElementById('headerBg');
 for(let i=0;i<14;i++){
