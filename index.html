@@ -1851,20 +1851,22 @@ async function interpret(src){
           const {arr,idx}=parseArrayAccess(vname,ln);
           expect(')');if(peek().v===';')eat();
           const resp=await askInput();
+          const respNorm=resp.replace(',','.');
           const tipo=arrTypes[arr]||'auto';
-          if(tipo==='int')arrays[arr][idx]=Math.trunc(parseFloat(resp)||0);
-          else if(tipo==='real')arrays[arr][idx]=parseFloat(resp)||0;
+          if(tipo==='int')arrays[arr][idx]=Math.trunc(parseFloat(respNorm)||0);
+          else if(tipo==='real')arrays[arr][idx]=parseFloat(respNorm)||0;
           else arrays[arr][idx]=resp;
           continue;
         }
         expect(')');if(peek().v===';')eat();
         if(!(vname in vars))errAt(ln,`variável "${vname}" não foi declarada`);
         const resp=await askInput();
+        const respNorm=resp.replace(',','.');
         const tipo=types[vname]||'auto';
-        if(tipo==='int')vars[vname]=Math.trunc(parseFloat(resp)||0);
-        else if(tipo==='real')vars[vname]=parseFloat(resp)||0;
+        if(tipo==='int')vars[vname]=Math.trunc(parseFloat(respNorm)||0);
+        else if(tipo==='real')vars[vname]=parseFloat(respNorm)||0;
         else if(tipo==='texto')vars[vname]=resp;
-        else{const n=parseFloat(resp);vars[vname]=isNaN(n)?resp:n;}
+        else{const n=parseFloat(respNorm);vars[vname]=isNaN(n)?resp:n;}
         continue;
       }
 
