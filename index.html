@@ -594,6 +594,101 @@ pre.ref-block {
   100% { transform: translateY(220px) rotate(720deg); opacity: 0; }
 }
 
+/* NOTAS / AVALIAÇÕES */
+.notas-panel {
+  display: none; flex-direction: column;
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 60px; background: #F9F8FF;
+}
+.notas-panel.show { display: flex; }
+
+.notas-header {
+  background: linear-gradient(135deg, #534AB7, #3C3489);
+  padding: 20px 18px 16px;
+  color: #fff;
+}
+.notas-titulo { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.notas-sub { font-size: 12px; opacity: .85; }
+
+.notas-form {
+  background: #fff;
+  margin: 14px 12px 0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(83,74,183,.12);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.notas-stars-label { font-size: 13px; font-weight: 700; color: #534AB7; }
+.star-picker { display: flex; gap: 6px; }
+.star-btn {
+  font-size: 32px; cursor: pointer; color: #DDD;
+  transition: color .15s, transform .1s;
+  line-height: 1; user-select: none;
+}
+.star-btn.on  { color: #FFD080; }
+.star-btn:hover { transform: scale(1.2); }
+
+.notas-input {
+  border: 1.5px solid #E0DCF8; border-radius: 10px;
+  padding: 9px 12px; font-size: 13px; font-family: inherit;
+  outline: none; color: #333;
+}
+.notas-input:focus { border-color: #534AB7; }
+
+.notas-textarea {
+  border: 1.5px solid #E0DCF8; border-radius: 10px;
+  padding: 9px 12px; font-size: 13px; font-family: inherit;
+  outline: none; resize: none; color: #333;
+}
+.notas-textarea:focus { border-color: #534AB7; }
+.notas-chars { font-size: 11px; color: #aaa; text-align: right; margin-top: -6px; }
+
+.notas-btn {
+  background: linear-gradient(135deg, #534AB7, #3C3489);
+  color: #fff; border: none; border-radius: 999px;
+  padding: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: opacity .15s;
+}
+.notas-btn:hover { opacity: .88; }
+.notas-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.notas-status { font-size: 13px; text-align: center; min-height: 18px; }
+.notas-status.ok  { color: #2EB87A; font-weight: 700; }
+.notas-status.err { color: #E04A4A; }
+
+.notas-media-box {
+  background: #fff;
+  margin: 12px 12px 0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(83,74,183,.1);
+  text-align: center;
+}
+.notas-media-num { font-size: 42px; font-weight: 900; color: #534AB7; line-height: 1; }
+.notas-media-stars { font-size: 22px; color: #FFD080; margin: 4px 0 2px; }
+.notas-media-label { font-size: 12px; color: #888; }
+
+.notas-lista-titulo {
+  font-size: 13px; font-weight: 700; color: #534AB7;
+  padding: 14px 14px 6px;
+}
+.notas-lista { display: flex; flex-direction: column; gap: 8px; padding: 0 12px; }
+.notas-loading { color: #aaa; font-size: 13px; text-align: center; padding: 20px; }
+
+.nota-card {
+  background: #fff; border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 6px rgba(83,74,183,.09);
+  animation: popIn .3s ease;
+}
+.nota-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.nota-card-nome { font-size: 13px; font-weight: 700; color: #333; }
+.nota-card-stars { font-size: 14px; color: #FFD080; }
+.nota-card-msg { font-size: 13px; color: #555; line-height: 1.5; }
+.nota-card-data { font-size: 10px; color: #bbb; margin-top: 4px; }
+
 /* MOBILE ADJUSTMENTS */
 @media (max-width: 600px) {
   .sidebar { width: 110px; }
@@ -625,6 +720,7 @@ pre.ref-block {
   <button class="tab" onclick="switchTab('examples')">📚 Exemplos</button>
   <button class="tab" onclick="switchTab('tutorial')">🎓 Tutorial</button>
   <button class="tab" onclick="switchTab('ref')">📖 Referência</button>
+  <button class="tab" onclick="switchTab('notas')">⭐ Avaliações</button>
 </div>
 
 <div class="toolbar">
@@ -1044,6 +1140,46 @@ tamanho(notas)         // retorna o tamanho do array</pre>
     <h3>➕ Operadores</h3>
 <pre class="ref-block">+  -  *  /  %
 >  &lt;  >=  &lt;=  ==  !=</pre>
+  </div>
+
+  <!-- AVALIAÇÕES -->
+  <div class="notas-panel" id="notasPanel">
+
+    <div class="notas-header">
+      <div class="notas-titulo">⭐ Avalie o CKid code!</div>
+      <div class="notas-sub">Sua opinião ajuda a melhorar o compilador para todos 💜</div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="notas-form" id="notasForm">
+      <div class="notas-stars-label">Sua nota:</div>
+      <div class="star-picker" id="starPicker">
+        <span class="star-btn" data-v="1" onclick="pickStar(1)">★</span>
+        <span class="star-btn" data-v="2" onclick="pickStar(2)">★</span>
+        <span class="star-btn" data-v="3" onclick="pickStar(3)">★</span>
+        <span class="star-btn" data-v="4" onclick="pickStar(4)">★</span>
+        <span class="star-btn" data-v="5" onclick="pickStar(5)">★</span>
+      </div>
+      <input id="notasNome" class="notas-input" placeholder="Seu nome (opcional)" maxlength="30" autocomplete="off" autocorrect="off" autocapitalize="words" />
+      <textarea id="notasMsg" class="notas-textarea" placeholder="Deixe um comentário... (opcional)" maxlength="200" rows="3"></textarea>
+      <div class="notas-chars"><span id="notasCount">0</span>/200</div>
+      <button class="notas-btn" onclick="enviarNota()">Enviar avaliação ✨</button>
+      <div class="notas-status" id="notasStatus"></div>
+    </div>
+
+    <!-- Média geral -->
+    <div class="notas-media-box" id="notasMediaBox">
+      <div class="notas-media-num" id="notasMediaNum">—</div>
+      <div class="notas-media-stars" id="notasMediaStars"></div>
+      <div class="notas-media-label" id="notasMediaLabel">Carregando avaliações...</div>
+    </div>
+
+    <!-- Lista de avaliações -->
+    <div class="notas-lista-titulo">💬 O que estão dizendo:</div>
+    <div class="notas-lista" id="notasLista">
+      <div class="notas-loading">Carregando...</div>
+    </div>
+
   </div>
 
 </div>
@@ -1653,16 +1789,17 @@ function handleTab(e) {
 /* ══ UI ══ */
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((b,i)=>{
-    b.classList.toggle('active',['editor','examples','tutorial','ref'][i]===tab);
+    b.classList.toggle('active',['editor','examples','tutorial','ref','notas'][i]===tab);
   });
   const isEditor = tab==='editor';
   document.getElementById('editorCol').style.display = isEditor ? 'flex' : 'none';
   document.querySelector('.sidebar').style.display   = isEditor ? 'flex' : 'none';
-  // esconde o textarea para parar vazamento de -webkit-text-fill-color
   document.getElementById('code').style.display = isEditor ? '' : 'none';
   document.getElementById('exPanel').classList.toggle('show', tab==='examples');
   document.getElementById('tutPanel').classList.toggle('show', tab==='tutorial');
   document.getElementById('refPanel').classList.toggle('show', tab==='ref');
+  document.getElementById('notasPanel').classList.toggle('show', tab==='notas');
+  if(tab==='notas') carregarNotas();
 }
 const SNIPPETS = {
   mostrar: 'mostrar("Olá!");',
@@ -2274,6 +2411,148 @@ for(let i=0;i<14;i++){
   const sz=Math.random()*3+1;
   s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${2+Math.random()*2}s`;
   hdr.appendChild(s);
+}
+/* ══ FIREBASE + AVALIAÇÕES ══ */
+let db = null;
+
+// Carrega Firebase dinamicamente
+(async function initFirebase() {
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp }
+      = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBz6IFbVGk_xHL8FPkgExbYxHSlqASRV2U",
+      authDomain: "ckid-code.firebaseapp.com",
+      projectId: "ckid-code",
+      storageBucket: "ckid-code.firebasestorage.app",
+      messagingSenderId: "966892371093",
+      appId: "1:966892371093:web:e2ce7c965dcaf243aa6f9c"
+    });
+
+    db = getFirestore(app);
+    window._fbCol        = () => collection(db, 'avaliacoes');
+    window._fbAddDoc     = addDoc;
+    window._fbGetDocs    = getDocs;
+    window._fbQuery      = query;
+    window._fbOrderBy    = orderBy;
+    window._fbTimestamp  = serverTimestamp;
+  } catch(e) {
+    console.warn('Firebase não carregou:', e);
+  }
+})();
+
+// ── estrelas ──
+let starValue = 0;
+function pickStar(v) {
+  starValue = v;
+  document.querySelectorAll('.star-btn').forEach((s,i) => {
+    s.classList.toggle('on', i < v);
+  });
+}
+
+// ── contador de chars ──
+document.addEventListener('DOMContentLoaded', () => {
+  const ta = document.getElementById('notasMsg');
+  if(ta) ta.addEventListener('input', () => {
+    document.getElementById('notasCount').textContent = ta.value.length;
+  });
+});
+
+// ── enviar avaliação ──
+async function enviarNota() {
+  const status = document.getElementById('notasStatus');
+  const btn    = document.querySelector('.notas-btn');
+
+  if(!starValue) {
+    status.textContent = '⚠️ Escolha uma nota de 1 a 5 estrelas!';
+    status.className = 'notas-status err'; return;
+  }
+  if(!db) {
+    status.textContent = '❌ Sem conexão com o servidor. Tente novamente.';
+    status.className = 'notas-status err'; return;
+  }
+
+  const nome = (document.getElementById('notasNome').value.trim() || 'Anônimo');
+  const msg  = document.getElementById('notasMsg').value.trim();
+
+  btn.disabled = true;
+  status.textContent = 'Enviando...';
+  status.className = 'notas-status';
+
+  try {
+    await window._fbAddDoc(window._fbCol(), {
+      nome, msg, estrelas: starValue,
+      data: window._fbTimestamp()
+    });
+    status.textContent = '🎉 Obrigado pela avaliação!';
+    status.className = 'notas-status ok';
+    // reset form
+    document.getElementById('notasNome').value = '';
+    document.getElementById('notasMsg').value  = '';
+    document.getElementById('notasCount').textContent = '0';
+    starValue = 0;
+    document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('on'));
+    SFX.play('success');
+    carregarNotas();
+  } catch(e) {
+    status.textContent = '❌ Erro ao enviar. Tente novamente.';
+    status.className = 'notas-status err';
+  }
+  btn.disabled = false;
+}
+
+// ── carregar avaliações ──
+let notasCarregadas = false;
+async function carregarNotas() {
+  if(!db) return;
+  const lista = document.getElementById('notasLista');
+  const mediaNum = document.getElementById('notasMediaNum');
+  const mediaStars = document.getElementById('notasMediaStars');
+  const mediaLabel = document.getElementById('notasMediaLabel');
+
+  lista.innerHTML = '<div class="notas-loading">Carregando...</div>';
+
+  try {
+    const q = window._fbQuery(window._fbCol(), window._fbOrderBy('data','desc'));
+    const snap = await window._fbGetDocs(q);
+    const docs = [];
+    snap.forEach(d => docs.push(d.data()));
+
+    // Média
+    if(docs.length === 0) {
+      mediaNum.textContent = '—';
+      mediaStars.textContent = '';
+      mediaLabel.textContent = 'Nenhuma avaliação ainda. Seja o primeiro! 🚀';
+      lista.innerHTML = '<div class="notas-loading">Nenhuma avaliação ainda.</div>';
+      return;
+    }
+
+    const avg = docs.reduce((s,d) => s + d.estrelas, 0) / docs.length;
+    mediaNum.textContent = avg.toFixed(1);
+    mediaStars.textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+    mediaLabel.textContent = `${docs.length} avaliação${docs.length > 1 ? 'ões' : ''}`;
+
+    // Lista
+    lista.innerHTML = '';
+    docs.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'nota-card';
+      const data = d.data?.toDate ? d.data.toDate().toLocaleDateString('pt-BR') : '';
+      card.innerHTML = `
+        <div class="nota-card-top">
+          <span class="nota-card-nome">👤 ${escHtml(d.nome||'Anônimo')}</span>
+          <span class="nota-card-stars">${'★'.repeat(d.estrelas)}${'☆'.repeat(5-d.estrelas)}</span>
+        </div>
+        ${d.msg ? `<div class="nota-card-msg">${escHtml(d.msg)}</div>` : ''}
+        ${data ? `<div class="nota-card-data">${data}</div>` : ''}
+      `;
+      lista.appendChild(card);
+    });
+  } catch(e) {
+    lista.innerHTML = '<div class="notas-loading">Erro ao carregar avaliações.</div>';
+  }
 }
 </script>
 </body>
