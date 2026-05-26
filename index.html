@@ -702,6 +702,7 @@ pre.ref-block {
 @media (max-width: 420px) {
   .sidebar { display: none; }
   .editor-col { width: 100%; }
+  .btn-sidebar-toggle { display: flex; }
 }
 </style>
 </head>
@@ -1856,7 +1857,8 @@ function switchTab(tab) {
   });
   const isEditor = tab==='editor';
   document.getElementById('editorCol').style.display = isEditor ? 'flex' : 'none';
-  document.querySelector('.sidebar').style.display   = isEditor ? 'flex' : 'none';
+  // só mostra sidebar se estiver no editor E sidebarVisible for true
+  document.querySelector('.sidebar').style.display = (isEditor && sidebarVisible) ? 'flex' : 'none';
   document.getElementById('code').style.display = isEditor ? '' : 'none';
   document.getElementById('exPanel').classList.toggle('show', tab==='examples');
   document.getElementById('tutPanel').classList.toggle('show', tab==='tutorial');
@@ -2366,21 +2368,33 @@ async function interpret(src){
 })();
 
 /* ══ SIDEBAR TOGGLE ══ */
-let sidebarVisible = true;
+const isMobile = () => window.innerWidth <= 420;
+let sidebarVisible = !isMobile(); // começa oculta no mobile
+
 function toggleSidebar() {
   sidebarVisible = !sidebarVisible;
-  const sb = document.querySelector('.sidebar');
+  const sb  = document.querySelector('.sidebar');
   const btn = document.getElementById('sidebarToggle');
   if (sidebarVisible) {
+    sb.style.display = 'flex';
     sb.classList.remove('hidden');
-    btn.classList.remove('hidden-state');
     btn.textContent = '◀ Ocultar';
   } else {
+    sb.style.display = 'none';
     sb.classList.add('hidden');
-    btn.classList.add('hidden-state');
     btn.textContent = '▶ Mostrar';
   }
 }
+
+// inicializa estado correto no mobile
+(function() {
+  if (isMobile()) {
+    const sb  = document.querySelector('.sidebar');
+    const btn = document.getElementById('sidebarToggle');
+    if(sb)  sb.style.display = 'none';
+    if(btn) btn.textContent  = '▶ Mostrar';
+  }
+})();
 
 /* ══ FILE MANAGEMENT ══ */
 let currentFileName = 'sem título.ckid';
