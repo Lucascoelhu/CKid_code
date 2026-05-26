@@ -178,15 +178,16 @@ body {
   font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75;
   white-space: pre; pointer-events: none;
   color: transparent; background: #1e1e3a;
-  width: max-content;
   min-width: 100%;
   min-height: 100%;
   z-index: 1;
+  box-sizing: border-box;
 }
 .err-line { background: rgba(242,95,95,.18); border-left: 3px solid #F09595; display: block; margin-left: -3px; }
 
 #code {
-  position: absolute; inset: 0;
+  position: absolute;
+  top: 0; left: 0;
   padding: 12px 40px 200px 48px;
   background: transparent; color: transparent;
   font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75;
@@ -195,8 +196,10 @@ body {
   overflow: hidden;
   -webkit-text-fill-color: transparent;
   width: 100%; height: 100%;
-  min-width: max-content;
+  min-width: 100%;
+  min-height: 100%;
   cursor: text;
+  box-sizing: border-box;
 }
 #code::selection { background: rgba(100,120,255,0.35); }
 #code::-moz-selection { background: rgba(100,120,255,0.35); }
@@ -1434,18 +1437,17 @@ function onEdit() {
   errorLines.clear();
   renderHighlight();
   updateLineNums();
-  const ta=document.getElementById('code');
-  const inner=document.getElementById('editorInner');
-  const lines=ta.value.split('\n').length;
-  const lineH=1.75*13;
-  const minH=Math.max(lines*lineH+220, document.getElementById('editorScroll').clientHeight);
-  inner.style.minHeight=minH+'px';
-  // sincroniza scroll
-  const sc=document.getElementById('editorScroll');
-  const ln=document.getElementById('lineNums');
-  const hl=document.getElementById('hlLayer');
-  ln.scrollTop=sc.scrollTop;
-  hl.scrollTop=sc.scrollTop;
+  requestAnimationFrame(() => {
+    const ta  = document.getElementById('code');
+    const inner = document.getElementById('editorInner');
+    const sc  = document.getElementById('editorScroll');
+    const lines = ta.value.split('\n').length;
+    const lineH = 1.75 * 13;
+    const minH  = Math.max(lines * lineH + 220, sc.clientHeight);
+    inner.style.minHeight = minH + 'px';
+    ta.style.height = minH + 'px';
+    syncScroll();
+  });
 }
 
 /* ══ KEYBOARD ══ */
