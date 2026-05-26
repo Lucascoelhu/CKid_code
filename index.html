@@ -341,6 +341,13 @@ body {
   text-align: center; margin-top: 20px; display: block;
 }
 
+.o-typed {
+  color: #A0D8FF;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 4px;
+}
+
 /* INPUT INLINE NA SAÍDA */
 .o-input-wrap {
   display: flex; align-items: center; gap: 8px;
@@ -374,29 +381,19 @@ body {
 /* SUCCESS BANNER */
 .o-success {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  margin-top: 14px;
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(46,232,160,.2), rgba(100,120,255,.2));
-  border: 2px solid #2EE8A0;
-  border-radius: 16px;
-  color: #2EE8A0;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(46,232,160,.15), rgba(100,120,255,.15));
+  border: 1px solid rgba(46,232,160,.4);
+  border-radius: 12px;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  animation: popIn .4s cubic-bezier(.175,.885,.32,1.275);
+  animation: popIn .3s cubic-bezier(.175,.885,.32,1.275);
 }
-@keyframes popIn {
-  0%   { transform: scale(.6); opacity: 0; }
-  100% { transform: scale(1);  opacity: 1; }
-}
-.o-success-icon { font-size: 36px; line-height: 1; }
-.o-success-title {
-  font-size: 18px; font-weight: 800; color: #2EE8A0; letter-spacing: .3px;
-}
-.o-success-sub {
-  font-size: 13px; color: #90D8C0; font-weight: 500;
-}
+.o-success-icon { font-size: 18px; line-height: 1; }
+.o-success-title { font-size: 13px; font-weight: 700; color: #2EE8A0; }
+.o-success-sub   { font-size: 11px; color: #90D8C0; margin-left: 4px; }
 
 /* FOOTER */
 .footer-credit {
@@ -1552,7 +1549,7 @@ function logSuccess() {
   d.innerHTML=`
     <span class="o-success-icon">🎉</span>
     <span class="o-success-title">Programa concluído!</span>
-    <span class="o-success-sub">Seu código rodou sem erros. Incrível! 🚀</span>
+    <span class="o-success-sub">Sem erros. Incrível! 🚀</span>
   `;
   out.appendChild(d); out.scrollTop=out.scrollHeight;
   launchConfetti();
@@ -1577,17 +1574,16 @@ function launchConfetti() {
     c.addEventListener('animationend', ()=>c.remove());
   }
 }
-function askInput(q) {
+function askInput() {
   return new Promise(res => {
     const out = document.getElementById('output');
     out.querySelector('.o-empty')?.remove();
 
-    // cria linha de input inline
     const wrap = document.createElement('div');
     wrap.className = 'o-line o-input-wrap';
     wrap.innerHTML = `
       <span class="o-ask-inline">▶</span>
-      <input class="o-input-field" id="userIn" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="digite aqui e pressione Enter..." />
+      <input class="o-input-field" id="userIn" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="digite e pressione Enter..." />
       <button class="o-input-btn" onclick="okInput()">OK</button>
     `;
     out.appendChild(wrap);
@@ -1598,7 +1594,14 @@ function askInput(q) {
     setTimeout(() => field.focus(), 50);
 
     inputResolve = v => {
-      wrap.remove();
+      // substitui o campo pelo valor digitado
+      wrap.outerHTML = '';
+      const d = document.createElement('div');
+      d.className = 'o-line';
+      const s = document.createElement('span');
+      s.className = 'o-typed'; s.textContent = v;
+      d.appendChild(s); out.appendChild(d);
+      out.scrollTop = out.scrollHeight;
       res(v);
     };
   });
@@ -1731,14 +1734,13 @@ async function interpret(src){
       if(tok.t==='ID'&&tok.v==='ler'&&peek(1).v==='('){
         const ln=tok.ln;eat();eat();const vname=eat().v;expect(')');if(peek().v===';')eat();
         if(!(vname in vars))errAt(ln,`variável "${vname}" não foi declarada`);
-        log(`O programa está esperando você digitar algo para "${vname}"...`,'ask');
-        const resp=await askInput(types[vname]==='texto'?`Digite um texto para "${vname}":`:`Digite um número para "${vname}":`);
+        const resp=await askInput();
         const tipo=types[vname]||'auto';
         if(tipo==='int')vars[vname]=Math.trunc(parseFloat(resp)||0);
         else if(tipo==='real')vars[vname]=parseFloat(resp)||0;
         else if(tipo==='texto')vars[vname]=resp;
         else{const n=parseFloat(resp);vars[vname]=isNaN(n)?resp:n;}
-        log(`Você digitou: "${resp}"  →  ${vname} = ${vars[vname]}`,'info');continue;
+        continue;
       }
       if(tok.t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){
         const nome=eat().v;eat();let val=parseExpr();const tipo=types[nome];
