@@ -7,7 +7,7 @@
   ║  Proibida a cópia, redistribuição ou uso comercial   ║
   ║  sem autorização prévia e por escrito do autor.      ║
   ║                                                      ║
-  ║  Contato: lucascoelhu                      ║
+  ║  Contato: lucascoelhu                                ║
   ╚══════════════════════════════════════════════════════╝
 -->
 <html lang="pt-BR">
@@ -340,6 +340,36 @@ body {
   color: #4a5a7a; font-style: italic; font-size: 13px;
   text-align: center; margin-top: 20px; display: block;
 }
+
+/* INPUT INLINE NA SAÍDA */
+.o-input-wrap {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 4px;
+}
+.o-ask-inline {
+  color: #FFD080; font-size: 16px; font-weight: 700; flex-shrink: 0;
+}
+.o-input-field {
+  flex: 1;
+  background: #2a2a55;
+  border: 2px solid #FFD080;
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: #F0F8FF;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  outline: none;
+  caret-color: #FFD080;
+}
+.o-input-field::placeholder { color: #6070a0; }
+.o-input-field:focus { border-color: #2EE8A0; box-shadow: 0 0 0 3px rgba(46,232,160,.2); }
+.o-input-btn {
+  background: #FFD080; color: #1a1a2e;
+  border: none; border-radius: 8px;
+  padding: 7px 14px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit; flex-shrink: 0;
+}
+.o-input-btn:hover { background: #2EE8A0; }
 
 /* SUCCESS BANNER */
 .o-success {
@@ -1007,15 +1037,8 @@ x == 10</pre>
   <span>CKid code v1.0 · criado por <strong>Lucas Coelho</strong> 💜</span>
 </div>
 
-<!-- INPUT MODAL -->
-<div class="input-overlay" id="inputOverlay">
-  <div class="input-box">
-    <h3>💬 Entrada</h3>
-    <p id="inputQ">Digite um valor:</p>
-    <input id="userIn" onkeydown="if(event.key==='Enter')okInput()" />
-    <button onclick="okInput()">OK ✓</button>
-  </div>
-</div>
+<!-- INPUT INLINE — aparece direto na saída -->
+<div class="input-overlay" id="inputOverlay" style="display:none;"></div>
 
 <!-- SALVAR COMO MODAL -->
 <div class="input-overlay" id="saveOverlay">
@@ -1555,18 +1578,34 @@ function launchConfetti() {
   }
 }
 function askInput(q) {
-  return new Promise(res=>{
-    inputResolve=res;
-    document.getElementById('inputQ').textContent=q;
-    document.getElementById('userIn').value='';
-    document.getElementById('inputOverlay').classList.add('show');
-    setTimeout(()=>document.getElementById('userIn').focus(),80);
+  return new Promise(res => {
+    const out = document.getElementById('output');
+    out.querySelector('.o-empty')?.remove();
+
+    // cria linha de input inline
+    const wrap = document.createElement('div');
+    wrap.className = 'o-line o-input-wrap';
+    wrap.innerHTML = `
+      <span class="o-ask-inline">▶</span>
+      <input class="o-input-field" id="userIn" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="digite aqui e pressione Enter..." />
+      <button class="o-input-btn" onclick="okInput()">OK</button>
+    `;
+    out.appendChild(wrap);
+    out.scrollTop = out.scrollHeight;
+
+    const field = document.getElementById('userIn');
+    field.onkeydown = e => { if (e.key === 'Enter') okInput(); };
+    setTimeout(() => field.focus(), 50);
+
+    inputResolve = v => {
+      wrap.remove();
+      res(v);
+    };
   });
 }
 function okInput() {
-  const v=document.getElementById('userIn').value;
-  document.getElementById('inputOverlay').classList.remove('show');
-  if(inputResolve){inputResolve(v);inputResolve=null;}
+  const v = document.getElementById('userIn')?.value ?? '';
+  if (inputResolve) { inputResolve(v); inputResolve = null; }
 }
 
 /* ══ RUN ══ */
