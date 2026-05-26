@@ -999,6 +999,23 @@ texto nome := "Ana";    // palavras e frases
 x := x + 1;
 x == 10</pre>
 
+    <h3>📋 Arrays (vetores)</h3>
+<pre class="ref-block">int  notas[5];          // array de 5 inteiros
+real precos[10];        // array de 10 decimais
+texto nomes[3];         // array de 3 textos
+
+notas[0] := 10;        // atribui valor (índice começa em 0)
+mostrar(notas[0]);     // acessa valor
+ler(notas[1]);         // lê valor do teclado
+
+// Percorrer com para:
+int i;
+para (i := 0; i < tamanho(notas); i := i + 1) {
+  mostrar(notas[i]);
+}
+
+tamanho(notas)         // retorna o tamanho do array</pre>
+
     <h3>🔄 enquanto</h3>
 <pre class="ref-block">enquanto (x &lt; 10) {
   mostrar(x);
@@ -1413,6 +1430,7 @@ function highlightTokens(s) {
       let w = '';
       while (i < s.length && /[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(s[i])) w += s[i++];
       if      (w === 'mostrar')         result += `<span class="t-show">${escHtml(w)}</span>`;
+      else if (w === 'tamanho')         result += `<span class="t-show">${escHtml(w)}</span>`;
       else if (w === 'ler')             result += `<span class="t-read">${escHtml(w)}</span>`;
       else if (KW_TYPE.includes(w))     result += `<span class="t-type">${escHtml(w)}</span>`;
       else if (KW_CTRL.includes(w))     result += `<span class="t-kw">${escHtml(w)}</span>`;
@@ -1646,8 +1664,9 @@ function tokenize(src) {
     if(src[i]==='/'&&src[i+1]==='/'){while(i<src.length&&src[i]!=='\n')i++;continue;}
     if(src[i]==='"'){
       let s='';i++;
-      while(i<src.length&&src[i]!=='"')s+=src[i++];
-      i++;tokens.push({t:'STR',v:s,ln:lineNum});continue;
+      while(i<src.length&&src[i]!=='"'&&src[i]!=='\n')s+=src[i++];
+      if(src[i]==='"')i++;
+      tokens.push({t:'STR',v:s,ln:lineNum});continue;
     }
     if(/\d/.test(src[i])){
       let n='',ln=lineNum;
@@ -1670,39 +1689,92 @@ function tokenize(src) {
 /* ══ INTERPRETER ══ */
 async function interpret(src){
   const toks=tokenize(src);let p=0;
-  const vars={},types={};let steps=0;
+  const vars={},types={},arrays={},arrTypes={};let steps=0;
   const peek=(o=0)=>toks[p+o]||{t:'EOF',v:'',ln:0};
   const eat=()=>toks[p++]||{t:'EOF',v:'',ln:0};
   function expect(v){const tok=eat();if(tok.v!==v)throw new Error(`linha ${tok.ln}: esperava "${v}", encontrei "${tok.v}"`);return tok;}
   function errAt(ln,msg){throw new Error(`linha ${ln}: ${msg}`);}
-  function parseExpr(){return parseAddSub();}
-  function parseAddSub(){
-    let left=parseMulDiv();
-    while(peek().v==='-'){eat();const right=parseMulDiv();left=(typeof left==='number'?left:parseFloat(left)||0)-(typeof right==='number'?right:parseFloat(right)||0);}
+
+  // Resolve array index: nome[expr]
+  function parseArrayAccess(nome, ln){
+    eat(); // consume '['
+    const idx = Math.trunc(+parseExpr()||0);
+    expect(']');
+    if(!(nome in arrays)) errAt(ln, `"${nome}" não é um array`);
+    if(idx < 0 || idx >= arrays[nome].length) errAt(ln, `índice ${idx} fora do limite do array "${nome}" (tamanho ${arrays[nome].length})`);
+    return {arr:nome, idx};
+  }
+
+  function parseExpr(){return parseOr();}
+  function parseOr(){
+    let left=parseAnd();
+    while(peek().v==='ou'||peek().v==='||'){eat();const r=parseAnd();left=left||r;}
     return left;
   }
-  function parseMulDiv(){
-    let left=parseSumStr();
-    while(['*','/','%'].includes(peek().v)){const op=eat().v,right=parseSumStr();const l=typeof left==='number'?left:parseFloat(left)||0,r=typeof right==='number'?right:parseFloat(right)||0;if(op==='*')left=l*r;else if(op==='/')left=r!==0?l/r:0;else left=l%r;}
-    return left;
-  }
-  function parseSumStr(){
+  function parseAnd(){
     let left=parseCmp();
-    while(peek().v==='+'){eat();const right=parseCmp();left=(typeof left==='number'&&typeof right==='number')?left+right:String(left)+String(right);}
+    while(peek().v==='e'||peek().v==='&&'){eat();const r=parseCmp();left=left&&r;}
     return left;
   }
   function parseCmp(){
-    let left=parseUnary();
+    let left=parseAddSub();
     const ops=['==','!=','>','<','>=','<='];
-    while(ops.includes(peek().v)||peek().t==='OP'){if(!ops.includes(peek().v))break;const op=eat().v,right=parseUnary();const l=typeof left==='number'?left:parseFloat(left)||0,r=typeof right==='number'?right:parseFloat(right)||0;if(op==='==')left=l===r;else if(op==='!=')left=l!==r;else if(op==='>')left=l>r;else if(op==='<')left=l<r;else if(op==='>=')left=l>=r;else left=l<=r;}
+    while(ops.includes(peek().v)||(peek().t==='OP'&&ops.includes(peek().v))){
+      if(!ops.includes(peek().v))break;
+      const op=eat().v,right=parseAddSub();
+      const l=typeof left==='number'?left:parseFloat(left)||0;
+      const r=typeof right==='number'?right:parseFloat(right)||0;
+      if(op==='==')left=(typeof left==='string'||typeof right==='string')?String(left)===String(right):l===r;
+      else if(op==='!=')left=(typeof left==='string'||typeof right==='string')?String(left)!==String(right):l!==r;
+      else if(op==='>')left=l>r;else if(op==='<')left=l<r;
+      else if(op==='>=')left=l>=r;else left=l<=r;
+    }
     return left;
   }
-  function parseUnary(){if(peek().v==='-'){eat();return -(parseFloat(parsePrimary())||0);}return parsePrimary();}
+  function parseAddSub(){
+    let left=parseMulDiv();
+    while(peek().v==='+'||peek().v==='-'){
+      const op=eat().v,right=parseMulDiv();
+      if(op==='+') left=(typeof left==='number'&&typeof right==='number')?left+right:String(left)+String(right);
+      else left=(typeof left==='number'?left:parseFloat(left)||0)-(typeof right==='number'?right:parseFloat(right)||0);
+    }
+    return left;
+  }
+  function parseMulDiv(){
+    let left=parseUnary();
+    while(['*','/','%'].includes(peek().v)){
+      const op=eat().v,right=parseUnary();
+      const l=typeof left==='number'?left:parseFloat(left)||0,r=typeof right==='number'?right:parseFloat(right)||0;
+      if(op==='*')left=l*r;else if(op==='/')left=r!==0?l/r:0;else left=l%r;
+    }
+    return left;
+  }
+  function parseUnary(){
+    if(peek().v==='nao'||peek().v==='!'){eat();return !parseUnary();}
+    if(peek().v==='-'){eat();return -(parseFloat(parseUnary())||0);}
+    return parsePrimary();
+  }
   function parsePrimary(){
     const tok=peek();
     if(tok.t==='NUM'){eat();return tok.v;}
     if(tok.t==='STR'){eat();return tok.v;}
-    if(tok.t==='ID'){eat();return tok.v in vars?vars[tok.v]:0;}
+    if(tok.t==='ID'){
+      // tamanho(arr)
+      if(tok.v==='tamanho'&&peek(1).v==='('){
+        eat();eat();
+        const nome=eat().v; expect(')');
+        if(nome in arrays) return arrays[nome].length;
+        if(nome in vars) return String(vars[nome]).length;
+        return 0;
+      }
+      eat();
+      // array access: nome[idx]
+      if(peek().v==='['){
+        const {arr,idx}=parseArrayAccess(tok.v,tok.ln);
+        return arrays[arr][idx];
+      }
+      return tok.v in vars ? vars[tok.v] : 0;
+    }
     if(tok.v==='('){eat();const v=parseExpr();expect(')');return v;}
     eat();return 0;
   }
@@ -1711,28 +1783,81 @@ async function interpret(src){
     while(peek().v!==')'&&peek().t!=='EOF'){parts.push(parseExpr());if(peek().v===',')eat();}
     return parts;
   }
+
+  // skip a block without executing
+  function skipBlock(){
+    let d=1;
+    while(p<toks.length&&d>0){
+      if(toks[p].v==='{')d++;
+      if(toks[p].v==='}')d--;
+      if(d>0)p++;
+    }
+    if(peek().v==='}')p++; // consume '}'
+  }
+  // find end of block (returns index AFTER closing '}')
+  function findBlockEnd(start){
+    let d=1,i=start;
+    while(i<toks.length&&d>0){if(toks[i].v==='{')d++;if(toks[i].v==='}')d--;if(d>0)i++;}
+    return i+1;
+  }
+
   async function execBlock(){
     while(p<toks.length){
-      if(++steps>100000)throw new Error('linha 1: verifique loops infinitos!');
+      if(++steps>500000)throw new Error('linha 1: loop infinito detectado! Verifique suas condições.');
       const tok=peek();
       if(tok.t==='EOF'||tok.v==='}')break;
+
+      // ── Declaração de variável simples: int/real/texto nome, nome2 := val; ──
       if(tok.t==='KW'&&['int','real','texto'].includes(tok.v)){
         const tipo=eat().v;
+        // verifica se é array: int nome[tamanho];
+        const ntok=peek();
+        if(ntok.t==='ID'&&peek(1).v==='['){
+          const nome=eat().v; eat(); // consume '['
+          const tam=Math.trunc(+parseExpr()||0); expect(']');
+          arrTypes[nome]=tipo;
+          const def=tipo==='texto'?'':0;
+          arrays[nome]=Array(tam).fill(null).map(()=>def);
+          if(peek().v===';')eat(); continue;
+        }
+        // variável simples (pode ser múltipla: int a, b, c)
         do{
-          const ntok=peek(),nome=eat().v;
-          if(ntok.t!=='ID')errAt(ntok.ln,`esperava nome de variável após "${tipo}"`);
+          const nt=peek(),nome=eat().v;
+          if(nt.t!=='ID')errAt(nt.ln,`esperava nome de variável após "${tipo}"`);
           types[nome]=tipo;
-          if(peek().v===':='||peek().v==='='){eat();let val=parseExpr();if(tipo==='int')val=Math.trunc(+val||0);else if(tipo==='real')val=+val||0;else val=String(val);vars[nome]=val;}
-          else{vars[nome]=tipo==='texto'?'':0;}
+          if(peek().v===':='||peek().v==='='){
+            eat();let val=parseExpr();
+            if(tipo==='int')val=Math.trunc(+val||0);
+            else if(tipo==='real')val=+val||0;
+            else val=String(val);
+            vars[nome]=val;
+          } else { vars[nome]=tipo==='texto'?'':0; }
         }while(peek().v===','&&eat());
         if(peek().v===';')eat();continue;
       }
+
+      // ── mostrar ──
       if(tok.t==='ID'&&tok.v==='mostrar'&&peek(1).v==='('){
         eat();eat();const parts=parseArgList();expect(')');if(peek().v===';')eat();
-        log(parts.map(v=>String(v)).join(''),'out');continue;
+        log(parts.map(v=>v===true?'verdadeiro':v===false?'falso':String(v)).join(''),'out');continue;
       }
+
+      // ── ler ──
       if(tok.t==='ID'&&tok.v==='ler'&&peek(1).v==='('){
-        const ln=tok.ln;eat();eat();const vname=eat().v;expect(')');if(peek().v===';')eat();
+        const ln=tok.ln;eat();eat();
+        const vname=eat().v;
+        // ler(arr[idx])
+        if(peek().v==='['){
+          const {arr,idx}=parseArrayAccess(vname,ln);
+          expect(')');if(peek().v===';')eat();
+          const resp=await askInput();
+          const tipo=arrTypes[arr]||'auto';
+          if(tipo==='int')arrays[arr][idx]=Math.trunc(parseFloat(resp)||0);
+          else if(tipo==='real')arrays[arr][idx]=parseFloat(resp)||0;
+          else arrays[arr][idx]=resp;
+          continue;
+        }
+        expect(')');if(peek().v===';')eat();
         if(!(vname in vars))errAt(ln,`variável "${vname}" não foi declarada`);
         const resp=await askInput();
         const tipo=types[vname]||'auto';
@@ -1742,60 +1867,108 @@ async function interpret(src){
         else{const n=parseFloat(resp);vars[vname]=isNaN(n)?resp:n;}
         continue;
       }
-      if(tok.t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){
-        const nome=eat().v;eat();let val=parseExpr();const tipo=types[nome];
+
+      // ── atribuição: nome := expr  ou  nome[idx] := expr ──
+      if(tok.t==='ID'&&(peek(1).v===':='||peek(1).v==='='||peek(1).v==='[')){
+        const nome=eat().v;
+        if(peek().v==='['){
+          // array[idx] := val
+          const {arr,idx}=parseArrayAccess(nome,tok.ln);
+          if(peek().v===':='||peek().v==='=') eat(); else errAt(tok.ln,'esperava := após índice');
+          let val=parseExpr();
+          const tipo=arrTypes[arr]||'auto';
+          if(tipo==='int')val=Math.trunc(+val||0);
+          else if(tipo==='real')val=+val||0;
+          arrays[arr][idx]=val;
+          if(peek().v===';')eat();continue;
+        }
+        eat(); // consume := or =
+        let val=parseExpr();
+        const tipo=types[nome];
         if(tipo==='int')val=Math.trunc(+val||0);else if(tipo==='real')val=+val||0;
         vars[nome]=val;if(peek().v===';')eat();continue;
       }
+
+      // ── enquanto ──
       if(tok.t==='KW'&&tok.v==='enquanto'){
-        eat();expect('(');const cp=p;let cond=parseExpr();expect(')');expect('{');
-        const bp=p;let d=1,be=p;
-        while(be<toks.length&&d>0){if(toks[be].v==='{')d++;if(toks[be].v==='}')d--;if(d>0)be++;}
-        let lim=1000;
+        eat();expect('(');const cp=p;
+        let cond=parseExpr();expect(')');expect('{');
+        const bp=p; const be=findBlockEnd(bp)-1; // index of '}'
+        let lim=100000;
         while(cond&&lim-->0){p=bp;await execBlock();p=cp;cond=parseExpr();expect(')');expect('{');}
+        if(!lim)throw new Error('linha '+tok.ln+': loop infinito!');
         p=be+1;if(peek().v===';')eat();continue;
       }
+
+      // ── faca...enquanto ──
       if(tok.t==='KW'&&(tok.v==='faca'||tok.v==='faça')){
-        eat();expect('{');const bp=p;let d=1,be=p;
-        while(be<toks.length&&d>0){if(toks[be].v==='{')d++;if(toks[be].v==='}')d--;if(d>0)be++;}
-        let lim=1000,cond=true;
-        while(cond&&lim-->0){p=bp;await execBlock();p=be+1;if(peek().t==='KW'&&peek().v==='enquanto')eat();expect('(');cond=parseExpr();expect(')');if(peek().v===';')eat();}
+        eat();expect('{');const bp=p;
+        const be=findBlockEnd(bp)-1;
+        let lim=100000,cond=true;
+        while(cond&&lim-->0){
+          p=bp;await execBlock();p=be+1;
+          if(peek().t==='KW'&&peek().v==='enquanto')eat();
+          expect('(');cond=parseExpr();expect(')');if(peek().v===';')eat();
+        }
+        if(!lim)throw new Error('linha '+tok.ln+': loop infinito!');
         continue;
       }
+
+      // ── para ──
       if(tok.t==='KW'&&tok.v==='para'){
         eat();expect('(');
-        if(peek().t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){const n=eat().v;eat();vars[n]=parseExpr();}
-        if(peek().v===';')eat();
-        const cp=p;let cond=parseExpr();if(peek().v===';')eat();
+        // init
+        if(peek().t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){
+          const n=eat().v;eat();
+          vars[n]=parseExpr();
+          if(!(n in types))types[n]='int';
+        }
+        expect(';');
+        const cp=p;let cond=parseExpr();expect(';');
+        // step tokens
         const sp=p;let pd=0,se2=p;
-        while(se2<toks.length){if(toks[se2].v==='(')pd++;if(toks[se2].v===')'){if(pd===0)break;pd--;}se2++;}
-        const stepToks=toks.slice(sp,se2);p=se2+1;expect('{');
-        const bp=p;let d=1,be=p;
-        while(be<toks.length&&d>0){if(toks[be].v==='{')d++;if(toks[be].v==='}')d--;if(d>0)be++;}
-        let lim=1000;
+        while(se2<toks.length){
+          if(toks[se2].v==='(')pd++;
+          if(toks[se2].v===')'){if(pd===0)break;pd--;}
+          se2++;
+        }
+        const stepToks=toks.slice(sp,se2);
+        p=se2+1;expect('{');
+        const bp=p;const be=findBlockEnd(bp)-1;
+        let lim=100000;
         while(cond&&lim-->0){
           p=bp;await execBlock();
+          // execute step
           const saved=[...toks];toks.splice(0,toks.length,...stepToks);p=0;
-          if(peek().t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){const n=eat().v;eat();vars[n]=parseExpr();}
+          if(peek().t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){
+            const n=eat().v;eat();let val=parseExpr();
+            const tipo=types[n];
+            if(tipo==='int')val=Math.trunc(+val||0);else if(tipo==='real')val=+val||0;
+            vars[n]=val;
+          }
           toks.splice(0,toks.length,...saved);
-          p=cp;cond=parseExpr();if(peek().v===';')eat();
+          p=cp;cond=parseExpr();expect(';');
           p=se2+1;if(peek().v==='{')eat();p=bp;if(!cond)break;
         }
+        if(!lim)throw new Error('linha '+tok.ln+': loop infinito!');
         p=be+1;continue;
       }
+
+      // ── se...senao ──
       if(tok.t==='KW'&&tok.v==='se'){
         eat();expect('(');const cond=parseExpr();expect(')');expect('{');
-        const bs=p;let d=1,be=p;
-        while(be<toks.length&&d>0){if(toks[be].v==='{')d++;if(toks[be].v==='}')d--;if(d>0)be++;}
-        if(cond){p=bs;await execBlock();}p=be+1;
+        const bs=p;const be=findBlockEnd(bs)-1;
+        if(cond){p=bs;await execBlock();}
+        p=be+1;
         if(peek().t==='KW'&&(peek().v==='senao'||peek().v==='senão')){
-          eat();expect('{');const es=p;let d2=1,ee=p;
-          while(ee<toks.length&&d2>0){if(toks[ee].v==='{')d2++;if(toks[ee].v==='}')d2--;if(d2>0)ee++;}
-          if(!cond){p=es;await execBlock();}p=ee+1;
+          eat();expect('{');const es=p;const ee=findBlockEnd(es)-1;
+          if(!cond){p=es;await execBlock();}
+          p=ee+1;
         }
         continue;
       }
-      eat();
+
+      eat(); // skip unknown token
     }
     if(peek().v==='}')eat();
   }
