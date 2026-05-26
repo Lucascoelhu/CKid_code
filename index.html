@@ -1130,6 +1130,10 @@ tamanho(notas)         // retorna o tamanho do array</pre>
   mostrar(i);
 }</pre>
 
+    <h3>🎲 Funções</h3>
+<pre class="ref-block">sortear(1, 10)     // número aleatório entre 1 e 10
+tamanho(array)     // tamanho do array ou texto</pre>
+
     <h3>❓ se...senao</h3>
 <pre class="ref-block">se (x > 5) {
   mostrar("maior!");
@@ -1645,33 +1649,91 @@ mostrar("Fatorial de ", n, " = ", fat);`,
 
   adivinhar:
 `// 🎯 Jogo: Adivinhe o número!
-// Um jogo completo que usa variáveis, 'enquanto' e 'se'.
-// O programa tem um segredo e você tenta adivinhar com dicas!
+// sortear(min, max) gera um número aleatório!
 
-int secreto := 7;       // o número escondido
-int chute, tentativas;  // palpite e contador de tentativas
+int secreto := sortear(1, 10); // número aleatório entre 1 e 10
+int chute, tentativas;
 
 mostrar("🎯 Adivinhe o número de 1 a 10!");
 mostrar("Boa sorte! 🍀");
 
-// Continua repetindo enquanto o chute for diferente do segredo
 enquanto (chute != secreto) {
   mostrar("Qual é o seu palpite?");
   ler(chute);
-  tentativas := tentativas + 1;  // conta mais uma tentativa
+  tentativas := tentativas + 1;
 
   se (chute == secreto) {
-    // Acertou!
     mostrar("🎉 ACERTOU em ", tentativas, " tentativa(s)!");
   } senao {
-    // Não acertou — dá uma dica
     se (chute > secreto) {
       mostrar("📉 Muito alto! Tente um número menor.");
     } senao {
       mostrar("📈 Muito baixo! Tente um número maior.");
     }
   }
-}`
+}`,
+
+  lotofacil:
+`// 🍀 Gerador de números da Lotofácil
+// A Lotofácil sorteia 15 números de 1 a 25, sem repetição.
+// Usamos um array para guardar os sorteados e checar repetição.
+
+int numeros[15];  // os 15 números sorteados
+int total, i, j, novo, repetido;
+
+mostrar("🍀 ========================");
+mostrar("   GERADOR - LOTOFÁCIL   ");
+mostrar("🍀 ========================");
+mostrar("Sorteando 15 números de 1 a 25...");
+
+total := 0;
+
+enquanto (total < 15) {
+  novo := sortear(1, 25);
+
+  // verifica se o número já foi sorteado
+  repetido := 0;
+  para (j := 0; j < total; j := j + 1) {
+    se (numeros[j] == novo) {
+      repetido := 1;
+    }
+  }
+
+  // só adiciona se não repetiu
+  se (repetido == 0) {
+    numeros[total] := novo;
+    total := total + 1;
+  }
+}
+
+// ordena os números (bubble sort)
+int aux, trocou;
+para (i := 0; i < 14; i := i + 1) {
+  trocou := 0;
+  para (j := 0; j < 14 - i; j := j + 1) {
+    se (numeros[j] > numeros[j + 1]) {
+      aux := numeros[j];
+      numeros[j] := numeros[j + 1];
+      numeros[j + 1] := aux;
+      trocou := 1;
+    }
+  }
+}
+
+mostrar("Seus números:");
+mostrar(
+  numeros[0], " - ", numeros[1], " - ", numeros[2], " - ",
+  numeros[3], " - ", numeros[4]
+);
+mostrar(
+  numeros[5], " - ", numeros[6], " - ", numeros[7], " - ",
+  numeros[8], " - ", numeros[9]
+);
+mostrar(
+  numeros[10], " - ", numeros[11], " - ", numeros[12], " - ",
+  numeros[13], " - ", numeros[14]
+);
+mostrar("🍀 Boa sorte!"`
 };
 
 const DEFAULT_CODE =
@@ -1717,6 +1779,7 @@ function highlightTokens(s) {
       while (i < s.length && /[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(s[i])) w += s[i++];
       if      (w === 'mostrar')         result += `<span class="t-show">${escHtml(w)}</span>`;
       else if (w === 'tamanho')         result += `<span class="t-show">${escHtml(w)}</span>`;
+      else if (w === 'sortear')         result += `<span class="t-show">${escHtml(w)}</span>`;
       else if (w === 'ler')             result += `<span class="t-read">${escHtml(w)}</span>`;
       else if (KW_TYPE.includes(w))     result += `<span class="t-type">${escHtml(w)}</span>`;
       else if (KW_CTRL.includes(w))     result += `<span class="t-kw">${escHtml(w)}</span>`;
@@ -2058,6 +2121,14 @@ async function interpret(src){
         if(nome in arrays) return arrays[nome].length;
         if(nome in vars) return String(vars[nome]).length;
         return 0;
+      }
+      // sortear(min, max)
+      if(tok.v==='sortear'&&peek(1).v==='('){
+        eat();eat();
+        const mn=parseExpr(); expect(',');
+        const mx=parseExpr(); expect(')');
+        const a=Math.ceil(+mn), b=Math.floor(+mx);
+        return Math.floor(Math.random()*(b-a+1))+a;
       }
       eat();
       // array access: nome[idx]
