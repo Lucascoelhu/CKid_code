@@ -630,14 +630,14 @@ pre.ref-block {
 <div class="toolbar">
   <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">◀ Ocultar</button>
   <button class="btn-run" onclick="runCode()">▶ Executar</button>
-  <button class="btn-sec" onclick="clearCode()">🗑 Limpar</button>
-  <button class="btn-sec" onclick="clearOut()">🧹 Saída</button>
+  <button class="btn-sec" onclick="SFX.play('click');clearCode()">🗑 Limpar</button>
+  <button class="btn-sec" onclick="SFX.play('click');clearOut()">🧹 Saída</button>
 </div>
 
 <div class="toolbar-file">
-  <button class="btn-file" onclick="newFile()">📄 Novo</button>
-  <button class="btn-file" onclick="openFile()">📂 Abrir</button>
-  <button class="btn-file" onclick="saveFile()">💾 Salvar</button>
+  <button class="btn-file" onclick="SFX.play('click');newFile()">📄 Novo</button>
+  <button class="btn-file" onclick="SFX.play('click');openFile()">📂 Abrir</button>
+  <button class="btn-file" onclick="SFX.play('click');saveFile()">💾 Salvar</button>
   <div class="file-name-display" id="fileNameDisplay">arquivo: <span id="currentFileName">sem título.ckid</span></div>
 </div>
 <!-- input oculto para abrir arquivo -->
@@ -701,7 +701,7 @@ pre.ref-block {
           <div class="line-nums" id="lineNums"></div>
           <div class="highlight-layer" id="hlLayer" aria-hidden="true"></div>
           <textarea id="code" spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" inputmode="text"
-            oninput="onEdit()" onkeydown="handleTab(event)"></textarea>
+            oninput="SFX.play('type');onEdit()" onkeydown="handleTab(event)"></textarea>
         </div>
       </div>
     </div>
@@ -1087,7 +1087,100 @@ tamanho(notas)         // retorna o tamanho do array</pre>
  * Licença: Todos os direitos reservados.
  * Proibida a cópia ou redistribuição sem autorização.
  */
-/* ══ EXAMPLES ══ */
+/* ══ SONS ══ */
+const SFX = (() => {
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+
+  function play(type, vol=0.18) {
+    try {
+      const ac = getCtx();
+      const g = ac.createGain();
+      g.gain.setValueAtTime(vol, ac.currentTime);
+      g.connect(ac.destination);
+
+      if (type === 'run') {
+        // bip ascendente — "iniciando!"
+        [440, 554, 659].forEach((f, i) => {
+          const o = ac.createOscillator();
+          o.type = 'sine'; o.frequency.value = f;
+          o.connect(g);
+          o.start(ac.currentTime + i * 0.08);
+          o.stop(ac.currentTime + i * 0.08 + 0.12);
+        });
+      }
+      else if (type === 'success') {
+        // fanfarra de vitória!
+        const notes = [523, 659, 784, 1047];
+        notes.forEach((f, i) => {
+          const o = ac.createOscillator();
+          o.type = 'triangle'; o.frequency.value = f;
+          const gi = ac.createGain();
+          gi.gain.setValueAtTime(0.22, ac.currentTime + i*0.12);
+          gi.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i*0.12 + 0.25);
+          o.connect(gi); gi.connect(ac.destination);
+          o.start(ac.currentTime + i * 0.12);
+          o.stop(ac.currentTime + i * 0.12 + 0.28);
+        });
+      }
+      else if (type === 'error') {
+        // bip descendente — "ops!"
+        const o = ac.createOscillator();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(300, ac.currentTime);
+        o.frequency.exponentialRampToValueAtTime(100, ac.currentTime + 0.3);
+        g.gain.setValueAtTime(0.15, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.3);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.32);
+      }
+      else if (type === 'type') {
+        // clique suave ao digitar
+        const o = ac.createOscillator();
+        o.type = 'sine'; o.frequency.value = 800 + Math.random() * 200;
+        g.gain.setValueAtTime(0.06, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.06);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.07);
+      }
+      else if (type === 'input') {
+        // ping ao aparecer campo de input
+        const o = ac.createOscillator();
+        o.type = 'sine'; o.frequency.value = 660;
+        g.gain.setValueAtTime(0.12, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.2);
+      }
+      else if (type === 'confirm') {
+        // confirmação ao pressionar OK/Enter
+        [440, 550].forEach((f, i) => {
+          const o = ac.createOscillator();
+          o.type = 'sine'; o.frequency.value = f;
+          const gi = ac.createGain();
+          gi.gain.setValueAtTime(0.12, ac.currentTime + i*0.07);
+          gi.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i*0.07 + 0.12);
+          o.connect(gi); gi.connect(ac.destination);
+          o.start(ac.currentTime + i*0.07);
+          o.stop(ac.currentTime + i*0.07 + 0.14);
+        });
+      }
+      else if (type === 'click') {
+        // clique de botão
+        const o = ac.createOscillator();
+        o.type = 'sine'; o.frequency.value = 520;
+        g.gain.setValueAtTime(0.1, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.08);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.09);
+      }
+    } catch(e) {}
+  }
+  return { play };
+})();
 const EXAMPLES = {
   // ── TUTORIAL EXAMPLES ──────────────────────────────────────
   mostrar_simples:
@@ -1570,6 +1663,7 @@ function logSuccess() {
     <span class="o-success-sub">Sem erros. Incrível! 🚀</span>
   `;
   out.appendChild(d); out.scrollTop=out.scrollHeight;
+  SFX.play('success');
   launchConfetti();
 }
 
@@ -1606,6 +1700,7 @@ function askInput() {
     `;
     out.appendChild(wrap);
     out.scrollTop = out.scrollHeight;
+    SFX.play('input');
 
     const field = document.getElementById('userIn');
     field.onkeydown = e => { if (e.key === 'Enter') okInput(); };
@@ -1625,12 +1720,14 @@ function askInput() {
   });
 }
 function okInput() {
+  SFX.play('confirm');
   const v = document.getElementById('userIn')?.value ?? '';
   if (inputResolve) { inputResolve(v); inputResolve = null; }
 }
 
 /* ══ RUN ══ */
 async function runCode() {
+  SFX.play('run');
   clearOut(); setStatus('executando...','');
   try {
     await interpret(document.getElementById('code').value);
@@ -1651,6 +1748,7 @@ async function runCode() {
       syncScroll();
     }
     log(msg,'err',ln);
+    SFX.play('error');
     setStatus('❌ erro'+(ln?` na linha ${ln}`:''),'status-err');
   }
 }
