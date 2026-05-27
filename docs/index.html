@@ -54,23 +54,45 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.9)
 .floating-code{position:absolute;font-family:'Fira Code',monospace;font-size:12px;opacity:0;animation:floatCode 8s infinite;pointer-events:none;z-index:0;white-space:nowrap}
 @keyframes floatCode{0%{opacity:0;transform:translateY(20px)}10%{opacity:.18}90%{opacity:.18}100%{opacity:0;transform:translateY(-60px)}}
 
-/* TYPING SECTION */
-.typing-section{background:var(--purple-mid);padding:60px 24px;text-align:center;overflow:hidden}
-.typing-inner{max-width:700px;margin:0 auto}
-.typing-label{font-size:13px;color:#AFA9EC;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px}
-.typing-window{background:#1e1e3a;border-radius:14px;border:1px solid #3a3a60;overflow:hidden;text-align:left;box-shadow:0 12px 48px rgba(0,0,0,.4)}
-.typing-bar{background:#161630;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #3a3a60}
-.typing-dot{width:11px;height:11px;border-radius:50%}
-.typing-file{color:#7070a0;font-size:12px;font-family:'Fira Code',monospace;margin-left:8px}
-.typing-code{padding:18px 18px 18px 52px;font-family:'Fira Code',monospace;font-size:13px;line-height:1.75;position:relative;min-height:160px}
-.typing-ln{position:absolute;left:0;top:18px;width:38px;text-align:right;padding-right:8px;color:#7070a0;font-size:12px;line-height:1.75}
-#typedCode{color:#A0A0D0}
-.cursor{display:inline-block;width:2px;height:16px;background:#9FE1CB;vertical-align:middle;animation:blink .8s infinite}
+.cursor{display:inline-block;width:2px;height:15px;background:#9FE1CB;vertical-align:middle;animation:blink .8s infinite;margin-left:1px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.typing-output{background:#141428;border-top:2px solid #3a3a60;padding:12px 18px;min-height:44px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.typing-out-lbl{font-size:10px;color:#8090b8;text-transform:uppercase;letter-spacing:.7px;font-family:'Fira Code',monospace}
-.out-item{background:#252550;border-left:3px solid #2EE8A0;border-radius:0 8px 8px 0;padding:4px 12px;color:#F0F8FF;font-size:12px;font-weight:700;font-family:'Fira Code',monospace;animation:popIn .3s cubic-bezier(.175,.885,.32,1.275)}
 @keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* DEMO SECTION */
+.demo-section{background:#181830;padding:70px 24px;overflow:hidden}
+.demo-inner{max-width:1000px;margin:0 auto}
+.demo-label{text-align:center;font-size:13px;color:#AFA9EC;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:28px}
+.demo-window{background:#1e1e3a;border-radius:16px;border:1px solid #3a3a60;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.demo-titlebar{background:#161630;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #3a3a60}
+.demo-dot{width:12px;height:12px;border-radius:50%}
+.demo-title{color:#9090c0;font-size:12px;font-family:'Fira Code',monospace;margin-left:8px;flex:1}
+.demo-status{font-size:11px;font-family:'Fira Code',monospace;padding:2px 10px;border-radius:6px;font-weight:700}
+.demo-status.idle{color:#7070a0;background:rgba(112,112,160,.15)}
+.demo-status.running{color:#1D9E75;background:rgba(29,158,117,.15)}
+.demo-status.error{color:#F09595;background:rgba(240,149,149,.15)}
+.demo-tabs{background:#1a1a35;display:flex;border-bottom:1px solid #2a2a50}
+.demo-tab{padding:6px 16px;color:#7070a0;font-size:11px;font-family:'Fira Code',monospace;border-bottom:2px solid transparent;cursor:default}
+.demo-tab.active{color:#EEEDFE;border-bottom-color:#EF9F27}
+.demo-body{display:flex;height:340px}
+.demo-sidebar{width:130px;background:#16162e;border-right:1px solid #2a2a50;padding:8px 6px;display:flex;flex-direction:column;gap:3px;overflow:hidden;flex-shrink:0}
+.demo-sec{font-size:8px;font-weight:800;color:#5a5a90;text-transform:uppercase;letter-spacing:1px;padding:6px 4px 3px}
+.demo-blk{padding:5px 8px;border-radius:7px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:5px;transition:transform .1s}
+.db-show{background:#1a4a3a;color:#5DCAA5;border-left:2px solid #2EB87A}
+.db-read{background:#1a2a4a;color:#5a8ae0;border-left:2px solid #4A8FE0}
+.db-int{background:#3a2a1a;color:#c08a40;border-left:2px solid #E08A2E}
+.db-if{background:#3a1a1a;color:#c05050;border-left:2px solid #E04A4A}
+.db-wh{background:#2a1a3a;color:#9a5adc;border-left:2px solid #9A4AE0}
+.demo-blk.highlight{transform:scale(1.06);box-shadow:0 2px 12px rgba(255,255,255,.15)}
+.demo-editor{flex:1;position:relative;overflow:hidden;background:#1e1e3a}
+.demo-ln{position:absolute;left:0;top:0;width:32px;padding:14px 4px 14px 0;text-align:right;font-family:'Fira Code',monospace;font-size:11px;line-height:1.75;color:#5a5a90;background:#181830;border-right:1px solid #2a2a50;z-index:2}
+.demo-code-area{position:absolute;left:32px;right:0;top:0;bottom:0;padding:14px 12px;font-family:'Fira Code',monospace;font-size:12px;line-height:1.75;color:#A0A0D0;overflow:hidden}
+.err-highlight{background:rgba(240,100,100,.15);border-left:2px solid #F09595;display:block;margin-left:-12px;padding-left:12px}
+.demo-output{background:#141428;border-top:2px solid #2a2a50;padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:48px}
+.out-lbl{font-size:9px;color:#6070a0;text-transform:uppercase;letter-spacing:.7px;font-family:'Fira Code',monospace;flex-shrink:0}
+.out-item{background:#1e1e50;border-left:3px solid #2EE8A0;border-radius:0 7px 7px 0;padding:3px 10px;color:#D0F0FF;font-size:11px;font-weight:700;font-family:'Fira Code',monospace;animation:popIn .3s cubic-bezier(.175,.885,.32,1.275)}
+.out-err{background:rgba(240,100,100,.12);border-left:3px solid #F09595;border-radius:0 7px 7px 0;padding:3px 10px;color:#FFB0B0;font-size:11px;font-family:'Fira Code',monospace;animation:errShake .3s ease}
 
 /* MESSAGES */
 .messages-section{padding:60px 24px;max-width:800px;margin:0 auto;text-align:center}
@@ -174,24 +196,45 @@ footer span{color:var(--teal-light)}
   <div class="hero-badge">Criado com 💜 por <span>Lucas Coelho</span> · Versão 1.0</div>
 </section>
 
-<!-- TYPING SECTION -->
-<section class="typing-section">
-  <div class="typing-inner">
-    <div class="typing-label reveal">✨ Veja o CKid digitando sozinho</div>
-    <div class="typing-window reveal">
-      <div class="typing-bar">
-        <div class="typing-dot" style="background:#FF5F57"></div>
-        <div class="typing-dot" style="background:#FFBD2E"></div>
-        <div class="typing-dot" style="background:#28C840"></div>
-        <span class="typing-file">meu_programa.ckid</span>
+<!-- DEMO SECTION -->
+<section class="demo-section">
+  <div class="demo-inner">
+    <div class="demo-label reveal">✨ Veja o CKid em ação — ao vivo</div>
+    <div class="demo-window reveal">
+      <div class="demo-titlebar">
+        <div class="demo-dot" style="background:#FF5F57"></div>
+        <div class="demo-dot" style="background:#FFBD2E"></div>
+        <div class="demo-dot" style="background:#28C840"></div>
+        <span class="demo-title" id="demoFile">novo_programa.ckid</span>
+        <span class="demo-status idle" id="demoStatus">● pronto</span>
       </div>
-      <div class="typing-code">
-        <div class="typing-ln" id="lineNums">1</div>
-        <span id="typedCode"></span><span class="cursor"></span>
+      <div class="demo-tabs">
+        <div class="demo-tab active">📝 Editor</div>
+        <div class="demo-tab">📚 Exemplos</div>
+        <div class="demo-tab">❓ Ajuda</div>
       </div>
-      <div class="typing-output">
-        <span class="typing-out-lbl">Saída —</span>
-        <span id="outputArea"></span>
+      <div class="demo-body">
+        <div class="demo-sidebar">
+          <div class="demo-sec">Saída</div>
+          <div class="demo-blk db-show" id="blk-mostrar">📢 mostrar</div>
+          <div class="demo-blk db-read" id="blk-ler">📥 ler</div>
+          <div class="demo-sec">Variáveis</div>
+          <div class="demo-blk db-int" id="blk-int">🔢 int</div>
+          <div class="demo-blk db-int" id="blk-texto">📝 texto</div>
+          <div class="demo-sec">Decisão</div>
+          <div class="demo-blk db-if" id="blk-se">❓ se/senao</div>
+          <div class="demo-sec">Repetição</div>
+          <div class="demo-blk db-wh" id="blk-enquanto">🔁 enquanto</div>
+          <div class="demo-blk db-wh" id="blk-para">🔂 para</div>
+        </div>
+        <div class="demo-editor">
+          <div class="demo-ln" id="demoLn">1</div>
+          <div class="demo-code-area" id="demoCode"></div>
+        </div>
+      </div>
+      <div class="demo-output">
+        <span class="out-lbl">▶ saída —</span>
+        <span id="demoOutput"></span>
       </div>
     </div>
   </div>
@@ -396,121 +439,182 @@ fragments.forEach((f,i)=>{
 });
 
 // Typing animation
-const programs=[
-  {
-    file:'saudacao.ckid',
-    code:`// Programa de saudação 🐰
-texto nome := "Lucas";
-int idade := 10;
-mostrar("Olá, ", nome, "!");
-mostrar("Você tem ", idade, " anos.");
-se (idade >= 10) {
-  mostrar("Uau, já é um programador!");
-}`,
-    outputs:['💬 Olá, Lucas!','💬 Você tem 10 anos.','💬 Uau, já é um programador!']
-  },
-  {
-    file:'tabuada.ckid',
-    code:`// Tabuada do 7 🔢
-int n := 7;
-mostrar("=== Tabuada do ", n, " ===");
-para (i := 1; i <= 10; i := i + 1) {
-  int res := n * i;
-  mostrar(n, " x ", i, " = ", res);
-}
-mostrar("Fim da tabuada!");`,
-    outputs:['💬 === Tabuada do 7 ===','💬 7 x 1 = 7','💬 7 x 2 = 14','💬 7 x 3 = 21','💬 7 x 4 = 28','💬 Fim da tabuada!']
-  },
-  {
-    file:'par_ou_impar.ckid',
-    code:`// Verificador par ou ímpar 🔍
-int numero := 42;
-mostrar("Número: ", numero);
-se (numero % 2 == 0) {
-  mostrar("É um número PAR! ✅");
-} senao {
-  mostrar("É um número ÍMPAR! 🔹");
-}
-mostrar("Programa concluído!");`,
-    outputs:['💬 Número: 42','💬 É um número PAR! ✅','💬 Programa concluído!']
-  },
-  {
-    file:'contagem.ckid',
-    code:`// Contagem regressiva 🚀
-int contador := 5;
-mostrar("Iniciando contagem...");
-enquanto (contador > 0) {
-  mostrar("⏱ ", contador, "...");
-  contador := contador - 1;
-}
-mostrar("🚀 Lançamento!");`,
-    outputs:['💬 Iniciando contagem...','💬 ⏱ 5...','💬 ⏱ 4...','💬 ⏱ 3...','💬 🚀 Lançamento!']
-  }
-];
-let progIdx=0, charIdx=0, typing=true;
-const typedEl=document.getElementById('typedCode');
-const outputEl=document.getElementById('outputArea');
-const lineEl=document.getElementById('lineNums');
-const fileEl=document.querySelector('.typing-file');
-
-function updateLines(text){
-  const lines=text.split('\n').length;
-  lineEl.innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
-}
-
+// ── DEMO ANIMATION ──
+const KW=['mostrar','ler','se','senao','senão','enquanto','para','int','real','texto','faca','faça'];
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function colorizeLine(raw){
   var s=esc(raw);
-  // comentarios
-  s=s.replace(/(\/\/[^
-]*)/g,'<i style="color:#8898C8">$1</i>');
-  // keywords
-  s=s.replace(/\b(mostrar|ler|se|senao|senão|enquanto|para|int|real|texto|faca|faça)\b/g,'<b style="color:#C0A8F0;font-weight:600">$1</b>');
-  // strings
-  s=s.replace(/&quot;([^&]*)&quot;/g,'<b style="color:#2EE8A0">&quot;$1&quot;</b>');
-  // numeros
+  s=s.replace(/(\/\/[^\n]*)/g,'<span style="color:#6878A8;font-style:italic">$1</span>');
+  KW.forEach(function(k){s=s.replace(new RegExp('\\b'+k+'\\b','g'),'<span style="color:#C0A8F0;font-weight:700">'+k+'</span>');});
+  s=s.replace(/&quot;([^&]*)&quot;/g,'<span style="color:#2EE8A0;font-weight:600">&quot;$1&quot;</span>');
   s=s.replace(/\b(\d+)\b/g,'<span style="color:#FFD080">$1</span>');
-  // operadores
-  s=s.replace(/(:=|==|!=|&lt;=|&gt;=|&lt;|&gt;)/g,'<span style="color:#60D4FF">$1</span>');
-  return s;
+  s=s.replace(/(:=|==|!=|&lt;=|&gt;=|&lt;|&gt;|\+|-|\*|\/)/g,'<span style="color:#60D4FF">$1</span>');
+  return '<span style="color:#A0A0D0">'+s+'</span>';
 }
 
-async function typeProgram(){
-  var prog=programs[progIdx];
-  fileEl.textContent=prog.file;
-  var allLines=prog.code.split('\n');
-  typedEl.innerHTML=''; outputEl.innerHTML='';
+const demos=[
+  {
+    file:'saudacao.ckid',
+    blk:'blk-texto',
+    lines:[
+      '// 🐰 Olá, CKid!',
+      'texto nome := "Lucas";',
+      'int idade := 11;',
+      'mostrar("Olá, ", nome, "!");',
+      'mostrar("Você tem ", idade, " anos.");',
+      'se (idade >= 10) {',
+      '  mostrar("Já é um programador! 🚀");',
+      '}'
+    ],
+    outputs:['💬 Olá, Lucas!','💬 Você tem 11 anos.','💬 Já é um programador! 🚀'],
+    success:true
+  },
+  {
+    file:'tabuada.ckid',
+    blk:'blk-para',
+    lines:[
+      '// 🔢 Tabuada do 7',
+      'int n := 7;',
+      'mostrar("=== Tabuada do ", n, " ===");',
+      'para (i := 1; i <= 5; i := i + 1) {',
+      '  int res := n * i;',
+      '  mostrar(n, " x ", i, " = ", res);',
+      '}',
+      'mostrar("Concluído! ✅");'
+    ],
+    outputs:['💬 === Tabuada do 7 ===','💬 7 x 1 = 7','💬 7 x 2 = 14','💬 7 x 3 = 21','💬 7 x 4 = 28','💬 Concluído! ✅'],
+    success:true
+  },
+  {
+    file:'adivinha.ckid',
+    blk:'blk-enquanto',
+    lines:[
+      '// 🎮 Jogo de adivinhação',
+      'int secreto := 7;',
+      'int chute := 0;',
+      'int tentativas := 0;',
+      'mostrar("Adivinhe de 1 a 10! 🎯");',
+      'enquanto (chute != secreto) {',
+      '  ler(chute);',
+      '  tentativas := tentativas + 1;',
+      '}',
+      'mostrar("🎉 Acertou em ", tentativas, " tentativas!");'
+    ],
+    outputs:['💬 Adivinhe de 1 a 10! 🎯','💬 🎉 Acertou em 3 tentativas!'],
+    success:true
+  },
+  {
+    file:'erro_demo.ckid',
+    blk:'blk-mostrar',
+    lines:[
+      '// ⚠️ Exemplo de erro',
+      'int pontos := 100;',
+      'mostrar("Pontos: ", pontos)',
+      'mostrar("Fim!")'
+    ],
+    errorLine:2,
+    errorMsg:'linha 3: faltou ponto e vírgula ";" no final',
+    outputs:[],
+    success:false
+  }
+];
 
-  for(var li=0;li<allLines.length;li++){
-    var line=allLines[li];
-    // digita char a char sem colorir
+var demoIdx=0;
+var codeEl=document.getElementById('demoCode');
+var lnEl=document.getElementById('demoLn');
+var outEl=document.getElementById('demoOutput');
+var fileEl=document.getElementById('demoFile');
+var statusEl=document.getElementById('demoStatus');
+
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+function highlightBlk(id){
+  document.querySelectorAll('.demo-blk').forEach(function(b){b.classList.remove('highlight');});
+  if(id){var el=document.getElementById(id);if(el)el.classList.add('highlight');}
+}
+
+function updateLn(n){
+  var html='';for(var i=1;i<=n;i++)html+=i+'<br>';
+  lnEl.innerHTML=html;
+}
+
+function renderLines(lines, errorLine){
+  return lines.map(function(l,i){
+    var colored=colorizeLine(l);
+    if(errorLine!==undefined && i===errorLine)
+      return '<span class="err-highlight">'+colored+'</span>';
+    return colored;
+  }).join('\n');
+}
+
+async function runDemo(){
+  var d=demos[demoIdx];
+  fileEl.textContent=d.file;
+  statusEl.textContent='● pronto';
+  statusEl.className='demo-status idle';
+  codeEl.innerHTML='';
+  outEl.innerHTML='';
+  lnEl.innerHTML='1';
+  highlightBlk(d.blk);
+
+  await sleep(600);
+
+  // Digita linha por linha
+  var typed=[];
+  for(var li=0;li<d.lines.length;li++){
+    var line=d.lines[li];
+    // digita char a char
     for(var ci=1;ci<=line.length;ci++){
-      var done=allLines.slice(0,li).map(colorizeLine).join('\n');
       var cur=esc(line.slice(0,ci));
-      typedEl.innerHTML=(done?(done+'\n'):'')+cur;
-      updateLines(allLines.slice(0,li+1).join('\n'));
-      await new Promise(function(r){setTimeout(r,40);});
+      var rendered=renderLines(typed)+(typed.length?'\n':'')+
+        '<span style="color:#A0A0D0">'+cur+'</span>'+
+        '<span class="cursor"></span>';
+      codeEl.innerHTML=rendered;
+      updateLn(typed.length+1);
+      await sleep(ci===1?80:28);
     }
-    // linha completa: coloriza
-    var done2=allLines.slice(0,li+1).map(colorizeLine).join('\n');
-    typedEl.innerHTML=done2;
-    updateLines(allLines.slice(0,li+1).join('\n'));
-    await new Promise(function(r){setTimeout(r,100);});
+    typed.push(line);
+    codeEl.innerHTML=renderLines(typed)+'<span class="cursor"></span>';
+    updateLn(typed.length);
+    await sleep(line.startsWith('//')?180:90);
   }
 
-  // outputs
-  await new Promise(function(r){setTimeout(r,400);});
-  for(var oi=0;oi<prog.outputs.length;oi++){
-    var span=document.createElement('span');
-    span.className='out-item';span.textContent=prog.outputs[oi];
-    outputEl.appendChild(span);
-    await new Promise(function(r){setTimeout(r,350);});
+  await sleep(400);
+
+  // Executar
+  statusEl.textContent='⚙ compilando...';
+  statusEl.className='demo-status idle';
+  await sleep(600);
+
+  if(d.success){
+    statusEl.textContent='✔ executado com sucesso';
+    statusEl.className='demo-status running';
+    codeEl.innerHTML=renderLines(typed);
+    updateLn(typed.length);
+    for(var oi=0;oi<d.outputs.length;oi++){
+      var span=document.createElement('span');
+      span.className='out-item';
+      span.textContent=d.outputs[oi];
+      outEl.appendChild(span);
+      await sleep(320);
+    }
+  } else {
+    statusEl.textContent='✖ erro encontrado';
+    statusEl.className='demo-status error';
+    codeEl.innerHTML=renderLines(typed, d.errorLine)+'<span class="cursor"></span>';
+    var errSpan=document.createElement('span');
+    errSpan.className='out-err';
+    errSpan.textContent=d.errorMsg;
+    outEl.appendChild(errSpan);
   }
-  await new Promise(function(r){setTimeout(r,2500);});
-  progIdx=(progIdx+1)%programs.length;
-  typeProgram();
+
+  await sleep(3200);
+  highlightBlk(null);
+  demoIdx=(demoIdx+1)%demos.length;
+  runDemo();
 }
-setTimeout(typeProgram, 800);
+
+runDemo();
 
 // Scroll reveal
 const observer=new IntersectionObserver(entries=>{
