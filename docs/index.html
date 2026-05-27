@@ -398,19 +398,53 @@ fragments.forEach((f,i)=>{
 // Typing animation
 const programs=[
   {
-    file:'ola_mundo.ckid',
-    code:`mostrar("Olá, mundo!");\nmostrar("Bem-vindo ao CKid! 🐰");\nmostrar("Vamos programar juntos!");`,
-    outputs:['💬 Olá, mundo!','💬 Bem-vindo ao CKid! 🐰','💬 Vamos programar juntos!']
-  },
-  {
-    file:'soma.ckid',
-    code:`int a := 5;\nint b := 3;\nint soma := a + b;\nmostrar("Resultado: ", soma);`,
-    outputs:['💬 Resultado: 8']
+    file:'saudacao.ckid',
+    code:`// Programa de saudação 🐰
+texto nome := "Lucas";
+int idade := 10;
+mostrar("Olá, ", nome, "!");
+mostrar("Você tem ", idade, " anos.");
+se (idade >= 10) {
+  mostrar("Uau, já é um programador!");
+}`,
+    outputs:['💬 Olá, Lucas!','💬 Você tem 10 anos.','💬 Uau, já é um programador!']
   },
   {
     file:'tabuada.ckid',
-    code:`// Tabuada do 2\npara (i := 1; i <= 5; i := i + 1) {\n  mostrar("2 x ", i, " = ", 2 * i);\n}`,
-    outputs:['💬 2 x 1 = 2','💬 2 x 2 = 4','💬 2 x 3 = 6','💬 2 x 4 = 8','💬 2 x 5 = 10']
+    code:`// Tabuada do 7 🔢
+int n := 7;
+mostrar("=== Tabuada do ", n, " ===");
+para (i := 1; i <= 10; i := i + 1) {
+  int res := n * i;
+  mostrar(n, " x ", i, " = ", res);
+}
+mostrar("Fim da tabuada!");`,
+    outputs:['💬 === Tabuada do 7 ===','💬 7 x 1 = 7','💬 7 x 2 = 14','💬 7 x 3 = 21','💬 7 x 4 = 28','💬 Fim da tabuada!']
+  },
+  {
+    file:'par_ou_impar.ckid',
+    code:`// Verificador par ou ímpar 🔍
+int numero := 42;
+mostrar("Número: ", numero);
+se (numero % 2 == 0) {
+  mostrar("É um número PAR! ✅");
+} senao {
+  mostrar("É um número ÍMPAR! 🔹");
+}
+mostrar("Programa concluído!");`,
+    outputs:['💬 Número: 42','💬 É um número PAR! ✅','💬 Programa concluído!']
+  },
+  {
+    file:'contagem.ckid',
+    code:`// Contagem regressiva 🚀
+int contador := 5;
+mostrar("Iniciando contagem...");
+enquanto (contador > 0) {
+  mostrar("⏱ ", contador, "...");
+  contador := contador - 1;
+}
+mostrar("🚀 Lançamento!");`,
+    outputs:['💬 Iniciando contagem...','💬 ⏱ 5...','💬 ⏱ 4...','💬 ⏱ 3...','💬 🚀 Lançamento!']
   }
 ];
 let progIdx=0, charIdx=0, typing=true;
