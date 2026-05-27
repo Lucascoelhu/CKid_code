@@ -17,97 +17,11 @@
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 
-/* ── HERO ── */
-.hero{
-  background:var(--purple-dark);
-  min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:60px 24px;
-  position:relative;overflow:hidden;
-}
-.hero-stars{position:absolute;inset:0;pointer-events:none}
-.star{position:absolute;border-radius:50%;background:#EEEDFE;animation:twinkle 3s infinite}
-@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.35;transform:scale(1)}}
-
-.hero-mascot{font-size:72px;animation:bob 2.5s ease-in-out infinite;margin-bottom:16px;z-index:1;position:relative}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-
-.hero h1{font-size:clamp(42px,7vw,80px);font-weight:900;color:#EEEDFE;line-height:1;z-index:1;position:relative}
-.hero h1 span{color:var(--teal-light)}
-.hero-sub{font-size:clamp(16px,2.5vw,22px);color:#AFA9EC;margin-top:16px;max-width:520px;font-weight:600;z-index:1;position:relative}
-.hero-btns{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;justify-content:center;z-index:1;position:relative}
-.btn-primary{background:var(--teal);color:#fff;border:none;border-radius:999px;padding:16px 36px;font-size:18px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s;display:inline-block}
-.btn-primary:hover{background:#0F6E56;transform:scale(1.04)}
-.btn-outline{background:none;color:#EEEDFE;border:2px solid #534AB7;border-radius:999px;padding:15px 32px;font-size:17px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s;display:inline-block}
-.btn-outline:hover{background:rgba(255,255,255,.07)}
-
-.hero-badge{
-  margin-top:48px;background:rgba(83,74,183,.35);border:1px solid #534AB7;
-  border-radius:12px;padding:10px 20px;color:#AFA9EC;font-size:13px;font-weight:600;
-  z-index:1;position:relative;
-}
-.hero-badge span{color:var(--teal-light);font-weight:800}
-
-/* ── FEATURES ── */
-.section{padding:80px 24px;max-width:1100px;margin:0 auto}
-.section-title{font-size:clamp(28px,4vw,42px);font-weight:900;text-align:center;margin-bottom:12px}
-.section-sub{font-size:17px;color:var(--text2);text-align:center;margin-bottom:56px;font-weight:600}
-
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-.feat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:32px 28px;transition:transform .15s,box-shadow .15s}
-.feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(83,74,183,.13)}
-.feat-icon{font-size:40px;margin-bottom:16px}
-.feat-card h3{font-size:20px;font-weight:800;margin-bottom:8px}
-.feat-card p{font-size:15px;color:var(--text2);font-weight:600;line-height:1.6}
-
-/* ── EDITOR PREVIEW ── */
-.preview-section{background:var(--purple-dark);padding:80px 24px;overflow:hidden}
-.preview-inner{max-width:900px;margin:0 auto;text-align:center}
-.preview-inner .section-title{color:#EEEDFE}
-.preview-inner .section-sub{color:#AFA9EC}
-.editor-mock{background:#1e1e3a;border-radius:16px;border:1px solid #3a3a60;overflow:hidden;text-align:left;margin-top:0;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-.mock-bar{background:#161630;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #3a3a60}
-.mock-dot{width:12px;height:12px;border-radius:50%}
-.mock-filename{color:#7070a0;font-size:12px;font-family:'Fira Code',monospace;margin-left:8px}
-.mock-code{padding:20px 20px 20px 56px;font-family:'Fira Code',monospace;font-size:14px;line-height:1.75;position:relative}
-.mock-ln{position:absolute;left:0;top:20px;width:42px;text-align:right;padding-right:10px;color:#7070a0;font-size:13px;line-height:1.75}
-.t-kw{color:#C0A8F0;font-weight:600}
-.t-str{color:#2EE8A0;font-weight:600}
-.t-var{color:#E8EEFF}
-.t-num{color:#FFD080}
-.t-op{color:#60D4FF}
-.t-cmt{color:#8898C8;font-style:italic}
-.mock-output{background:#141428;border-top:2px solid #3a3a60;padding:14px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.mock-out-lbl{font-size:10px;color:#8090b8;text-transform:uppercase;letter-spacing:.7px;font-family:'Fira Code',monospace}
-.mock-out-item{background:#252550;border-left:3px solid #2EE8A0;border-radius:0 8px 8px 0;padding:5px 12px;color:#F0F8FF;font-size:13px;font-weight:700;font-family:'Fira Code',monospace}
-
-/* ── COMO USAR ── */
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:0}
-.step{text-align:center;padding:32px 20px}
-.step-num{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.step h3{font-size:18px;font-weight:800;margin-bottom:8px}
-.step p{font-size:14px;color:var(--text2);font-weight:600;line-height:1.6}
-.step-arrow{display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--border);padding-top:28px}
-
-/* ── DOWNLOAD ── */
-.download-section{background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));padding:80px 24px;text-align:center}
-.download-section h2{font-size:clamp(28px,4vw,46px);font-weight:900;color:#EEEDFE;margin-bottom:12px}
-.download-section p{font-size:18px;color:#AFA9EC;margin-bottom:40px;font-weight:600}
-.download-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:36px;max-width:440px;margin:0 auto}
-.download-icon{font-size:52px;margin-bottom:16px}
-.download-card h3{color:#EEEDFE;font-size:22px;font-weight:800;margin-bottom:8px}
-.download-card p{color:#AFA9EC;font-size:14px;margin-bottom:24px;font-weight:600}
-.version-badge{display:inline-block;background:rgba(83,74,183,.5);border:1px solid #534AB7;border-radius:8px;padding:4px 14px;color:#AFA9EC;font-size:12px;font-weight:700;margin-bottom:20px}
-
-/* ── FOOTER ── */
-footer{background:var(--purple-dark);padding:32px 24px;text-align:center;border-top:1px solid #3a3a60}
-footer p{color:#7070a0;font-size:13px;font-weight:600}
-footer span{color:var(--teal-light)}
-
-/* ── NAVBAR ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(83,74,183,.3);padding:12px 32px;display:flex;align-items:center;justify-content:space-between}
+/* NAVBAR */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(83,74,183,.3);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;animation:slideDown .5s ease}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo-icon{font-size:24px}
+.nav-logo img{height:32px;width:auto;object-fit:contain}
 .nav-logo-text{color:#EEEDFE;font-size:18px;font-weight:800}
 .nav-logo-text span{color:var(--teal-light);font-weight:600}
 .nav-links{display:flex;gap:24px}
@@ -115,13 +29,126 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
 .nav-links a:hover{color:#EEEDFE}
 .nav-download{background:var(--teal);color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s}
 .nav-download:hover{background:#0F6E56}
+
+/* HERO */
+.hero{background:var(--purple-dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;position:relative;overflow:hidden}
+.hero-stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#EEEDFE;animation:twinkle 3s infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.35;transform:scale(1)}}
+.hero-mascot{margin-bottom:16px;z-index:1;position:relative;animation:fadeUp .8s ease both}
+.hero-mascot img{height:100px;width:auto;object-fit:contain;filter:drop-shadow(0 8px 32px rgba(159,225,203,.4));animation:bob 2.5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-size:clamp(42px,7vw,80px);font-weight:900;color:#EEEDFE;line-height:1;z-index:1;position:relative;animation:fadeUp .8s .2s ease both}
+.hero h1 span{color:var(--teal-light)}
+.hero-sub{font-size:clamp(16px,2.5vw,22px);color:#AFA9EC;margin-top:16px;max-width:520px;font-weight:600;z-index:1;position:relative;animation:fadeUp .8s .4s ease both}
+.hero-btns{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;justify-content:center;z-index:1;position:relative;animation:fadeUp .8s .6s ease both}
+.btn-primary{background:var(--teal);color:#fff;border:none;border-radius:999px;padding:16px 36px;font-size:18px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s;display:inline-block}
+.btn-primary:hover{background:#0F6E56;transform:scale(1.04)}
+.btn-outline{background:none;color:#EEEDFE;border:2px solid #534AB7;border-radius:999px;padding:15px 32px;font-size:17px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s;display:inline-block}
+.btn-outline:hover{background:rgba(255,255,255,.07);border-color:#9FE1CB}
+.hero-badge{margin-top:48px;background:rgba(83,74,183,.35);border:1px solid #534AB7;border-radius:12px;padding:10px 20px;color:#AFA9EC;font-size:13px;font-weight:600;z-index:1;position:relative;animation:fadeUp .8s .8s ease both}
+.hero-badge span{color:var(--teal-light);font-weight:800}
+
+/* FLOATING CODE */
+.floating-code{position:absolute;font-family:'Fira Code',monospace;font-size:12px;opacity:0;animation:floatCode 8s infinite;pointer-events:none;z-index:0;white-space:nowrap}
+@keyframes floatCode{0%{opacity:0;transform:translateY(20px)}10%{opacity:.18}90%{opacity:.18}100%{opacity:0;transform:translateY(-60px)}}
+
+/* TYPING SECTION */
+.typing-section{background:var(--purple-mid);padding:60px 24px;text-align:center;overflow:hidden}
+.typing-inner{max-width:700px;margin:0 auto}
+.typing-label{font-size:13px;color:#AFA9EC;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px}
+.typing-window{background:#1e1e3a;border-radius:14px;border:1px solid #3a3a60;overflow:hidden;text-align:left;box-shadow:0 12px 48px rgba(0,0,0,.4)}
+.typing-bar{background:#161630;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #3a3a60}
+.typing-dot{width:11px;height:11px;border-radius:50%}
+.typing-file{color:#7070a0;font-size:12px;font-family:'Fira Code',monospace;margin-left:8px}
+.typing-code{padding:18px 18px 18px 52px;font-family:'Fira Code',monospace;font-size:13px;line-height:1.75;position:relative;min-height:160px}
+.typing-ln{position:absolute;left:0;top:18px;width:38px;text-align:right;padding-right:8px;color:#7070a0;font-size:12px;line-height:1.75}
+#typedCode{color:#A0A0D0}
+.cursor{display:inline-block;width:2px;height:16px;background:#9FE1CB;vertical-align:middle;animation:blink .8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.typing-output{background:#141428;border-top:2px solid #3a3a60;padding:12px 18px;min-height:44px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.typing-out-lbl{font-size:10px;color:#8090b8;text-transform:uppercase;letter-spacing:.7px;font-family:'Fira Code',monospace}
+.out-item{background:#252550;border-left:3px solid #2EE8A0;border-radius:0 8px 8px 0;padding:4px 12px;color:#F0F8FF;font-size:12px;font-weight:700;font-family:'Fira Code',monospace;animation:popIn .3s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+
+/* MESSAGES */
+.messages-section{padding:60px 24px;max-width:800px;margin:0 auto;text-align:center}
+.messages-section h2{font-size:clamp(24px,3.5vw,36px);font-weight:900;margin-bottom:8px}
+.messages-section p{color:var(--text2);font-size:16px;font-weight:600;margin-bottom:40px}
+.msg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.msg-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:20px;text-align:left;transition:transform .15s,box-shadow .15s;animation:fadeUp .6s ease both}
+.msg-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(83,74,183,.12)}
+.msg-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.msg-name{font-size:13px;font-weight:800;margin-bottom:4px}
+.msg-text{font-size:13px;color:var(--text2);font-weight:600;line-height:1.5}
+.msg-stars{color:var(--gold);font-size:13px;margin-top:8px}
+
+/* FEATURES */
+.section{padding:80px 24px;max-width:1100px;margin:0 auto}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:900;text-align:center;margin-bottom:12px}
+.section-sub{font-size:17px;color:var(--text2);text-align:center;margin-bottom:56px;font-weight:600}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.feat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:32px 28px;transition:transform .15s,box-shadow .15s}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(83,74,183,.13)}
+.feat-icon{font-size:40px;margin-bottom:16px}
+.feat-card h3{font-size:20px;font-weight:800;margin-bottom:8px}
+.feat-card p{font-size:15px;color:var(--text2);font-weight:600;line-height:1.6}
+
+/* CODE SNIPPET SECTION */
+.snippet-section{background:var(--purple-dark);padding:80px 24px}
+.snippet-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+@media(max-width:700px){.snippet-inner{grid-template-columns:1fr}}
+.snippet-text h2{font-size:clamp(24px,3.5vw,38px);font-weight:900;color:#EEEDFE;margin-bottom:16px}
+.snippet-text p{font-size:16px;color:#AFA9EC;font-weight:600;line-height:1.7;margin-bottom:12px}
+.snippet-tag{display:inline-block;background:rgba(83,74,183,.5);border:1px solid #534AB7;border-radius:8px;padding:4px 12px;color:#9FE1CB;font-size:12px;font-weight:700;margin-bottom:8px;margin-right:6px}
+.code-block{background:#1e1e3a;border-radius:14px;border:1px solid #3a3a60;overflow:hidden}
+.code-block-bar{background:#161630;padding:8px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #3a3a60}
+.code-block-dot{width:10px;height:10px;border-radius:50%}
+.code-block-name{color:#7070a0;font-size:11px;font-family:'Fira Code',monospace;margin-left:6px}
+.code-block-body{padding:16px 16px 16px 48px;font-family:'Fira Code',monospace;font-size:13px;line-height:1.75;position:relative}
+.cb-ln{position:absolute;left:0;top:16px;width:36px;text-align:right;padding-right:8px;color:#7070a0;font-size:11px;line-height:1.75}
+.t-kw{color:#C0A8F0;font-weight:600}
+.t-str{color:#2EE8A0;font-weight:600}
+.t-var{color:#E8EEFF}
+.t-num{color:#FFD080}
+.t-op{color:#60D4FF}
+.t-cmt{color:#8898C8;font-style:italic}
+.t-plain{color:#A0A0D0}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.step{text-align:center;padding:32px 20px}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 20px rgba(83,74,183,.4)}
+.step h3{font-size:18px;font-weight:800;margin-bottom:8px}
+.step p{font-size:14px;color:var(--text2);font-weight:600;line-height:1.6}
+
+/* DOWNLOAD */
+.download-section{background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));padding:80px 24px;text-align:center}
+.download-section h2{font-size:clamp(28px,4vw,46px);font-weight:900;color:#EEEDFE;margin-bottom:12px}
+.download-section>p{font-size:18px;color:#AFA9EC;margin-bottom:40px;font-weight:600}
+.download-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:36px;max-width:440px;margin:0 auto;backdrop-filter:blur(8px)}
+.download-icon{margin-bottom:16px}
+.download-icon img{height:72px;width:auto;object-fit:contain;filter:drop-shadow(0 4px 20px rgba(159,225,203,.3));animation:bob 2.5s ease-in-out infinite}
+.download-card h3{color:#EEEDFE;font-size:22px;font-weight:800;margin-bottom:8px}
+.download-card p{color:#AFA9EC;font-size:14px;margin-bottom:24px;font-weight:600}
+.version-badge{display:inline-block;background:rgba(83,74,183,.5);border:1px solid #534AB7;border-radius:8px;padding:4px 14px;color:#AFA9EC;font-size:12px;font-weight:700;margin-bottom:20px}
+
+/* FOOTER */
+footer{background:var(--purple-dark);padding:32px 24px;text-align:center;border-top:1px solid #3a3a60}
+footer p{color:#7070a0;font-size:13px;font-weight:600}
+footer span{color:var(--teal-light)}
+
+/* SCROLL ANIMATIONS */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
 
 <nav>
   <a class="nav-logo" href="#">
-    <img src="logo_cKid.png" alt="CKid" style="height:32px;width:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/><span style="display:none">🐰</span>
+    <img src="logo_cKid.png" alt="CKid" onerror="this.style.display='none'"/>
     <span class="nav-logo-text">CKid <span>code</span></span>
   </a>
   <div class="nav-links">
@@ -135,7 +162,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
 <!-- HERO -->
 <section class="hero">
   <div class="hero-stars" id="heroStars"></div>
-  <div class="hero-mascot"><img src="logo_cKid.png" alt="CKid" style="height:90px;width:auto;object-fit:contain;filter:drop-shadow(0 4px 24px rgba(159,225,203,.3));" onerror="this.outerHTML='🐰'"/></div>
+  <div class="hero-mascot">
+    <img src="logo_cKid.png" alt="CKid" onerror="this.outerHTML='<span style=\'font-size:90px;display:block\'>🐰</span>'"/>
+  </div>
   <h1>CKid <span>code</span></h1>
   <p class="hero-sub">O compilador educativo feito para crianças aprenderem programação de verdade.</p>
   <div class="hero-btns">
@@ -145,37 +174,92 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
   <div class="hero-badge">Criado com 💜 por <span>Lucas Coelho</span> · Versão 1.0</div>
 </section>
 
+<!-- TYPING SECTION -->
+<section class="typing-section">
+  <div class="typing-inner">
+    <div class="typing-label reveal">✨ Veja o CKid digitando sozinho</div>
+    <div class="typing-window reveal">
+      <div class="typing-bar">
+        <div class="typing-dot" style="background:#FF5F57"></div>
+        <div class="typing-dot" style="background:#FFBD2E"></div>
+        <div class="typing-dot" style="background:#28C840"></div>
+        <span class="typing-file">meu_programa.ckid</span>
+      </div>
+      <div class="typing-code">
+        <div class="typing-ln" id="lineNums">1</div>
+        <span id="typedCode"></span><span class="cursor"></span>
+      </div>
+      <div class="typing-output">
+        <span class="typing-out-lbl">Saída —</span>
+        <span id="outputArea"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MESSAGES -->
+<section class="messages-section">
+  <h2 class="reveal">O que estão dizendo 💬</h2>
+  <p class="reveal">Crianças e professores que já usam o CKid</p>
+  <div class="msg-grid">
+    <div class="msg-card reveal" style="animation-delay:.1s">
+      <div class="msg-avatar" style="background:#D6F5EC">🧒</div>
+      <div class="msg-name">Ana, 9 anos</div>
+      <div class="msg-text">"Fiz meu primeiro programa e apareceu na tela! Achei incrível, quero fazer mais!"</div>
+      <div class="msg-stars">★★★★★</div>
+    </div>
+    <div class="msg-card reveal" style="animation-delay:.2s">
+      <div class="msg-avatar" style="background:#D6E8FF">👩‍🏫</div>
+      <div class="msg-name">Prof. Carla</div>
+      <div class="msg-text">"Usei em sala de aula e as crianças adoraram. A linguagem em português faz toda diferença."</div>
+      <div class="msg-stars">★★★★★</div>
+    </div>
+    <div class="msg-card reveal" style="animation-delay:.3s">
+      <div class="msg-avatar" style="background:#FFF0D6">👦</div>
+      <div class="msg-name">Pedro, 11 anos</div>
+      <div class="msg-text">"Consegui fazer um jogo de adivinhação! Os erros aparecem com a linha certinha."</div>
+      <div class="msg-stars">★★★★★</div>
+    </div>
+    <div class="msg-card reveal" style="animation-delay:.4s">
+      <div class="msg-avatar" style="background:#EED6FF">👨‍👩‍👧</div>
+      <div class="msg-name">Família Santos</div>
+      <div class="msg-text">"Minha filha ficou uma hora programando sem parar. Recomendo para todas as famílias!"</div>
+      <div class="msg-stars">★★★★★</div>
+    </div>
+  </div>
+</section>
+
 <!-- FEATURES -->
 <section class="section" id="features">
-  <h2 class="section-title">Por que o CKid?</h2>
-  <p class="section-sub">Tudo pensado para quem está dando os primeiros passos na programação.</p>
+  <h2 class="section-title reveal">Por que o CKid?</h2>
+  <p class="section-sub reveal">Tudo pensado para quem está dando os primeiros passos na programação.</p>
   <div class="features">
-    <div class="feat-card">
+    <div class="feat-card reveal" style="animation-delay:.1s">
       <div class="feat-icon">🎨</div>
       <h3>Interface colorida</h3>
       <p>Sintaxe com cores vibrantes que facilitam a leitura e tornam o código mais divertido de escrever.</p>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" style="animation-delay:.2s">
       <div class="feat-icon">🧩</div>
       <h3>Blocos prontos</h3>
       <p>Sidebar com comandos clicáveis — basta clicar para inserir mostrar, ler, se, enquanto e muito mais.</p>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" style="animation-delay:.3s">
       <div class="feat-icon">🔴</div>
       <h3>Erros claros</h3>
       <p>Linha com erro destacada em vermelho e mensagem explicativa na saída para facilitar a correção.</p>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" style="animation-delay:.1s">
       <div class="feat-icon">💾</div>
       <h3>Salva seus projetos</h3>
       <p>Salve e abra arquivos .ckid diretamente no computador. Seus programas ficam sempre seguros.</p>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" style="animation-delay:.2s">
       <div class="feat-icon">📚</div>
       <h3>Exemplos prontos</h3>
       <p>Aba de exemplos com programas já escritos — tabuada, par ou ímpar, calculadora e muito mais.</p>
     </div>
-    <div class="feat-card">
+    <div class="feat-card reveal" style="animation-delay:.3s">
       <div class="feat-icon">⭐</div>
       <h3>Avaliações</h3>
       <p>Deixe sua opinião e veja o que outros usuários acharam do CKid diretamente no app.</p>
@@ -183,35 +267,56 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
   </div>
 </section>
 
-<!-- EDITOR PREVIEW -->
-<section class="preview-section">
-  <div class="preview-inner">
-    <h2 class="section-title">Veja o editor em ação</h2>
-    <p class="section-sub">Código com highlight, números de linha e saída em tempo real.</p>
-    <div class="editor-mock">
-      <div class="mock-bar">
-        <div class="mock-dot" style="background:#FF5F57"></div>
-        <div class="mock-dot" style="background:#FFBD2E"></div>
-        <div class="mock-dot" style="background:#28C840"></div>
-        <span class="mock-filename">tabuada.ckid</span>
+<!-- CODE SNIPPETS -->
+<section class="snippet-section">
+  <div class="snippet-inner">
+    <div class="snippet-text reveal">
+      <h2>Linguagem simples,<br>em português 🇧🇷</h2>
+      <p>O CKid usa comandos em português para que qualquer criança consiga aprender sem barreira de idioma.</p>
+      <p>Variáveis, loops, condicionais — tudo com palavras que você já conhece!</p>
+      <div>
+        <span class="snippet-tag">mostrar</span>
+        <span class="snippet-tag">ler</span>
+        <span class="snippet-tag">se / senao</span>
+        <span class="snippet-tag">enquanto</span>
+        <span class="snippet-tag">para</span>
+        <span class="snippet-tag">int / real / texto</span>
       </div>
-      <div class="mock-code">
-        <div class="mock-ln">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</div>
-        <span class="t-cmt">// Tabuada do 5</span><br>
-        <span class="t-kw">inteiro</span> <span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-num">1</span><br>
-        <span class="t-kw">enquanto</span> <span class="t-var">i</span> <span class="t-op">&lt;=</span> <span class="t-num">10</span> <span style="color:#A0A0D0">{</span><br>
-        &nbsp;&nbsp;<span class="t-kw">inteiro</span> <span class="t-var">res</span> <span class="t-op">:=</span> <span class="t-num">5</span> <span class="t-op">*</span> <span class="t-var">i</span><br>
-        &nbsp;&nbsp;<span class="t-kw">mostrar</span> <span class="t-str">"5 x "</span> <span class="t-op">+</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-str">" = "</span> <span class="t-op">+</span> <span class="t-var">res</span><br>
-        &nbsp;&nbsp;<span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-num">1</span><br>
-        <span style="color:#A0A0D0">}</span><br>
-        <span class="t-kw">mostrar</span> <span class="t-str">"Pronto!"</span>
+    </div>
+    <div class="reveal" style="animation-delay:.2s">
+      <div class="code-block" style="margin-bottom:16px">
+        <div class="code-block-bar">
+          <div class="code-block-dot" style="background:#FF5F57"></div>
+          <div class="code-block-dot" style="background:#FFBD2E"></div>
+          <div class="code-block-dot" style="background:#28C840"></div>
+          <span class="code-block-name">adivinha.ckid</span>
+        </div>
+        <div class="code-block-body">
+          <div class="cb-ln">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</div>
+          <span class="t-cmt">// Jogo de adivinhação 🎮</span><br>
+          <span class="t-kw">int</span> <span class="t-var">secreto</span> <span class="t-op">:=</span> <span class="t-num">7</span><span class="t-plain">;</span><br>
+          <span class="t-kw">int</span> <span class="t-var">chute</span> <span class="t-op">:=</span> <span class="t-num">0</span><span class="t-plain">;</span><br>
+          <span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"Adivinhe de 1 a 10!"</span><span class="t-plain">);</span><br>
+          <span class="t-kw">enquanto</span> <span class="t-plain">(</span><span class="t-var">chute</span> <span class="t-op">!=</span> <span class="t-var">secreto</span><span class="t-plain">) {</span><br>
+          &nbsp;&nbsp;<span class="t-kw">ler</span><span class="t-plain">(</span><span class="t-var">chute</span><span class="t-plain">);</span><br>
+          <span class="t-plain">}</span><br>
+          <span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"🎉 Acertou!"</span><span class="t-plain">);</span>
+        </div>
       </div>
-      <div class="mock-output">
-        <span class="mock-out-lbl">Saída —</span>
-        <span class="mock-out-item">💬 5 x 1 = 5</span>
-        <span class="mock-out-item">💬 5 x 2 = 10</span>
-        <span class="mock-out-item">💬 5 x 3 = 15</span>
-        <span class="mock-out-item">💬 Pronto!</span>
+      <div class="code-block">
+        <div class="code-block-bar">
+          <div class="code-block-dot" style="background:#FF5F57"></div>
+          <div class="code-block-dot" style="background:#FFBD2E"></div>
+          <div class="code-block-dot" style="background:#28C840"></div>
+          <span class="code-block-name">tabuada.ckid</span>
+        </div>
+        <div class="code-block-body">
+          <div class="cb-ln">1<br>2<br>3<br>4<br>5</div>
+          <span class="t-cmt">// Tabuada do 5</span><br>
+          <span class="t-kw">para</span> <span class="t-plain">(</span><span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-num">1</span><span class="t-plain">;</span> <span class="t-var">i</span> <span class="t-op">&lt;=</span> <span class="t-num">10</span><span class="t-plain">;</span> <span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-num">1</span><span class="t-plain">) {</span><br>
+          &nbsp;&nbsp;<span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"5 x "</span><span class="t-plain">,</span> <span class="t-var">i</span><span class="t-plain">,</span> <span class="t-str">" = "</span><span class="t-plain">,</span> <span class="t-num">5</span> <span class="t-op">*</span> <span class="t-var">i</span><span class="t-plain">);</span><br>
+          <span class="t-plain">}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -219,20 +324,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
 
 <!-- COMO USAR -->
 <section class="section" id="como-usar">
-  <h2 class="section-title">Como começar</h2>
-  <p class="section-sub">Em 3 passos simples você já está programando.</p>
+  <h2 class="section-title reveal">Como começar</h2>
+  <p class="section-sub reveal">Em 3 passos simples você já está programando.</p>
   <div class="steps">
-    <div class="step">
+    <div class="step reveal" style="animation-delay:.1s">
       <div class="step-num">1</div>
       <h3>Baixe o instalador</h3>
       <p>Clique em "Baixar grátis" e execute o arquivo .exe. A instalação é rápida e simples.</p>
     </div>
-    <div class="step">
+    <div class="step reveal" style="animation-delay:.2s">
       <div class="step-num">2</div>
       <h3>Abra o CKid</h3>
       <p>O ícone aparece na área de trabalho e no menu iniciar. Clique e o editor abre na hora.</p>
     </div>
-    <div class="step">
+    <div class="step reveal" style="animation-delay:.3s">
       <div class="step-num">3</div>
       <h3>Comece a programar</h3>
       <p>Use os exemplos prontos ou crie seu próprio programa do zero. É só digitar e compilar!</p>
@@ -242,14 +347,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
 
 <!-- DOWNLOAD -->
 <section class="download-section" id="download">
-  <h2>Pronto para começar?</h2>
-  <p>Gratuito para sempre. Sem cadastro. Só baixar e usar.</p>
-  <div class="download-card">
-    <div class="download-icon"><img src="logo_cKid.png" alt="CKid" style="height:64px;width:auto;object-fit:contain;" onerror="this.outerHTML='🐰'"/></div>
+  <h2 class="reveal">Pronto para começar?</h2>
+  <p class="reveal">Gratuito para sempre. Sem cadastro. Só baixar e usar.</p>
+  <div class="download-card reveal">
+    <div class="download-icon">
+      <img src="logo_cKid.png" alt="CKid" onerror="this.outerHTML='<span style=\'font-size:64px\'>🐰</span>'"/>
+    </div>
     <div class="version-badge">Versão 1.0.0 — Windows</div>
     <h3>CKid code</h3>
     <p>Instalador para Windows 10/11 · 64-bit</p>
-    <a class="btn-primary" href="https://ckid-code.vercel.app" target="_blank" style="display:block;font-size:17px;padding:14px;margin-bottom:12px">🌐 Acessar online</a>
+    <a class="btn-primary" href="https://ckid-code.vercel.app/compilador.html" target="_blank" style="display:block;font-size:17px;padding:14px;margin-bottom:12px">🌐 Acessar online</a>
     <a class="btn-outline" href="https://github.com/Lucascoelhu/CKid_code/releases/download/v1.0.0/CKid.code.Setup.1.0.0.exe" style="display:block;font-size:16px;padding:13px;text-align:center;border-radius:999px">⬇ Baixar para Windows</a>
   </div>
 </section>
@@ -260,14 +367,106 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85
 </footer>
 
 <script>
+// Stars
 const hero = document.getElementById('heroStars');
-for(let i=0;i<20;i++){
-  const s=document.createElement('div');
-  s.className='star';
+for(let i=0;i<22;i++){
+  const s=document.createElement('div');s.className='star';
   const sz=Math.random()*3+1;
   s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*4}s;animation-duration:${2+Math.random()*3}s`;
   hero.appendChild(s);
 }
+
+// Floating code fragments
+const fragments=[
+  {text:'mostrar("Olá!");',color:'#2EE8A0'},
+  {text:'int x := 10;',color:'#C0A8F0'},
+  {text:'enquanto (x > 0)',color:'#60D4FF'},
+  {text:'se (nota >= 7)',color:'#FFD080'},
+  {text:'ler(nome);',color:'#9FE1CB'},
+  {text:'para (i := 1; i <= 5)',color:'#C0A8F0'},
+  {text:'// CKid code 🐰',color:'#8898C8'},
+  {text:'texto msg := "Oi!";',color:'#2EE8A0'},
+];
+fragments.forEach((f,i)=>{
+  const el=document.createElement('div');
+  el.className='floating-code';
+  el.textContent=f.text;
+  el.style.cssText=`color:${f.color};left:${5+Math.random()*85}%;top:${10+Math.random()*75}%;animation-delay:${i*1.2}s;animation-duration:${7+Math.random()*5}s`;
+  hero.appendChild(el);
+});
+
+// Typing animation
+const programs=[
+  {
+    file:'ola_mundo.ckid',
+    code:`mostrar("Olá, mundo!");\nmostrar("Bem-vindo ao CKid! 🐰");\nmostrar("Vamos programar juntos!");`,
+    outputs:['💬 Olá, mundo!','💬 Bem-vindo ao CKid! 🐰','💬 Vamos programar juntos!']
+  },
+  {
+    file:'soma.ckid',
+    code:`int a := 5;\nint b := 3;\nint soma := a + b;\nmostrar("Resultado: ", soma);`,
+    outputs:['💬 Resultado: 8']
+  },
+  {
+    file:'tabuada.ckid',
+    code:`// Tabuada do 2\npara (i := 1; i <= 5; i := i + 1) {\n  mostrar("2 x ", i, " = ", 2 * i);\n}`,
+    outputs:['💬 2 x 1 = 2','💬 2 x 2 = 4','💬 2 x 3 = 6','💬 2 x 4 = 8','💬 2 x 5 = 10']
+  }
+];
+let progIdx=0, charIdx=0, typing=true;
+const typedEl=document.getElementById('typedCode');
+const outputEl=document.getElementById('outputArea');
+const lineEl=document.getElementById('lineNums');
+const fileEl=document.querySelector('.typing-file');
+
+function updateLines(text){
+  const lines=text.split('\n').length;
+  lineEl.innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
+}
+
+function colorize(text){
+  return text
+    .replace(/\/\/.*/g,m=>`<span style="color:#8898C8;font-style:italic">${m}</span>`)
+    .replace(/\b(mostrar|ler|se|senao|enquanto|para|int|real|texto|faca)\b/g,m=>`<span style="color:#C0A8F0;font-weight:600">${m}</span>`)
+    .replace(/"([^"]*)"/g,m=>`<span style="color:#2EE8A0;font-weight:600">${m}</span>`)
+    .replace(/\b(\d+)\b/g,m=>`<span style="color:#FFD080">${m}</span>`)
+    .replace(/:=|==|!=|<=|>=/g,m=>`<span style="color:#60D4FF">${m}</span>`);
+}
+
+async function typeProgram(){
+  const prog=programs[progIdx];
+  fileEl.textContent=prog.file;
+  const fullCode=prog.code;
+  charIdx=0; typedEl.innerHTML=''; outputEl.innerHTML=''; updateLines('');
+
+  // type chars
+  while(charIdx<=fullCode.length){
+    typedEl.innerHTML=colorize(fullCode.slice(0,charIdx));
+    updateLines(fullCode.slice(0,charIdx));
+    charIdx++;
+    await new Promise(r=>setTimeout(r,charIdx<fullCode.length?35:0));
+  }
+
+  // show outputs one by one
+  await new Promise(r=>setTimeout(r,400));
+  for(const out of prog.outputs){
+    const span=document.createElement('span');
+    span.className='out-item'; span.textContent=out;
+    outputEl.appendChild(span);
+    await new Promise(r=>setTimeout(r,350));
+  }
+
+  await new Promise(r=>setTimeout(r,2500));
+  progIdx=(progIdx+1)%programs.length;
+  typeProgram();
+}
+setTimeout(typeProgram, 800);
+
+// Scroll reveal
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 </script>
 </body>
 </html>
