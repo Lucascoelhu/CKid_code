@@ -424,27 +424,47 @@ function updateLines(text){
   lineEl.innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
 }
 
-function colorize(text){
-  return text
-    .replace(/\/\/.*/g,m=>`<span style="color:#8898C8;font-style:italic">${m}</span>`)
-    .replace(/\b(mostrar|ler|se|senao|enquanto|para|int|real|texto|faca)\b/g,m=>`<span style="color:#C0A8F0;font-weight:600">${m}</span>`)
-    .replace(/"([^"]*)"/g,m=>`<span style="color:#2EE8A0;font-weight:600">${m}</span>`)
-    .replace(/\b(\d+)\b/g,m=>`<span style="color:#FFD080">${m}</span>`)
-    .replace(/:=|==|!=|<=|>=/g,m=>`<span style="color:#60D4FF">${m}</span>`);
+function colorizeLine(line){
+  return line
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(\/\/.*)/g,'<span style="color:#8898C8;font-style:italic">$1</span>')
+    .replace(/\b(mostrar|ler|se|senao|senão|enquanto|para|int|real|texto|faca|faça)\b/g,'<span style="color:#C0A8F0;font-weight:600">$1</span>')
+    .replace(/"([^"]*)"/g,'<span style="color:#2EE8A0;font-weight:600">"$1"</span>')
+    .replace(/\b(\d+)\b/g,'<span style="color:#FFD080">$1</span>')
+    .replace(/(:=|==|!=|<=|>=)/g,'<span style="color:#60D4FF">$1</span>');
+}
+
+function renderLines(lines){
+  return lines.map(l=>colorizeLine(l)).join('\n');
 }
 
 async function typeProgram(){
   const prog=programs[progIdx];
   fileEl.textContent=prog.file;
   const fullCode=prog.code;
-  charIdx=0; typedEl.innerHTML=''; outputEl.innerHTML=''; updateLines('');
+  const allLines=fullCode.split('\n');
+  typedEl.innerHTML=''; outputEl.innerHTML=''; updateLines('');
 
-  // type chars
-  while(charIdx<=fullCode.length){
-    typedEl.innerHTML=colorize(fullCode.slice(0,charIdx));
-    updateLines(fullCode.slice(0,charIdx));
-    charIdx++;
-    await new Promise(r=>setTimeout(r,charIdx<fullCode.length?35:0));
+  let currentLine=0, currentChar=0, typed='';
+
+  while(currentLine < allLines.length){
+    const line=allLines[currentLine];
+    if(currentChar < line.length){
+      currentChar++;
+      // Build display: completed lines colorized + current line plain
+      const completedLines=allLines.slice(0,currentLine).map(l=>colorizeLine(l));
+      const currentPlain=line.slice(0,currentChar).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      typedEl.innerHTML=completedLines.join('\n')+(completedLines.length?'\n':'')+currentPlain;
+      updateLines(allLines.slice(0,currentLine+1).join('\n'));
+      await new Promise(r=>setTimeout(r,38));
+    } else {
+      // Line complete — colorize it and move to next
+      currentLine++; currentChar=0;
+      const completedLines=allLines.slice(0,currentLine).map(l=>colorizeLine(l));
+      typedEl.innerHTML=completedLines.join('\n');
+      updateLines(allLines.slice(0,currentLine).join('\n'));
+      if(currentLine < allLines.length) await new Promise(r=>setTimeout(r,120));
+    }
   }
 
   // show outputs one by one
