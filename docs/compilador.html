@@ -744,6 +744,9 @@ pre.ref-block {
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sec-label">Saída / Entrada</div>
+    <button class="blk b-show" onclick="ins('inicio\n\n  // seu código aqui\n\nfim')" style="background:#D6F5EC;color:#1A6B4A;border-left:3px solid #1D9E75;margin-bottom:4px;width:100%;padding:8px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px">
+      <span>🟢</span><span>inicio / fim</span>
+    </button>
     <button class="blk b-show" onclick="insSnippet('mostrar')">
       <span class="blk-icon">🖨️</span>
       <div><span class="blk-name">mostrar</span><span class="blk-hint">imprime na tela</span></div>
@@ -1325,428 +1328,505 @@ const SFX = (() => {
 const EXAMPLES = {
   // ── TUTORIAL EXAMPLES ──────────────────────────────────────
   mostrar_simples:
-`// 🖨️ Passo 2 — Mostrando texto na tela
-// O comando mostrar() exibe uma mensagem na saída.
-// O texto deve ficar entre aspas "assim".
-// Não esqueça o ponto e vírgula ; no final!
+`inicio
 
-mostrar("Olá, mundo!");
-mostrar("Eu sei programar!");
-mostrar("CKid é demais! 🐰");`,
+  // 🖨️ Passo 2 — Mostrando texto na tela
+  // O comando mostrar() exibe uma mensagem na saída.
+  // O texto deve ficar entre aspas "assim".
+  // Não esqueça o ponto e vírgula ; no final!
+  
+  mostrar("Olá, mundo!");
+  mostrar("Eu sei programar!");
+  mostrar("CKid é demais! 🐰");
+
+fim`,
 
   variaveis:
-`// 📦 Passo 3 — Guardando informações em variáveis
-// Variáveis são "caixinhas" com um nome que guardam um valor.
-// int  → números inteiros (sem vírgula)
-// real → números decimais (com vírgula)
-// texto → palavras e frases
+`inicio
 
-// Você pode declarar várias do mesmo tipo de uma vez:
-int   pontos, nivel;      // dois inteiros, começam em 0
-real  preco := 9.99;      // preço com centavos
-texto nome  := "Maria";   // uma palavra ou frase
+  // 📦 Passo 3 — Guardando informações em variáveis
+  // Variáveis são "caixinhas" com um nome que guardam um valor.
+  // int  → números inteiros (sem vírgula)
+  // real → números decimais (com vírgula)
+  // texto → palavras e frases
+  
+  // Você pode declarar várias do mesmo tipo de uma vez:
+  int   pontos, nivel;      // dois inteiros, começam em 0
+  real  preco := 9.99;      // preço com centavos
+  texto nome  := "Maria";   // uma palavra ou frase
+  
+  mostrar("Nome: ", nome);
+  mostrar("Pontos iniciais: ", pontos);
+  mostrar("Nível: ", nivel);
+  
+  // Mudando o valor da variável
+  pontos := pontos + 10;    // soma 10
+  nivel  := 1;
+  mostrar("Após ganhar pontos: ", pontos);
+  mostrar("Nível atual: ", nivel);
+  mostrar("Preço do produto: R$ ", preco);
 
-mostrar("Nome: ", nome);
-mostrar("Pontos iniciais: ", pontos);
-mostrar("Nível: ", nivel);
-
-// Mudando o valor da variável
-pontos := pontos + 10;    // soma 10
-nivel  := 1;
-mostrar("Após ganhar pontos: ", pontos);
-mostrar("Nível atual: ", nivel);
-mostrar("Preço do produto: R$ ", preco);`,
+fim`,
 
   ler_nome:
-`// ⌨️ Passo 4 — Lendo o que o usuário digita
-// O comando ler() pausa o programa e espera uma entrada.
-// Sempre avise o usuário o que digitar com mostrar() antes!
+`inicio
 
-texto nome := "";  // variável vazia para guardar o nome
-int   idade;       // variável para guardar a idade (começa em 0)
+  // ⌨️ Passo 4 — Lendo o que o usuário digita
+  // O comando ler() pausa o programa e espera uma entrada.
+  // Sempre avise o usuário o que digitar com mostrar() antes!
+  
+  texto nome := "";  // variável vazia para guardar o nome
+  int   idade;       // variável para guardar a idade (começa em 0)
+  
+  mostrar("Qual é o seu nome?");
+  ler(nome);                // lê e guarda em 'nome'
+  
+  mostrar("Quantos anos você tem?");
+  ler(idade);               // lê e guarda em 'idade'
+  
+  mostrar("Olá, ", nome, "!");
+  mostrar("Você tem ", idade, " anos.");
+  mostrar("Que legal te conhecer! 😊");
 
-mostrar("Qual é o seu nome?");
-ler(nome);                // lê e guarda em 'nome'
-
-mostrar("Quantos anos você tem?");
-ler(idade);               // lê e guarda em 'idade'
-
-mostrar("Olá, ", nome, "!");
-mostrar("Você tem ", idade, " anos.");
-mostrar("Que legal te conhecer! 😊");`,
+fim`,
 
   se_senao:
-`// ❓ Passo 5 — Tomando decisões com se...senao
-// O 'se' executa um bloco SE a condição for verdadeira.
-// O 'senao' executa quando a condição for falsa.
+`inicio
 
-real nota;  // aceita decimais como 7.5, 8.0...
-
-mostrar("Qual foi sua nota? (0 a 10)");
-ler(nota);
-
-se (nota >= 7) {
-  // Este bloco executa quando nota >= 7
-  mostrar("✅ Parabéns! Você foi aprovado!");
-} senao {
-  se (nota >= 5) {
-    // Este bloco: nota entre 5 e 6
-    mostrar("⚠️ Recuperação. Você pode melhorar!");
+  // ❓ Passo 5 — Tomando decisões com se...senao
+  // O 'se' executa um bloco SE a condição for verdadeira.
+  // O 'senao' executa quando a condição for falsa.
+  
+  real nota;  // aceita decimais como 7.5, 8.0...
+  
+  mostrar("Qual foi sua nota? (0 a 10)");
+  ler(nota);
+  
+  se (nota >= 7) {
+    // Este bloco executa quando nota >= 7
+    mostrar("✅ Parabéns! Você foi aprovado!");
   } senao {
-    // Este bloco: nota abaixo de 5
-    mostrar("❌ Reprovado. Não desista, estude mais!");
+    se (nota >= 5) {
+      // Este bloco: nota entre 5 e 6
+      mostrar("⚠️ Recuperação. Você pode melhorar!");
+    } senao {
+      // Este bloco: nota abaixo de 5
+      mostrar("❌ Reprovado. Não desista, estude mais!");
+    }
   }
-}`,
+
+fim`,
 
   enquanto_simples:
-`// 🔄 Passo 6 — Repetindo com enquanto
-// O 'enquanto' repete o bloco { } enquanto a condição for verdadeira.
-// IMPORTANTE: sempre mude a variável da condição dentro do loop!
+`inicio
 
-int x := 1;  // começa em 1
+  // 🔄 Passo 6 — Repetindo com enquanto
+  // O 'enquanto' repete o bloco { } enquanto a condição for verdadeira.
+  // IMPORTANTE: sempre mude a variável da condição dentro do loop!
+  
+  int x := 1;  // começa em 1
+  
+  enquanto (x <= 5) {
+    // Este bloco repete enquanto x for menor ou igual a 5
+    mostrar("Repetição número ", x);
+    x := x + 1;  // aumenta x — sem isso, loop infinito!
+  }
+  
+  mostrar("Fim! x chegou a ", x);
 
-enquanto (x <= 5) {
-  // Este bloco repete enquanto x for menor ou igual a 5
-  mostrar("Repetição número ", x);
-  x := x + 1;  // aumenta x — sem isso, loop infinito!
-}
-
-mostrar("Fim! x chegou a ", x);`,
+fim`,
 
   para_simples:
-`// 🔂 Passo 7 — Contando com para
-// O 'para' é ideal quando você sabe quantas vezes repetir.
-// Estrutura: para (início; condição; passo)
+`inicio
 
-int i, r;  // i = contador, r = resultado da tabuada
+  // 🔂 Passo 7 — Contando com para
+  // O 'para' é ideal quando você sabe quantas vezes repetir.
+  // Estrutura: para (início; condição; passo)
+  
+  int i, r;  // i = contador, r = resultado da tabuada
+  
+  // Conta de 1 até 5
+  para (i := 1; i <= 5; i := i + 1) {
+    mostrar("Contando: ", i);
+  }
+  
+  mostrar("--- Pronto! ---");
+  
+  // Outro exemplo: tabuada do 3
+  mostrar("Tabuada do 3:");
+  para (i := 1; i <= 10; i := i + 1) {
+    r := 3 * i;
+    mostrar("3 x ", i, " = ", r);
+  }
 
-// Conta de 1 até 5
-para (i := 1; i <= 5; i := i + 1) {
-  mostrar("Contando: ", i);
-}
-
-mostrar("--- Pronto! ---");
-
-// Outro exemplo: tabuada do 3
-mostrar("Tabuada do 3:");
-para (i := 1; i <= 10; i := i + 1) {
-  r := 3 * i;
-  mostrar("3 x ", i, " = ", r);
-}`,
+fim`,
   calculadora:
-`// 🧮 Calculadora
-// Escolha a operação e calcule!
+`inicio
 
-real a, b, resultado;
-int opcao;
-
-mostrar("╔══════════════════════╗");
-mostrar("║     🧮 CALCULADORA   ║");
-mostrar("╚══════════════════════╝");
-
-mostrar("Digite o primeiro número:");
-ler(a);
-
-mostrar("Digite o segundo número:");
-ler(b);
-
-mostrar("Escolha a operação:");
-mostrar("1 - Soma          (+)");
-mostrar("2 - Subtração     (-)");
-mostrar("3 - Multiplicação (x)");
-mostrar("4 - Divisão       (/)");
-mostrar("5 - Resto         (%)");
-ler(opcao);
-
-se (opcao == 1) {
-  resultado := a + b;
-  mostrar(a, " + ", b, " = ", resultado);
-} senao {
-  se (opcao == 2) {
-    resultado := a - b;
-    mostrar(a, " - ", b, " = ", resultado);
+  // 🧮 Calculadora
+  // Escolha a operação e calcule!
+  
+  real a, b, resultado;
+  int opcao;
+  
+  mostrar("╔══════════════════════╗");
+  mostrar("║     🧮 CALCULADORA   ║");
+  mostrar("╚══════════════════════╝");
+  
+  mostrar("Digite o primeiro número:");
+  ler(a);
+  
+  mostrar("Digite o segundo número:");
+  ler(b);
+  
+  mostrar("Escolha a operação:");
+  mostrar("1 - Soma          (+)");
+  mostrar("2 - Subtração     (-)");
+  mostrar("3 - Multiplicação (x)");
+  mostrar("4 - Divisão       (/)");
+  mostrar("5 - Resto         (%)");
+  ler(opcao);
+  
+  se (opcao == 1) {
+    resultado := a + b;
+    mostrar(a, " + ", b, " = ", resultado);
   } senao {
-    se (opcao == 3) {
-      resultado := a * b;
-      mostrar(a, " x ", b, " = ", resultado);
+    se (opcao == 2) {
+      resultado := a - b;
+      mostrar(a, " - ", b, " = ", resultado);
     } senao {
-      se (opcao == 4) {
-        se (b == 0) {
-          mostrar("❌ Erro: não é possível dividir por zero!");
-        } senao {
-          resultado := a / b;
-          mostrar(a, " ÷ ", b, " = ", resultado);
-        }
+      se (opcao == 3) {
+        resultado := a * b;
+        mostrar(a, " x ", b, " = ", resultado);
       } senao {
-        se (opcao == 5) {
-          resultado := a % b;
-          mostrar(a, " % ", b, " = ", resultado);
+        se (opcao == 4) {
+          se (b == 0) {
+            mostrar("❌ Erro: não é possível dividir por zero!");
+          } senao {
+            resultado := a / b;
+            mostrar(a, " ÷ ", b, " = ", resultado);
+          }
         } senao {
-          mostrar("❌ Opção inválida! Escolha entre 1 e 5.");
+          se (opcao == 5) {
+            resultado := a % b;
+            mostrar(a, " % ", b, " = ", resultado);
+          } senao {
+            mostrar("❌ Opção inválida! Escolha entre 1 e 5.");
+          }
         }
       }
     }
   }
-}`,
 
-  lucas:`// ★ Homenagem ao criador do CKid ★
-texto nome := "Lucas Coelho";
-int ano := 2025;
-mostrar("╔══════════════════════════════╗");
-mostrar("  🐰 HALL DA FAMA — CKID");
-mostrar("╠══════════════════════════════╣");
-mostrar("  Criador : ", nome);
-mostrar("  Versão  : CKid code v1.0");
-mostrar("  Ano     : ", ano);
-mostrar("╠══════════════════════════════╣");
-mostrar("  Missão: tornar a programação");
-mostrar("  simples e divertida! 💜");
-mostrar("╚══════════════════════════════╝");
-mostrar("Obrigado, ", nome, "! ⭐");`,
+fim`,
+
+  lucas:
+`inicio
+
+  // ★ Homenagem ao criador do CKid ★
+  texto nome := "Lucas Coelho";
+  int ano := 2025;
+  mostrar("╔══════════════════════════════╗");
+  mostrar("  🐰 HALL DA FAMA — CKID");
+  mostrar("╠══════════════════════════════╣");
+  mostrar("  Criador : ", nome);
+  mostrar("  Versão  : CKid code v1.0");
+  mostrar("  Ano     : ", ano);
+  mostrar("╠══════════════════════════════╣");
+  mostrar("  Missão: tornar a programação");
+  mostrar("  simples e divertida! 💜");
+  mostrar("╚══════════════════════════════╝");
+  mostrar("Obrigado, ", nome, "! ⭐");
+
+fim`,
 
   soma:
-`// ➕ Soma de dois números
-// Aqui vamos usar 'ler' para pegar dois números do usuário
-// e guardar em variáveis para fazer a soma depois.
+`inicio
 
-// Você pode declarar várias variáveis do mesmo tipo numa linha só!
-int a, b, resultado;  // três inteiros, todos começam em 0
+  // ➕ Soma de dois números
+  // Aqui vamos usar 'ler' para pegar dois números do usuário
+  // e guardar em variáveis para fazer a soma depois.
+  
+  // Você pode declarar várias variáveis do mesmo tipo numa linha só!
+  int a, b, resultado;  // três inteiros, todos começam em 0
+  
+  mostrar("Digite o primeiro número:");
+  ler(a);            // o usuário digita e vai para 'a'
+  
+  mostrar("Digite o segundo número:");
+  ler(b);            // o usuário digita e vai para 'b'
+  
+  resultado := a + b; // faz a soma e guarda em 'resultado'
+  mostrar("Resultado: ", a, " + ", b, " = ", resultado);
 
-mostrar("Digite o primeiro número:");
-ler(a);            // o usuário digita e vai para 'a'
-
-mostrar("Digite o segundo número:");
-ler(b);            // o usuário digita e vai para 'b'
-
-resultado := a + b; // faz a soma e guarda em 'resultado'
-mostrar("Resultado: ", a, " + ", b, " = ", resultado);`,
+fim`,
 
   ola:
-`// 👋 Olá, mundo! — seu primeiro programa!
-// Este é o programa mais clássico da programação.
-// Vamos pedir o nome do usuário e dar uma saudação!
+`inicio
 
-texto nome := "";  // variável do tipo texto, começa vazia
+  // 👋 Olá, mundo! — seu primeiro programa!
+  // Este é o programa mais clássico da programação.
+  // Vamos pedir o nome do usuário e dar uma saudação!
+  
+  texto nome := "";  // variável do tipo texto, começa vazia
+  
+  mostrar("Qual é o seu nome?");
+  ler(nome);         // pausa e espera o usuário digitar
+  
+  // Agora mostramos uma mensagem usando o nome digitado
+  mostrar("Olá, ", nome, "! Bem-vindo ao CKid! 🐰");
 
-mostrar("Qual é o seu nome?");
-ler(nome);         // pausa e espera o usuário digitar
-
-// Agora mostramos uma mensagem usando o nome digitado
-mostrar("Olá, ", nome, "! Bem-vindo ao CKid! 🐰");`,
+fim`,
 
   contagem:
-`// 🔢 Contagem de 1 até 10 com 'para'
-// O 'para' é perfeito para repetir algo um número fixo de vezes.
-// Estrutura: para (início; condição de parada; passo)
+`inicio
 
-int i;  // variável de controle do loop (começa em 0)
+  // 🔢 Contagem de 1 até 10 com 'para'
+  // O 'para' é perfeito para repetir algo um número fixo de vezes.
+  // Estrutura: para (início; condição de parada; passo)
+  
+  int i;  // variável de controle do loop (começa em 0)
+  
+  mostrar("Contando de 1 até 10:");
+  
+  para (i := 1; i <= 10; i := i + 1) {
+    // Este bloco repete 10 vezes (i vai de 1 a 10)
+    mostrar(i);
+  }
+  
+  mostrar("Fim! Contei até 10! 🎉");
 
-mostrar("Contando de 1 até 10:");
-
-para (i := 1; i <= 10; i := i + 1) {
-  // Este bloco repete 10 vezes (i vai de 1 a 10)
-  mostrar(i);
-}
-
-mostrar("Fim! Contei até 10! 🎉");`,
+fim`,
 
   regressiva:
-`// 🚀 Contagem regressiva com 'enquanto'
-// O 'enquanto' repete ENQUANTO uma condição for verdadeira.
-// Aqui vai repetindo enquanto x for maior que 0.
+`inicio
 
-int x := 10;  // começa em 10
+  // 🚀 Contagem regressiva com 'enquanto'
+  // O 'enquanto' repete ENQUANTO uma condição for verdadeira.
+  // Aqui vai repetindo enquanto x for maior que 0.
+  
+  int x := 10;  // começa em 10
+  
+  mostrar("Contagem regressiva:");
+  
+  enquanto (x > 0) {
+    mostrar(x);       // mostra o número atual
+    x := x - 1;      // diminui 1 — sem isso nunca para!
+  }
+  
+  mostrar("🚀 LANÇAR!");
 
-mostrar("Contagem regressiva:");
-
-enquanto (x > 0) {
-  mostrar(x);       // mostra o número atual
-  x := x - 1;      // diminui 1 — sem isso nunca para!
-}
-
-mostrar("🚀 LANÇAR!");`,
+fim`,
 
   tabuada:
-`// ✖️ Tabuada de qualquer número
-// O usuário escolhe o número e o 'para' calcula a tabuada completa.
+`inicio
 
-int n, i, r;  // n = número escolhido, i = contador, r = resultado
+  // ✖️ Tabuada de qualquer número
+  // O usuário escolhe o número e o 'para' calcula a tabuada completa.
+  
+  int n, i, r;  // n = número escolhido, i = contador, r = resultado
+  
+  mostrar("Qual tabuada você quer ver?");
+  ler(n);
+  
+  mostrar("--- Tabuada do ", n, " ---");
+  
+  para (i := 1; i <= 10; i := i + 1) {
+    r := n * i;  // multiplica n por i
+    mostrar(n, " x ", i, " = ", r);
+  }
 
-mostrar("Qual tabuada você quer ver?");
-ler(n);
-
-mostrar("--- Tabuada do ", n, " ---");
-
-para (i := 1; i <= 10; i := i + 1) {
-  r := n * i;  // multiplica n por i
-  mostrar(n, " x ", i, " = ", r);
-}`,
+fim`,
 
   par_impar:
-`// ⚖️ Par ou Ímpar
-// Usamos o operador % (resto da divisão) para descobrir.
-// Todo número par dividido por 2 tem resto 0!
+`inicio
 
-int num, resto;  // num = número digitado, resto = resultado do %
+  // ⚖️ Par ou Ímpar
+  // Usamos o operador % (resto da divisão) para descobrir.
+  // Todo número par dividido por 2 tem resto 0!
+  
+  int num, resto;  // num = número digitado, resto = resultado do %
+  
+  mostrar("Digite um número:");
+  ler(num);
+  
+  resto := num % 2;  // % dá o resto da divisão (ex: 7 % 2 = 1)
+  
+  se (resto == 0) {
+    // resto == 0 significa que divide exato → é par
+    mostrar(num, " é PAR! ✅");
+  } senao {
+    // qualquer outro resto → é ímpar
+    mostrar(num, " é ÍMPAR! ❌");
+  }
 
-mostrar("Digite um número:");
-ler(num);
-
-resto := num % 2;  // % dá o resto da divisão (ex: 7 % 2 = 1)
-
-se (resto == 0) {
-  // resto == 0 significa que divide exato → é par
-  mostrar(num, " é PAR! ✅");
-} senao {
-  // qualquer outro resto → é ímpar
-  mostrar(num, " é ÍMPAR! ❌");
-}`,
+fim`,
 
   media:
-`// 📊 Média de notas — aprovado ou não?
-// Calculamos a média de 3 notas e usamos 'se' para decidir.
-// Repare no 'se' dentro de 'se' — isso se chama 'aninhamento'!
+`inicio
 
-real n1, n2, n3, media;  // quatro decimais declarados de uma vez
-
-mostrar("Nota 1:"); ler(n1);
-mostrar("Nota 2:"); ler(n2);
-mostrar("Nota 3:"); ler(n3);
-
-media := (n1 + n2 + n3) / 3;  // soma e divide por 3
-mostrar("Sua média foi: ", media);
-
-// Decisão em cascata: uma condição dentro da outra
-se (media >= 7) {
-  mostrar("✅ Aprovado! Parabéns!");
-} senao {
-  se (media >= 5) {
-    mostrar("⚠️ Recuperação. Você pode melhorar!");
+  // 📊 Média de notas — aprovado ou não?
+  // Calculamos a média de 3 notas e usamos 'se' para decidir.
+  // Repare no 'se' dentro de 'se' — isso se chama 'aninhamento'!
+  
+  real n1, n2, n3, media;  // quatro decimais declarados de uma vez
+  
+  mostrar("Nota 1:"); ler(n1);
+  mostrar("Nota 2:"); ler(n2);
+  mostrar("Nota 3:"); ler(n3);
+  
+  media := (n1 + n2 + n3) / 3;  // soma e divide por 3
+  mostrar("Sua média foi: ", media);
+  
+  // Decisão em cascata: uma condição dentro da outra
+  se (media >= 7) {
+    mostrar("✅ Aprovado! Parabéns!");
   } senao {
-    mostrar("❌ Reprovado. Não desista, continue estudando!");
+    se (media >= 5) {
+      mostrar("⚠️ Recuperação. Você pode melhorar!");
+    } senao {
+      mostrar("❌ Reprovado. Não desista, continue estudando!");
+    }
   }
-}`,
+
+fim`,
 
   fatorial:
-`// 🧮 Fatorial com 'faca...enquanto'
-// O fatorial de 5 é: 5 × 4 × 3 × 2 × 1 = 120
-// O 'faca...enquanto' executa o bloco PELO MENOS UMA VEZ
-// antes de verificar a condição — diferente do 'enquanto' normal!
+`inicio
 
-int n, i;       // n = número, i = contador
-int fat := 1;   // resultado (começa em 1, neutro na multiplicação)
+  // 🧮 Fatorial com 'faca...enquanto'
+  // O fatorial de 5 é: 5 × 4 × 3 × 2 × 1 = 120
+  // O 'faca...enquanto' executa o bloco PELO MENOS UMA VEZ
+  // antes de verificar a condição — diferente do 'enquanto' normal!
+  
+  int n, i;       // n = número, i = contador
+  int fat := 1;   // resultado (começa em 1, neutro na multiplicação)
+  
+  mostrar("Qual número você quer calcular o fatorial?");
+  ler(n);
+  
+  i := 1;  // contador começa em 1
+  faca {
+    fat := fat * i;  // multiplica pelo contador atual
+    i := i + 1;      // avança o contador
+  } enquanto (i <= n); // continua enquanto não passar de n
+  
+  mostrar("Fatorial de ", n, " = ", fat);
 
-mostrar("Qual número você quer calcular o fatorial?");
-ler(n);
-
-i := 1;  // contador começa em 1
-faca {
-  fat := fat * i;  // multiplica pelo contador atual
-  i := i + 1;      // avança o contador
-} enquanto (i <= n); // continua enquanto não passar de n
-
-mostrar("Fatorial de ", n, " = ", fat);`,
+fim`,
 
   adivinhar:
-`// 🎯 Jogo: Adivinhe o número!
-// sortear(min, max) gera um número aleatório!
+`inicio
 
-int secreto := sortear(1, 10); // número aleatório entre 1 e 10
-int chute, tentativas;
-
-mostrar("🎯 Adivinhe o número de 1 a 10!");
-mostrar("Boa sorte! 🍀");
-
-enquanto (chute != secreto) {
-  mostrar("Qual é o seu palpite?");
-  ler(chute);
-  tentativas := tentativas + 1;
-
-  se (chute == secreto) {
-    mostrar("🎉 ACERTOU em ", tentativas, " tentativa(s)!");
-  } senao {
-    se (chute > secreto) {
-      mostrar("📉 Muito alto! Tente um número menor.");
+  // 🎯 Jogo: Adivinhe o número!
+  // sortear(min, max) gera um número aleatório!
+  
+  int secreto := sortear(1, 10); // número aleatório entre 1 e 10
+  int chute, tentativas;
+  
+  mostrar("🎯 Adivinhe o número de 1 a 10!");
+  mostrar("Boa sorte! 🍀");
+  
+  enquanto (chute != secreto) {
+    mostrar("Qual é o seu palpite?");
+    ler(chute);
+    tentativas := tentativas + 1;
+  
+    se (chute == secreto) {
+      mostrar("🎉 ACERTOU em ", tentativas, " tentativa(s)!");
     } senao {
-      mostrar("📈 Muito baixo! Tente um número maior.");
+      se (chute > secreto) {
+        mostrar("📉 Muito alto! Tente um número menor.");
+      } senao {
+        mostrar("📈 Muito baixo! Tente um número maior.");
+      }
     }
   }
-}`,
+
+fim`,
 
   lotofacil:
-`// 🍀 Gerador de números da Lotofácil
-// A Lotofácil sorteia 15 números de 1 a 25, sem repetição.
-// Usamos um array para guardar os sorteados e checar repetição.
+`inicio
 
-int numeros[15];  // os 15 números sorteados
-int total, i, j, novo, repetido;
-
-mostrar("🍀 ========================");
-mostrar("   GERADOR - LOTOFÁCIL   ");
-mostrar("🍀 ========================");
-mostrar("Sorteando 15 números de 1 a 25...");
-
-total := 0;
-
-enquanto (total < 15) {
-  novo := sortear(1, 25);
-
-  // verifica se o número já foi sorteado
-  repetido := 0;
-  para (j := 0; j < total; j := j + 1) {
-    se (numeros[j] == novo) {
-      repetido := 1;
+  // 🍀 Gerador de números da Lotofácil
+  // A Lotofácil sorteia 15 números de 1 a 25, sem repetição.
+  // Usamos um array para guardar os sorteados e checar repetição.
+  
+  int numeros[15];  // os 15 números sorteados
+  int total, i, j, novo, repetido;
+  
+  mostrar("🍀 ========================");
+  mostrar("   GERADOR - LOTOFÁCIL   ");
+  mostrar("🍀 ========================");
+  mostrar("Sorteando 15 números de 1 a 25...");
+  
+  total := 0;
+  
+  enquanto (total < 15) {
+    novo := sortear(1, 25);
+  
+    // verifica se o número já foi sorteado
+    repetido := 0;
+    para (j := 0; j < total; j := j + 1) {
+      se (numeros[j] == novo) {
+        repetido := 1;
+      }
+    }
+  
+    // só adiciona se não repetiu
+    se (repetido == 0) {
+      numeros[total] := novo;
+      total := total + 1;
     }
   }
-
-  // só adiciona se não repetiu
-  se (repetido == 0) {
-    numeros[total] := novo;
-    total := total + 1;
-  }
-}
-
-// ordena os números (bubble sort)
-int aux, trocou;
-para (i := 0; i < 14; i := i + 1) {
-  trocou := 0;
-  para (j := 0; j < 14 - i; j := j + 1) {
-    se (numeros[j] > numeros[j + 1]) {
-      aux := numeros[j];
-      numeros[j] := numeros[j + 1];
-      numeros[j + 1] := aux;
-      trocou := 1;
+  
+  // ordena os números (bubble sort)
+  int aux, trocou;
+  para (i := 0; i < 14; i := i + 1) {
+    trocou := 0;
+    para (j := 0; j < 14 - i; j := j + 1) {
+      se (numeros[j] > numeros[j + 1]) {
+        aux := numeros[j];
+        numeros[j] := numeros[j + 1];
+        numeros[j + 1] := aux;
+        trocou := 1;
+      }
     }
   }
-}
+  
+  mostrar("Seus números:");
+  mostrar(
+    numeros[0], " - ", numeros[1], " - ", numeros[2], " - ",
+    numeros[3], " - ", numeros[4]
+  );
+  mostrar(
+    numeros[5], " - ", numeros[6], " - ", numeros[7], " - ",
+    numeros[8], " - ", numeros[9]
+  );
+  mostrar(
+    numeros[10], " - ", numeros[11], " - ", numeros[12], " - ",
+    numeros[13], " - ", numeros[14]
+  );
+  mostrar("🍀 Boa sorte!"
 
-mostrar("Seus números:");
-mostrar(
-  numeros[0], " - ", numeros[1], " - ", numeros[2], " - ",
-  numeros[3], " - ", numeros[4]
-);
-mostrar(
-  numeros[5], " - ", numeros[6], " - ", numeros[7], " - ",
-  numeros[8], " - ", numeros[9]
-);
-mostrar(
-  numeros[10], " - ", numeros[11], " - ", numeros[12], " - ",
-  numeros[13], " - ", numeros[14]
-);
-mostrar("🍀 Boa sorte!"`
+fim`
 };
 
 const DEFAULT_CODE =
 `// Soma de dois números 🐰
-int a, b, resultado;
+inicio
 
-mostrar("Digite o primeiro número:");
-ler(a);
-mostrar("Digite o segundo número:");
-ler(b);
+  int a, b, resultado;
 
-resultado := a + b;
-mostrar("Resultado: ", a, " + ", b, " = ", resultado);`;
+  mostrar("Digite o primeiro número:");
+  ler(a);
+  mostrar("Digite o segundo número:");
+  ler(b);
+
+  resultado := a + b;
+  mostrar("Resultado: ", a, " + ", b, " = ", resultado);
+
+fim`;
 
 /* ══ STATE ══ */
 let inputResolve = null;
@@ -1757,7 +1837,7 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 function highlightTokens(s) {
-  const KW_CTRL = ['se','senao','senão','enquanto','faca','faça','para'];
+  const KW_CTRL = ['se','senao','senão','enquanto','faca','faça','para','inicio','fim'];
   const KW_TYPE = ['int','real','texto'];
   let result = '', i = 0;
   while (i < s.length) {
@@ -2031,7 +2111,7 @@ function tokenize(src) {
     if(/[a-záéíóúàãõâêîôûçA-Z_ã]/.test(src[i])){
       let w='',ln=lineNum;
       while(i<src.length&&/[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(src[i]))w+=src[i++];
-      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto'];
+      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim'];
       tokens.push({t:KW.includes(w)?'KW':'ID',v:w,ln});continue;
     }
     const two=src.slice(i,i+2);
@@ -2043,6 +2123,21 @@ function tokenize(src) {
 
 /* ══ INTERPRETER ══ */
 async function interpret(src){
+  // Valida inicio/fim
+  const srcTrim=src.trim();
+  const toks0=tokenize(src);
+  const hasInicio=toks0.some(t=>t.v==='inicio');
+  const hasFim=toks0.some(t=>t.v==='fim');
+  if(!hasInicio&&!hasFim&&srcTrim.length>0){
+    throw new Error('linha 1: todo programa precisa começar com "inicio" e terminar com "fim"');
+  }
+  if(!hasInicio){
+    throw new Error('linha 1: faltou "inicio" no começo do programa');
+  }
+  if(!hasFim){
+    const lastLn=src.split('\n').length;
+    throw new Error('linha '+lastLn+': faltou "fim" no final do programa');
+  }
   const toks=tokenize(src);let p=0;
   const vars={},types={},arrays={},arrTypes={};let steps=0;
   const peek=(o=0)=>toks[p+o]||{t:'EOF',v:'',ln:0};
@@ -2188,6 +2283,7 @@ async function interpret(src){
         do{
           const nt=peek(),nome=eat().v;
           if(nt.t!=='ID')errAt(nt.ln,`esperava nome de variável após "${tipo}"`);
+          if(nome in vars)errAt(nt.ln,`variável "${nome}" já foi declarada`);
           types[nome]=tipo;
           if(peek().v===':='||peek().v==='='){
             eat();let val=parseExpr();
@@ -2338,7 +2434,11 @@ async function interpret(src){
     }
     if(peek().v==='}')eat();
   }
+  // consome 'inicio'
+  if(peek().v==='inicio') eat();
   await execBlock();
+  // verifica 'fim'
+  if(peek().v==='fim') eat();
 }
 
 /* ══ RESIZE OUTPUT (drag handle) ══ */
