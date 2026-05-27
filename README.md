@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="src/logo_cKid.png" alt="CKid code" width="100"/>
+<img src="docs/logo_cKid.png" alt="CKid code" width="100"/>
 
 # 🐰 CKid — code
 
