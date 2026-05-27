@@ -912,8 +912,12 @@ pre.ref-block {
       </div>
       <div class="tut-body">
         <p>O comando <strong>mostrar</strong> exibe uma mensagem na tela do programa. Coloque o texto entre aspas <code>"assim"</code>:</p>
-        <div class="tut-code"><span class="c-fn">mostrar</span>(<span class="c-str">"Olá, mundo!"</span>);
-<span class="c-fn">mostrar</span>(<span class="c-str">"Eu sei programar!"</span>);</div>
+        <div class="tut-code"><span class="c-kw">inicio</span>
+
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Olá, mundo!"</span>);
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Eu sei programar!"</span>);
+
+<span class="c-kw">fim</span></div>
         <p>Cada <code>mostrar</code> aparece em uma linha diferente na saída. O <strong>ponto e vírgula</strong> <code>;</code> no final é obrigatório — ele avisa que a ordem acabou!</p>
         <div class="tut-tip"><strong>💡 Dica:</strong> Você pode mostrar várias coisas de uma vez separando com vírgula:<br><code>mostrar("Meu nome é ", nome, "!");</code></div>
         <button class="tut-try-btn" onclick="loadTutEx('mostrar_simples')">▶ Experimentar no editor</button>
@@ -933,13 +937,21 @@ pre.ref-block {
           <strong>Imagina:</strong> uma caixa chamada "idade" com o número 10 dentro. Sempre que você falar "idade", o computador pega o 10 da caixa!
         </div>
         <p>No CKid existem 3 tipos de variável:</p>
-        <div class="tut-code"><span class="c-type">int</span>   <span class="c-var">pontos</span>, <span class="c-var">nivel</span>;          <span class="c-cmt">// dois inteiros, ambos começam em 0</span>
-<span class="c-type">real</span>  <span class="c-var">preco</span>   <span class="c-op">:=</span> <span class="c-num">9.99</span>;   <span class="c-cmt">// números com vírgula (3.14, 9.99...)</span>
-<span class="c-type">texto</span> <span class="c-var">nome</span>    <span class="c-op">:=</span> <span class="c-str">"Ana"</span>;  <span class="c-cmt">// palavras e frases</span></div>
+        <div class="tut-code"><span class="c-kw">inicio</span>
+
+  <span class="c-type">int</span>   <span class="c-var">pontos</span>, <span class="c-var">nivel</span>;          <span class="c-cmt">// dois inteiros, ambos começam em 0</span>
+  <span class="c-type">real</span>  <span class="c-var">preco</span>   <span class="c-op">:=</span> <span class="c-num">9.99</span>;   <span class="c-cmt">// números com vírgula (3.14, 9.99...)</span>
+  <span class="c-type">texto</span> <span class="c-var">nome</span>    <span class="c-op">:=</span> <span class="c-str">"Ana"</span>;  <span class="c-cmt">// palavras e frases</span>
+
+<span class="c-kw">fim</span></div>
         <p>O símbolo <code>:=</code> significa <strong>"recebe"</strong>. Leia como: <em>"a variável pontos recebe o valor 0"</em>.</p>
-        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">pontos</span> <span class="c-op">:=</span> <span class="c-num">0</span>;
-<span class="c-var">pontos</span> <span class="c-op">:=</span> <span class="c-var">pontos</span> <span class="c-op">+</span> <span class="c-num">10</span>;  <span class="c-cmt">// soma 10 aos pontos</span>
-<span class="c-fn">mostrar</span>(<span class="c-str">"Pontos: "</span>, <span class="c-var">pontos</span>);  <span class="c-cmt">// mostra: Pontos: 10</span></div>
+        <div class="tut-code"><span class="c-kw">inicio</span>
+
+  <span class="c-type">int</span> <span class="c-var">pontos</span> <span class="c-op">:=</span> <span class="c-num">0</span>;
+  <span class="c-var">pontos</span> <span class="c-op">:=</span> <span class="c-var">pontos</span> <span class="c-op">+</span> <span class="c-num">10</span>;  <span class="c-cmt">// soma 10 aos pontos</span>
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Pontos: "</span>, <span class="c-var">pontos</span>);  <span class="c-cmt">// mostra: Pontos: 10</span>
+
+<span class="c-kw">fim</span></div>
         <button class="tut-try-btn" onclick="loadTutEx('variaveis')">▶ Experimentar no editor</button>
       </div>
     </div>
@@ -952,10 +964,14 @@ pre.ref-block {
       </div>
       <div class="tut-body">
         <p>O comando <strong>ler</strong> pausa o programa e espera você digitar algo. O que você digitar fica guardado numa variável:</p>
-        <div class="tut-code"><span class="c-type">texto</span> <span class="c-var">nome</span> <span class="c-op">:=</span> <span class="c-str">""</span>;
-<span class="c-fn">mostrar</span>(<span class="c-str">"Qual é o seu nome?"</span>);
-<span class="c-fn">ler</span>(<span class="c-var">nome</span>);
-<span class="c-fn">mostrar</span>(<span class="c-str">"Olá, "</span>, <span class="c-var">nome</span>, <span class="c-str">"! Seja bem-vindo!"</span>);</div>
+        <div class="tut-code"><span class="c-kw">inicio</span>
+
+  <span class="c-type">texto</span> <span class="c-var">nome</span> <span class="c-op">:=</span> <span class="c-str">""</span>;
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Qual é o seu nome?"</span>);
+  <span class="c-fn">ler</span>(<span class="c-var">nome</span>);
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Olá, "</span>, <span class="c-var">nome</span>, <span class="c-str">"! Seja bem-vindo!"</span>);
+
+<span class="c-kw">fim</span></div>
         <div class="tut-tip"><strong>💡 Ordem importa!</strong> Sempre declare a variável antes de usar o <code>ler</code>. E sempre use <code>mostrar</code> antes para avisar o usuário o que digitar!</div>
         <button class="tut-try-btn" onclick="loadTutEx('ler_nome')">▶ Experimentar no editor</button>
       </div>
@@ -973,15 +989,19 @@ pre.ref-block {
           <span class="tut-analogy-icon">🌧️</span>
           <strong>Na vida real:</strong> "SE estiver chovendo, pego o guarda-chuva. SENÃO, vou sem ele."
         </div>
-        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">idade</span> <span class="c-op">:=</span> <span class="c-num">0</span>;
-<span class="c-fn">mostrar</span>(<span class="c-str">"Quantos anos você tem?"</span>);
-<span class="c-fn">ler</span>(<span class="c-var">idade</span>);
+        <div class="tut-code"><span class="c-kw">inicio</span>
 
-<span class="c-kw">se</span> (<span class="c-var">idade</span> <span class="c-op">>=</span> <span class="c-num">10</span>) {
-  <span class="c-fn">mostrar</span>(<span class="c-str">"Você tem 10 anos ou mais!"</span>);
-} <span class="c-kw">senao</span> {
-  <span class="c-fn">mostrar</span>(<span class="c-str">"Você tem menos de 10 anos!"</span>);
-}</div>
+  <span class="c-type">int</span> <span class="c-var">idade</span> <span class="c-op">:=</span> <span class="c-num">0</span>;
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Quantos anos você tem?"</span>);
+  <span class="c-fn">ler</span>(<span class="c-var">idade</span>);
+  
+  <span class="c-kw">se</span> (<span class="c-var">idade</span> <span class="c-op">>=</span> <span class="c-num">10</span>) {
+    <span class="c-fn">mostrar</span>(<span class="c-str">"Você tem 10 anos ou mais!"</span>);
+  } <span class="c-kw">senao</span> {
+    <span class="c-fn">mostrar</span>(<span class="c-str">"Você tem menos de 10 anos!"</span>);
+  }
+
+<span class="c-kw">fim</span></div>
         <p>As <strong>chaves</strong> <code>{ }</code> marcam o início e o fim de cada bloco de código. Tudo que estiver dentro delas pertence àquele bloco.</p>
         <div class="tut-tip">
           <strong>🔍 Operadores de comparação:</strong><br>
@@ -1005,12 +1025,16 @@ pre.ref-block {
           <span class="tut-analogy-icon">🎮</span>
           <strong>No jogo:</strong> "ENQUANTO o jogador tiver vidas, continue jogando."
         </div>
-        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">x</span> <span class="c-op">:=</span> <span class="c-num">1</span>;
+        <div class="tut-code"><span class="c-kw">inicio</span>
 
-<span class="c-kw">enquanto</span> (<span class="c-var">x</span> <span class="c-op">&lt;=</span> <span class="c-num">5</span>) {
-  <span class="c-fn">mostrar</span>(<span class="c-str">"Repetição número "</span>, <span class="c-var">x</span>);
-  <span class="c-var">x</span> <span class="c-op">:=</span> <span class="c-var">x</span> <span class="c-op">+</span> <span class="c-num">1</span>;  <span class="c-cmt">// IMPORTANTE: avança x!</span>
-}</div>
+  <span class="c-type">int</span> <span class="c-var">x</span> <span class="c-op">:=</span> <span class="c-num">1</span>;
+  
+  <span class="c-kw">enquanto</span> (<span class="c-var">x</span> <span class="c-op">&lt;=</span> <span class="c-num">5</span>) {
+    <span class="c-fn">mostrar</span>(<span class="c-str">"Repetição número "</span>, <span class="c-var">x</span>);
+    <span class="c-var">x</span> <span class="c-op">:=</span> <span class="c-var">x</span> <span class="c-op">+</span> <span class="c-num">1</span>;  <span class="c-cmt">// IMPORTANTE: avança x!</span>
+  }
+
+<span class="c-kw">fim</span></div>
         <div class="tut-tip"><strong>⚠️ Cuidado!</strong> Sempre lembre de mudar a variável da condição dentro do loop. Se você esquecer o <code>x := x + 1</code>, o programa vai ficar repetindo para sempre!</div>
         <button class="tut-try-btn" onclick="loadTutEx('enquanto_simples')">▶ Experimentar no editor</button>
       </div>
@@ -1024,10 +1048,14 @@ pre.ref-block {
       </div>
       <div class="tut-body">
         <p>O <strong>para</strong> é perfeito quando você sabe exatamente quantas vezes quer repetir. Ele tem 3 partes:</p>
-        <div class="tut-code"><span class="c-cmt">// para (início; condição; passo)</span>
-<span class="c-kw">para</span> (<span class="c-var">i</span> <span class="c-op">:=</span> <span class="c-num">1</span>; <span class="c-var">i</span> <span class="c-op">&lt;=</span> <span class="c-num">5</span>; <span class="c-var">i</span> <span class="c-op">:=</span> <span class="c-var">i</span> <span class="c-op">+</span> <span class="c-num">1</span>) {
-  <span class="c-fn">mostrar</span>(<span class="c-str">"Número: "</span>, <span class="c-var">i</span>);
-}</div>
+        <div class="tut-code"><span class="c-kw">inicio</span>
+
+  <span class="c-cmt">// para (início; condição; passo)</span>
+  <span class="c-kw">para</span> (<span class="c-var">i</span> <span class="c-op">:=</span> <span class="c-num">1</span>; <span class="c-var">i</span> <span class="c-op">&lt;=</span> <span class="c-num">5</span>; <span class="c-var">i</span> <span class="c-op">:=</span> <span class="c-var">i</span> <span class="c-op">+</span> <span class="c-num">1</span>) {
+    <span class="c-fn">mostrar</span>(<span class="c-str">"Número: "</span>, <span class="c-var">i</span>);
+  }
+
+<span class="c-kw">fim</span></div>
         <div class="tut-tip">
           <strong>📖 Leia assim:</strong> "Para i começando em 1, enquanto i for menor ou igual a 5, some 1 ao i a cada repetição."<br><br>
           <strong>1️⃣ início:</strong> <code>i := 1</code> — começa aqui<br>
@@ -1046,22 +1074,26 @@ pre.ref-block {
       </div>
       <div class="tut-body">
         <p>Agora que você conhece variáveis, <code>se</code>, <code>ler</code> e <code>enquanto</code>, dá para fazer um jogo de adivinhação!</p>
-        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">secreto</span> <span class="c-op">:=</span> <span class="c-num">7</span>;    <span class="c-cmt">// número a adivinhar</span>
-<span class="c-type">int</span> <span class="c-var">chute</span>   <span class="c-op">:=</span> <span class="c-num">0</span>;    <span class="c-cmt">// palpite do jogador</span>
+        <div class="tut-code"><span class="c-kw">inicio</span>
 
-<span class="c-fn">mostrar</span>(<span class="c-str">"Adivinhe de 1 a 10!"</span>);
-
-<span class="c-kw">enquanto</span> (<span class="c-var">chute</span> <span class="c-op">!=</span> <span class="c-var">secreto</span>) {
-  <span class="c-fn">ler</span>(<span class="c-var">chute</span>);
-  <span class="c-kw">se</span> (<span class="c-var">chute</span> <span class="c-op">&gt;</span> <span class="c-var">secreto</span>) {
-    <span class="c-fn">mostrar</span>(<span class="c-str">"Muito alto! Tente menos."</span>);
-  } <span class="c-kw">senao</span> {
-    <span class="c-kw">se</span> (<span class="c-var">chute</span> <span class="c-op">&lt;</span> <span class="c-var">secreto</span>) {
-      <span class="c-fn">mostrar</span>(<span class="c-str">"Muito baixo! Tente mais."</span>);
+  <span class="c-type">int</span> <span class="c-var">secreto</span> <span class="c-op">:=</span> <span class="c-num">7</span>;    <span class="c-cmt">// número a adivinhar</span>
+  <span class="c-type">int</span> <span class="c-var">chute</span>   <span class="c-op">:=</span> <span class="c-num">0</span>;    <span class="c-cmt">// palpite do jogador</span>
+  
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Adivinhe de 1 a 10!"</span>);
+  
+  <span class="c-kw">enquanto</span> (<span class="c-var">chute</span> <span class="c-op">!=</span> <span class="c-var">secreto</span>) {
+    <span class="c-fn">ler</span>(<span class="c-var">chute</span>);
+    <span class="c-kw">se</span> (<span class="c-var">chute</span> <span class="c-op">&gt;</span> <span class="c-var">secreto</span>) {
+      <span class="c-fn">mostrar</span>(<span class="c-str">"Muito alto! Tente menos."</span>);
+    } <span class="c-kw">senao</span> {
+      <span class="c-kw">se</span> (<span class="c-var">chute</span> <span class="c-op">&lt;</span> <span class="c-var">secreto</span>) {
+        <span class="c-fn">mostrar</span>(<span class="c-str">"Muito baixo! Tente mais."</span>);
+      }
     }
   }
-}
-<span class="c-fn">mostrar</span>(<span class="c-str">"🎉 Acertou!"</span>);</div>
+  <span class="c-fn">mostrar</span>(<span class="c-str">"🎉 Acertou!"</span>);
+
+<span class="c-kw">fim</span></div>
         <div class="tut-tip"><strong>🚀 Próximos passos:</strong> Tente modificar o número secreto, ou adicionar um contador de tentativas. A programação é sobre experimentar!</div>
         <button class="tut-try-btn" onclick="loadEx('adivinhar')">▶ Abrir exemplo completo</button>
       </div>
