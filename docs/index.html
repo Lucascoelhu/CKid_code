@@ -177,6 +177,7 @@ footer span{color:var(--teal-light)}
     <a href="#features">Recursos</a>
     <a href="#como-usar">Como usar</a>
     <a href="#download">Download</a>
+    <a href="#doacao" style="color:#9FE1CB">💜 Apoiar</a>
   </div>
   <a class="nav-download" href="#download">⬇ Baixar</a>
 </nav>
@@ -404,6 +405,22 @@ footer span{color:var(--teal-light)}
   </div>
 </section>
 
+<!-- DOAÇÃO -->
+<section id="doacao" style="background:var(--purple-dark);padding:60px 24px;text-align:center;border-top:1px solid #3a3a60">
+  <div style="max-width:480px;margin:0 auto">
+    <div style="font-size:40px;margin-bottom:12px">💜</div>
+    <h2 style="color:#EEEDFE;font-size:clamp(22px,3vw,32px);font-weight:900;margin-bottom:10px">Apoie o CKid</h2>
+    <p style="color:#AFA9EC;font-size:16px;font-weight:600;line-height:1.6;margin-bottom:32px">O CKid é gratuito e feito com muito carinho. Se ele te ajudou, considere fazer uma doação via PIX para manter o projeto crescendo! 🐰</p>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:32px" id="pixCard">
+      <div style="font-size:24px;margin-bottom:8px">📱</div>
+      <div style="color:#9FE1CB;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px">Chave PIX</div>
+      <div style="background:#161630;border:1px solid #3a3a60;border-radius:10px;padding:14px 18px;font-family:'Fira Code',monospace;font-size:13px;color:#EEEDFE;word-break:break-all;margin-bottom:16px;position:relative" id="pixKey">2cc37828-79bc-4626-b251-ae7fb87bf057</div>
+      <button onclick="copyPix()" style="background:var(--teal);color:#fff;border:none;border-radius:999px;padding:12px 28px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;transition:background .15s;width:100%" id="pixBtn">📋 Copiar chave PIX</button>
+      <p style="color:#7068A8;font-size:12px;margin-top:14px;font-weight:600">Qualquer valor é bem-vindo e faz diferença! 💜</p>
+    </div>
+  </div>
+</section>
+
 <footer>
   <p>© 2026 <span>Lucas Coelho</span> · CKid code · Todos os direitos reservados.</p>
   <p style="margin-top:8px">Feito com 💜 para crianças que querem aprender a programar.</p>
@@ -615,6 +632,18 @@ async function runDemo(){
 }
 
 runDemo();
+
+function copyPix(){
+  navigator.clipboard.writeText('2cc37828-79bc-4626-b251-ae7fb87bf057').then(function(){
+    var btn=document.getElementById('pixBtn');
+    btn.textContent='✅ Chave copiada!';
+    btn.style.background='#3C3489';
+    setTimeout(function(){
+      btn.textContent='📋 Copiar chave PIX';
+      btn.style.background='';
+    },2500);
+  });
+}
 
 // Scroll reveal
 const observer=new IntersectionObserver(entries=>{
