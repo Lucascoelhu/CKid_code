@@ -338,13 +338,15 @@ footer span{color:var(--teal-light)}
         <div class="code-block-body">
           <div class="cb-ln">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</div>
           <span class="t-cmt">// Jogo de adivinhação 🎮</span><br>
-          <span class="t-kw">int</span> <span class="t-var">secreto</span> <span class="t-op">:=</span> <span class="t-num">7</span><span class="t-plain">;</span><br>
-          <span class="t-kw">int</span> <span class="t-var">chute</span> <span class="t-op">:=</span> <span class="t-num">0</span><span class="t-plain">;</span><br>
-          <span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"Adivinhe de 1 a 10!"</span><span class="t-plain">);</span><br>
-          <span class="t-kw">enquanto</span> <span class="t-plain">(</span><span class="t-var">chute</span> <span class="t-op">!=</span> <span class="t-var">secreto</span><span class="t-plain">) {</span><br>
-          &nbsp;&nbsp;<span class="t-kw">ler</span><span class="t-plain">(</span><span class="t-var">chute</span><span class="t-plain">);</span><br>
-          <span class="t-plain">}</span><br>
-          <span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"🎉 Acertou!"</span><span class="t-plain">);</span>
+          <span class="t-kw">inicio</span><br><br>
+          &nbsp;&nbsp;<span class="t-kw">int</span> <span class="t-var">secreto</span> <span class="t-op">:=</span> <span class="t-num">7</span><span class="t-plain">;</span><br>
+          &nbsp;&nbsp;<span class="t-kw">int</span> <span class="t-var">chute</span> <span class="t-op">:=</span> <span class="t-num">0</span><span class="t-plain">;</span><br>
+          &nbsp;&nbsp;<span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"Adivinhe de 1 a 10!"</span><span class="t-plain">);</span><br>
+          &nbsp;&nbsp;<span class="t-kw">enquanto</span> <span class="t-plain">(</span><span class="t-var">chute</span> <span class="t-op">!=</span> <span class="t-var">secreto</span><span class="t-plain">) {</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-kw">ler</span><span class="t-plain">(</span><span class="t-var">chute</span><span class="t-plain">);</span><br>
+          &nbsp;&nbsp;<span class="t-plain">}</span><br>
+          &nbsp;&nbsp;<span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"🎉 Acertou!"</span><span class="t-plain">);</span><br><br>
+          <span class="t-kw">fim</span>
         </div>
       </div>
       <div class="code-block">
@@ -357,9 +359,11 @@ footer span{color:var(--teal-light)}
         <div class="code-block-body">
           <div class="cb-ln">1<br>2<br>3<br>4<br>5</div>
           <span class="t-cmt">// Tabuada do 5</span><br>
-          <span class="t-kw">para</span> <span class="t-plain">(</span><span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-num">1</span><span class="t-plain">;</span> <span class="t-var">i</span> <span class="t-op">&lt;=</span> <span class="t-num">10</span><span class="t-plain">;</span> <span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-num">1</span><span class="t-plain">) {</span><br>
-          &nbsp;&nbsp;<span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"5 x "</span><span class="t-plain">,</span> <span class="t-var">i</span><span class="t-plain">,</span> <span class="t-str">" = "</span><span class="t-plain">,</span> <span class="t-num">5</span> <span class="t-op">*</span> <span class="t-var">i</span><span class="t-plain">);</span><br>
-          <span class="t-plain">}</span>
+          <span class="t-kw">inicio</span><br><br>
+          &nbsp;&nbsp;<span class="t-kw">para</span> <span class="t-plain">(</span><span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-num">1</span><span class="t-plain">;</span> <span class="t-var">i</span> <span class="t-op">&lt;=</span> <span class="t-num">10</span><span class="t-plain">;</span> <span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-num">1</span><span class="t-plain">) {</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-kw">mostrar</span><span class="t-plain">(</span><span class="t-str">"5 x "</span><span class="t-plain">,</span> <span class="t-var">i</span><span class="t-plain">,</span> <span class="t-str">" = "</span><span class="t-plain">,</span> <span class="t-num">5</span> <span class="t-op">*</span> <span class="t-var">i</span><span class="t-plain">);</span><br>
+          &nbsp;&nbsp;<span class="t-plain">}</span><br><br>
+          <span class="t-kw">fim</span>
         </div>
       </div>
     </div>
