@@ -424,59 +424,55 @@ function updateLines(text){
   lineEl.innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
 }
 
-function colorizeLine(line){
-  return line
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/(\/\/.*)/g,'<span style="color:#8898C8;font-style:italic">$1</span>')
-    .replace(/\b(mostrar|ler|se|senao|senão|enquanto|para|int|real|texto|faca|faça)\b/g,'<span style="color:#C0A8F0;font-weight:600">$1</span>')
-    .replace(/"([^"]*)"/g,'<span style="color:#2EE8A0;font-weight:600">"$1"</span>')
-    .replace(/\b(\d+)\b/g,'<span style="color:#FFD080">$1</span>')
-    .replace(/(:=|==|!=|<=|>=)/g,'<span style="color:#60D4FF">$1</span>');
-}
-
-function renderLines(lines){
-  return lines.map(l=>colorizeLine(l)).join('\n');
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function colorizeLine(raw){
+  var s=esc(raw);
+  // comentarios
+  s=s.replace(/(\/\/[^
+]*)/g,'<i style="color:#8898C8">$1</i>');
+  // keywords
+  s=s.replace(/\b(mostrar|ler|se|senao|senão|enquanto|para|int|real|texto|faca|faça)\b/g,'<b style="color:#C0A8F0;font-weight:600">$1</b>');
+  // strings
+  s=s.replace(/&quot;([^&]*)&quot;/g,'<b style="color:#2EE8A0">&quot;$1&quot;</b>');
+  // numeros
+  s=s.replace(/\b(\d+)\b/g,'<span style="color:#FFD080">$1</span>');
+  // operadores
+  s=s.replace(/(:=|==|!=|&lt;=|&gt;=|&lt;|&gt;)/g,'<span style="color:#60D4FF">$1</span>');
+  return s;
 }
 
 async function typeProgram(){
-  const prog=programs[progIdx];
+  var prog=programs[progIdx];
   fileEl.textContent=prog.file;
-  const fullCode=prog.code;
-  const allLines=fullCode.split('\n');
-  typedEl.innerHTML=''; outputEl.innerHTML=''; updateLines('');
+  var allLines=prog.code.split('\n');
+  typedEl.innerHTML=''; outputEl.innerHTML='';
 
-  let currentLine=0, currentChar=0, typed='';
-
-  while(currentLine < allLines.length){
-    const line=allLines[currentLine];
-    if(currentChar < line.length){
-      currentChar++;
-      // Build display: completed lines colorized + current line plain
-      const completedLines=allLines.slice(0,currentLine).map(l=>colorizeLine(l));
-      const currentPlain=line.slice(0,currentChar).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      typedEl.innerHTML=completedLines.join('\n')+(completedLines.length?'\n':'')+currentPlain;
-      updateLines(allLines.slice(0,currentLine+1).join('\n'));
-      await new Promise(r=>setTimeout(r,38));
-    } else {
-      // Line complete — colorize it and move to next
-      currentLine++; currentChar=0;
-      const completedLines=allLines.slice(0,currentLine).map(l=>colorizeLine(l));
-      typedEl.innerHTML=completedLines.join('\n');
-      updateLines(allLines.slice(0,currentLine).join('\n'));
-      if(currentLine < allLines.length) await new Promise(r=>setTimeout(r,120));
+  for(var li=0;li<allLines.length;li++){
+    var line=allLines[li];
+    // digita char a char sem colorir
+    for(var ci=1;ci<=line.length;ci++){
+      var done=allLines.slice(0,li).map(colorizeLine).join('\n');
+      var cur=esc(line.slice(0,ci));
+      typedEl.innerHTML=(done?(done+'\n'):'')+cur;
+      updateLines(allLines.slice(0,li+1).join('\n'));
+      await new Promise(function(r){setTimeout(r,40);});
     }
+    // linha completa: coloriza
+    var done2=allLines.slice(0,li+1).map(colorizeLine).join('\n');
+    typedEl.innerHTML=done2;
+    updateLines(allLines.slice(0,li+1).join('\n'));
+    await new Promise(function(r){setTimeout(r,100);});
   }
 
-  // show outputs one by one
-  await new Promise(r=>setTimeout(r,400));
-  for(const out of prog.outputs){
-    const span=document.createElement('span');
-    span.className='out-item'; span.textContent=out;
+  // outputs
+  await new Promise(function(r){setTimeout(r,400);});
+  for(var oi=0;oi<prog.outputs.length;oi++){
+    var span=document.createElement('span');
+    span.className='out-item';span.textContent=prog.outputs[oi];
     outputEl.appendChild(span);
-    await new Promise(r=>setTimeout(r,350));
+    await new Promise(function(r){setTimeout(r,350);});
   }
-
-  await new Promise(r=>setTimeout(r,2500));
+  await new Promise(function(r){setTimeout(r,2500);});
   progIdx=(progIdx+1)%programs.length;
   typeProgram();
 }
