@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CKid code — Compilador educativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#534AB7;--purple-dark:#26215C;--purple-mid:#3C3489;
+  --teal:#1D9E75;--teal-light:#9FE1CB;
+  --gold:#EF9F27;
+  --bg:#F7F5FF;--surface:#fff;--border:#DDD8FF;
+  --text:#2A2060;--text2:#7068A8;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{
+  background:var(--purple-dark);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 24px;
+  position:relative;overflow:hidden;
+}
+.hero-stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#EEEDFE;animation:twinkle 3s infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.35;transform:scale(1)}}
+
+.hero-mascot{font-size:72px;animation:bob 2.5s ease-in-out infinite;margin-bottom:16px;z-index:1;position:relative}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.hero h1{font-size:clamp(42px,7vw,80px);font-weight:900;color:#EEEDFE;line-height:1;z-index:1;position:relative}
+.hero h1 span{color:var(--teal-light)}
+.hero-sub{font-size:clamp(16px,2.5vw,22px);color:#AFA9EC;margin-top:16px;max-width:520px;font-weight:600;z-index:1;position:relative}
+.hero-btns{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;justify-content:center;z-index:1;position:relative}
+.btn-primary{background:var(--teal);color:#fff;border:none;border-radius:999px;padding:16px 36px;font-size:18px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s;display:inline-block}
+.btn-primary:hover{background:#0F6E56;transform:scale(1.04)}
+.btn-outline{background:none;color:#EEEDFE;border:2px solid #534AB7;border-radius:999px;padding:15px 32px;font-size:17px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s;display:inline-block}
+.btn-outline:hover{background:rgba(255,255,255,.07)}
+
+.hero-badge{
+  margin-top:48px;background:rgba(83,74,183,.35);border:1px solid #534AB7;
+  border-radius:12px;padding:10px 20px;color:#AFA9EC;font-size:13px;font-weight:600;
+  z-index:1;position:relative;
+}
+.hero-badge span{color:var(--teal-light);font-weight:800}
+
+/* ── FEATURES ── */
+.section{padding:80px 24px;max-width:1100px;margin:0 auto}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:900;text-align:center;margin-bottom:12px}
+.section-sub{font-size:17px;color:var(--text2);text-align:center;margin-bottom:56px;font-weight:600}
+
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.feat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:32px 28px;transition:transform .15s,box-shadow .15s}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(83,74,183,.13)}
+.feat-icon{font-size:40px;margin-bottom:16px}
+.feat-card h3{font-size:20px;font-weight:800;margin-bottom:8px}
+.feat-card p{font-size:15px;color:var(--text2);font-weight:600;line-height:1.6}
+
+/* ── EDITOR PREVIEW ── */
+.preview-section{background:var(--purple-dark);padding:80px 24px;overflow:hidden}
+.preview-inner{max-width:900px;margin:0 auto;text-align:center}
+.preview-inner .section-title{color:#EEEDFE}
+.preview-inner .section-sub{color:#AFA9EC}
+.editor-mock{background:#1e1e3a;border-radius:16px;border:1px solid #3a3a60;overflow:hidden;text-align:left;margin-top:0;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.mock-bar{background:#161630;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #3a3a60}
+.mock-dot{width:12px;height:12px;border-radius:50%}
+.mock-filename{color:#7070a0;font-size:12px;font-family:'Fira Code',monospace;margin-left:8px}
+.mock-code{padding:20px 20px 20px 56px;font-family:'Fira Code',monospace;font-size:14px;line-height:1.75;position:relative}
+.mock-ln{position:absolute;left:0;top:20px;width:42px;text-align:right;padding-right:10px;color:#7070a0;font-size:13px;line-height:1.75}
+.t-kw{color:#C0A8F0;font-weight:600}
+.t-str{color:#2EE8A0;font-weight:600}
+.t-var{color:#E8EEFF}
+.t-num{color:#FFD080}
+.t-op{color:#60D4FF}
+.t-cmt{color:#8898C8;font-style:italic}
+.mock-output{background:#141428;border-top:2px solid #3a3a60;padding:14px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.mock-out-lbl{font-size:10px;color:#8090b8;text-transform:uppercase;letter-spacing:.7px;font-family:'Fira Code',monospace}
+.mock-out-item{background:#252550;border-left:3px solid #2EE8A0;border-radius:0 8px 8px 0;padding:5px 12px;color:#F0F8FF;font-size:13px;font-weight:700;font-family:'Fira Code',monospace}
+
+/* ── COMO USAR ── */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:0}
+.step{text-align:center;padding:32px 20px}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.step h3{font-size:18px;font-weight:800;margin-bottom:8px}
+.step p{font-size:14px;color:var(--text2);font-weight:600;line-height:1.6}
+.step-arrow{display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--border);padding-top:28px}
+
+/* ── DOWNLOAD ── */
+.download-section{background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));padding:80px 24px;text-align:center}
+.download-section h2{font-size:clamp(28px,4vw,46px);font-weight:900;color:#EEEDFE;margin-bottom:12px}
+.download-section p{font-size:18px;color:#AFA9EC;margin-bottom:40px;font-weight:600}
+.download-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:36px;max-width:440px;margin:0 auto}
+.download-icon{font-size:52px;margin-bottom:16px}
+.download-card h3{color:#EEEDFE;font-size:22px;font-weight:800;margin-bottom:8px}
+.download-card p{color:#AFA9EC;font-size:14px;margin-bottom:24px;font-weight:600}
+.version-badge{display:inline-block;background:rgba(83,74,183,.5);border:1px solid #534AB7;border-radius:8px;padding:4px 14px;color:#AFA9EC;font-size:12px;font-weight:700;margin-bottom:20px}
+
+/* ── FOOTER ── */
+footer{background:var(--purple-dark);padding:32px 24px;text-align:center;border-top:1px solid #3a3a60}
+footer p{color:#7070a0;font-size:13px;font-weight:600}
+footer span{color:var(--teal-light)}
+
+/* ── NAVBAR ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(83,74,183,.3);padding:12px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{font-size:24px}
+.nav-logo-text{color:#EEEDFE;font-size:18px;font-weight:800}
+.nav-logo-text span{color:var(--teal-light);font-weight:600}
+.nav-links{display:flex;gap:24px}
+.nav-links a{color:#AFA9EC;text-decoration:none;font-size:14px;font-weight:700;transition:color .15s}
+.nav-links a:hover{color:#EEEDFE}
+.nav-download{background:var(--teal);color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;text-decoration:none;transition:background .15s}
+.nav-download:hover{background:#0F6E56}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <span class="nav-logo-icon">🐰</span>
+    <span class="nav-logo-text">CKid <span>code</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Recursos</a>
+    <a href="#como-usar">Como usar</a>
+    <a href="#download">Download</a>
+  </div>
+  <a class="nav-download" href="#download">⬇ Baixar</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-stars" id="heroStars"></div>
+  <div class="hero-mascot">🐰</div>
+  <h1>CKid <span>code</span></h1>
+  <p class="hero-sub">O compilador educativo feito para crianças aprenderem programação de verdade.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="https://ckid-code.vercel.app" target="_blank">🌐 Acessar online</a>
+    <a class="btn-outline" href="#download">⬇ Baixar grátis</a>
+  </div>
+  <div class="hero-badge">Criado com 💜 por <span>Lucas Coelho</span> · Versão 1.0</div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <h2 class="section-title">Por que o CKid?</h2>
+  <p class="section-sub">Tudo pensado para quem está dando os primeiros passos na programação.</p>
+  <div class="features">
+    <div class="feat-card">
+      <div class="feat-icon">🎨</div>
+      <h3>Interface colorida</h3>
+      <p>Sintaxe com cores vibrantes que facilitam a leitura e tornam o código mais divertido de escrever.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🧩</div>
+      <h3>Blocos prontos</h3>
+      <p>Sidebar com comandos clicáveis — basta clicar para inserir mostrar, ler, se, enquanto e muito mais.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔴</div>
+      <h3>Erros claros</h3>
+      <p>Linha com erro destacada em vermelho e mensagem explicativa na saída para facilitar a correção.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💾</div>
+      <h3>Salva seus projetos</h3>
+      <p>Salve e abra arquivos .ckid diretamente no computador. Seus programas ficam sempre seguros.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📚</div>
+      <h3>Exemplos prontos</h3>
+      <p>Aba de exemplos com programas já escritos — tabuada, par ou ímpar, calculadora e muito mais.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⭐</div>
+      <h3>Avaliações</h3>
+      <p>Deixe sua opinião e veja o que outros usuários acharam do CKid diretamente no app.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EDITOR PREVIEW -->
+<section class="preview-section">
+  <div class="preview-inner">
+    <h2 class="section-title">Veja o editor em ação</h2>
+    <p class="section-sub">Código com highlight, números de linha e saída em tempo real.</p>
+    <div class="editor-mock">
+      <div class="mock-bar">
+        <div class="mock-dot" style="background:#FF5F57"></div>
+        <div class="mock-dot" style="background:#FFBD2E"></div>
+        <div class="mock-dot" style="background:#28C840"></div>
+        <span class="mock-filename">tabuada.ckid</span>
+      </div>
+      <div class="mock-code">
+        <div class="mock-ln">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</div>
+        <span class="t-cmt">// Tabuada do 5</span><br>
+        <span class="t-kw">inteiro</span> <span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-num">1</span><br>
+        <span class="t-kw">enquanto</span> <span class="t-var">i</span> <span class="t-op">&lt;=</span> <span class="t-num">10</span> <span style="color:#A0A0D0">{</span><br>
+        &nbsp;&nbsp;<span class="t-kw">inteiro</span> <span class="t-var">res</span> <span class="t-op">:=</span> <span class="t-num">5</span> <span class="t-op">*</span> <span class="t-var">i</span><br>
+        &nbsp;&nbsp;<span class="t-kw">mostrar</span> <span class="t-str">"5 x "</span> <span class="t-op">+</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-str">" = "</span> <span class="t-op">+</span> <span class="t-var">res</span><br>
+        &nbsp;&nbsp;<span class="t-var">i</span> <span class="t-op">:=</span> <span class="t-var">i</span> <span class="t-op">+</span> <span class="t-num">1</span><br>
+        <span style="color:#A0A0D0">}</span><br>
+        <span class="t-kw">mostrar</span> <span class="t-str">"Pronto!"</span>
+      </div>
+      <div class="mock-output">
+        <span class="mock-out-lbl">Saída —</span>
+        <span class="mock-out-item">💬 5 x 1 = 5</span>
+        <span class="mock-out-item">💬 5 x 2 = 10</span>
+        <span class="mock-out-item">💬 5 x 3 = 15</span>
+        <span class="mock-out-item">💬 Pronto!</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO USAR -->
+<section class="section" id="como-usar">
+  <h2 class="section-title">Como começar</h2>
+  <p class="section-sub">Em 3 passos simples você já está programando.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Baixe o instalador</h3>
+      <p>Clique em "Baixar grátis" e execute o arquivo .exe. A instalação é rápida e simples.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Abra o CKid</h3>
+      <p>O ícone aparece na área de trabalho e no menu iniciar. Clique e o editor abre na hora.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Comece a programar</h3>
+      <p>Use os exemplos prontos ou crie seu próprio programa do zero. É só digitar e compilar!</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section class="download-section" id="download">
+  <h2>Pronto para começar?</h2>
+  <p>Gratuito para sempre. Sem cadastro. Só baixar e usar.</p>
+  <div class="download-card">
+    <div class="download-icon">🐰</div>
+    <div class="version-badge">Versão 1.0.0 — Windows</div>
+    <h3>CKid code</h3>
+    <p>Instalador para Windows 10/11 · 64-bit</p>
+    <a class="btn-primary" href="https://ckid-code.vercel.app" target="_blank" style="display:block;font-size:17px;padding:14px;margin-bottom:12px">🌐 Acessar online</a>
+    <a class="btn-outline" href="#" style="display:block;font-size:16px;padding:13px;text-align:center;border-radius:999px">⬇ Baixar para Windows</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span>Lucas Coelho</span> · CKid code · Todos os direitos reservados.</p>
+  <p style="margin-top:8px">Feito com 💜 para crianças que querem aprender a programar.</p>
+</footer>
+
+<script>
+const hero = document.getElementById('heroStars');
+for(let i=0;i<20;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=Math.random()*3+1;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*4}s;animation-duration:${2+Math.random()*3}s`;
+  hero.appendChild(s);
+}
+</script>
+</body>
+</html>
