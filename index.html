@@ -2048,6 +2048,7 @@ async function interpret(src){
   const peek=(o=0)=>toks[p+o]||{t:'EOF',v:'',ln:0};
   const eat=()=>toks[p++]||{t:'EOF',v:'',ln:0};
   function expect(v){const tok=eat();if(tok.v!==v)throw new Error(`linha ${tok.ln}: esperava "${v}", encontrei "${tok.v}"`);return tok;}
+  function requireSemi(ln){if(peek().v===';'){eat();}else{throw new Error(`linha ${ln}: faltou ponto e vírgula ";" no final`);}}
   function errAt(ln,msg){throw new Error(`linha ${ln}: ${msg}`);}
 
   // Resolve array index: nome[expr]
@@ -2181,7 +2182,7 @@ async function interpret(src){
           arrTypes[nome]=tipo;
           const def=tipo==='texto'?'':0;
           arrays[nome]=Array(tam).fill(null).map(()=>def);
-          if(peek().v===';')eat(); continue;
+          requireSemi(ntok.ln); continue;
         }
         // variável simples (pode ser múltipla: int a, b, c)
         do{
@@ -2196,12 +2197,12 @@ async function interpret(src){
             vars[nome]=val;
           } else { vars[nome]=tipo==='texto'?'':0; }
         }while(peek().v===','&&eat());
-        if(peek().v===';')eat();continue;
+        requireSemi(tok.ln);continue;
       }
 
       // ── mostrar ──
       if(tok.t==='ID'&&tok.v==='mostrar'&&peek(1).v==='('){
-        eat();eat();const parts=parseArgList();expect(')');if(peek().v===';')eat();
+        eat();eat();const parts=parseArgList();expect(')');requireSemi(tok.ln);
         log(parts.map(v=>v===true?'verdadeiro':v===false?'falso':String(v)).join(''),'out');continue;
       }
 
@@ -2212,7 +2213,7 @@ async function interpret(src){
         // ler(arr[idx])
         if(peek().v==='['){
           const {arr,idx}=parseArrayAccess(vname,ln);
-          expect(')');if(peek().v===';')eat();
+          expect(')');requireSemi(ln);
           const resp=await askInput();
           const respNorm=resp.replace(',','.');
           const tipo=arrTypes[arr]||'auto';
@@ -2221,7 +2222,7 @@ async function interpret(src){
           else arrays[arr][idx]=resp;
           continue;
         }
-        expect(')');if(peek().v===';')eat();
+        expect(')');requireSemi(ln);
         if(!(vname in vars))errAt(ln,`variável "${vname}" não foi declarada`);
         const resp=await askInput();
         const respNorm=resp.replace(',','.');
@@ -2245,13 +2246,13 @@ async function interpret(src){
           if(tipo==='int')val=Math.trunc(+val||0);
           else if(tipo==='real')val=+val||0;
           arrays[arr][idx]=val;
-          if(peek().v===';')eat();continue;
+          requireSemi(tok.ln);continue;
         }
         eat(); // consume := or =
         let val=parseExpr();
         const tipo=types[nome];
         if(tipo==='int')val=Math.trunc(+val||0);else if(tipo==='real')val=+val||0;
-        vars[nome]=val;if(peek().v===';')eat();continue;
+        vars[nome]=val;requireSemi(tok.ln);continue;
       }
 
       // ── enquanto ──
