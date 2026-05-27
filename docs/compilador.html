@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════╗
+  ║              CKid code — Compilador Educativo        ║
+  ║                                                      ║
+  ║  © 2026 Lucas Coelho. Todos os direitos reservados.  ║
+  ║  Proibida a cópia, redistribuição ou uso comercial   ║
+  ║  sem autorização prévia e por escrito do autor.      ║
+  ║                                                      ║
+  ║  Contato: lucascoelhu                                ║
+  ╚══════════════════════════════════════════════════════╝
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CKid — code | Compilador educativo</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F7F5FF;
+  --surface: #FFFFFF;
+  --surface2: #F0EEFF;
+  --border: #DDD8FF;
+  --text: #2A2060;
+  --text2: #7068A8;
+  --accent: #534AB7;
+  --accent2: #3C3489;
+  --accent3: #26215C;
+  --gold: #EF9F27;
+  --green: #1D9E75;
+  --radius: 12px;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* HEADER */
+.header-bg {
+  background: var(--accent3);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+.header-logo { height: 38px; width: auto; object-fit: contain; z-index: 1; animation: bob 2.5s ease-in-out infinite; }
+.star { position: absolute; border-radius: 50%; background: #EEEDFE; opacity: 0; animation: twinkle 3s infinite; }
+@keyframes twinkle { 0%,100%{opacity:0;transform:scale(.5)} 50%{opacity:.3;transform:scale(1)} }
+.header-mascot { font-size: 24px; animation: bob 2.5s ease-in-out infinite; z-index: 1; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+.header-text { z-index: 1; }
+.header-title { color: #EEEDFE; font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
+.header-title .tag { color: #9FE1CB; font-weight: 400; font-size: 15px; }
+.header-sub { color: #AFA9EC; font-size: 11px; margin-top: 1px; }
+
+/* TABS */
+.tabs-bar { background: var(--accent2); display: flex; flex-shrink: 0; }
+.tab { padding: 7px 14px; color: #AFA9EC; font-size: 12px; cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; font-family: inherit; transition: color .15s; flex: 1; text-align: center; }
+.tab.active { color: #EEEDFE; border-bottom-color: var(--gold); }
+.tab:hover:not(.active) { color: #CECBF6; }
+
+/* TOOLBAR */
+.toolbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 7px 12px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.btn-run { background: var(--green); color: #fff; border: none; border-radius: 999px; padding: 8px 22px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background .15s; font-family: inherit; flex: 1; justify-content: center; }
+.btn-run:hover { background: #0F6E56; }
+.btn-run:active { transform: scale(.97); }
+.btn-sec { background: none; border: 1px solid var(--border); color: var(--text2); border-radius: 999px; padding: 7px 14px; font-size: 12px; cursor: pointer; font-family: inherit; transition: background .12s; white-space: nowrap; }
+.btn-sec:hover { background: var(--surface2); }
+
+/* SIDEBAR TOGGLE */
+.btn-sidebar-toggle { background: var(--accent2); color: #fff; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0; transition: background .15s; white-space: nowrap; font-family: inherit; }
+.btn-sidebar-toggle:hover { background: var(--accent3); }
+.btn-sidebar-toggle.hidden-state { background: var(--green); }
+.sidebar.hidden { display: none !important; }
+
+/* LAYOUT BODY */
+.body { display: flex; flex: 1; overflow: hidden; min-height: 0; min-width: 0; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 158px;
+  background: #F8F7FF;
+  border-right: 1px solid #E0DCF8;
+  padding: 8px 6px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.sec-label {
+  font-size: 9px; font-weight: 800; color: #9890C8;
+  text-transform: uppercase; letter-spacing: 1px;
+  padding: 8px 6px 4px; margin-top: 2px;
+}
+.blk {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 10px; border: none;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  text-align: left; width: 100%;
+  transition: transform .12s, box-shadow .12s;
+  line-height: 1.2; box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+.blk:hover  { transform: translateX(3px); box-shadow: 0 2px 8px rgba(0,0,0,.13); }
+.blk:active { transform: scale(.96); }
+.blk-icon { font-size: 15px; flex-shrink: 0; }
+.blk-name { font-weight: 700; display: block; font-size: 12px; }
+.blk-hint { font-size: 10px; opacity: .7; font-family: inherit; display: block; margin-top: 1px; }
+
+/* cores suaves por categoria */
+.b-show  { background: #D6F5EC; color: #1A6B4A; border-left: 3px solid #2EB87A; }
+.b-read  { background: #D6E8FF; color: #1A3D7A; border-left: 3px solid #4A8FE0; }
+.b-int   { background: #FFF0D6; color: #7A4A00; border-left: 3px solid #E08A2E; }
+.b-real  { background: #FFF0D6; color: #7A4A00; border-left: 3px solid #E08A2E; }
+.b-text  { background: #FFF0D6; color: #7A4A00; border-left: 3px solid #E08A2E; }
+.b-while { background: #EED6FF; color: #4A1A7A; border-left: 3px solid #9A4AE0; }
+.b-do    { background: #EED6FF; color: #4A1A7A; border-left: 3px solid #9A4AE0; }
+.b-for   { background: #EED6FF; color: #4A1A7A; border-left: 3px solid #9A4AE0; }
+.b-if    { background: #FFD6D6; color: #7A1A1A; border-left: 3px solid #E04A4A; }
+
+/* EDITOR COLUMN */
+.editor-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* EDITOR WRAP — takes remaining space above output */
+.editor-wrap {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  flex: 1;
+}
+
+/* container interno que permite scroll horizontal real */
+.editor-scroll {
+  position: absolute; inset: 0;
+  overflow-x: auto; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #1e1e3a;
+}
+
+.editor-inner {
+  position: relative;
+  min-width: 100%;
+  width: max-content;
+  min-height: 100%;
+  background: #1e1e3a;
+}
+
+.line-nums {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 34px;
+  background: #161630; border-right: 1px solid #3a3a60;
+  padding: 12px 5px 12px 0;
+  font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75;
+  color: #7070a0; text-align: right;
+  pointer-events: none; z-index: 3; overflow: hidden;
+}
+.line-nums .ln { display: block; }
+.line-nums .ln.has-err { color: #F09595; font-weight: 700; }
+
+.highlight-layer {
+  position: absolute;
+  top: 0; left: 0;
+  padding: 12px 40px 200px 48px;
+  font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75;
+  white-space: pre; pointer-events: none;
+  color: transparent; background: #1e1e3a;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: 1;
+  box-sizing: border-box;
+}
+.err-line { background: rgba(242,95,95,.18); border-left: 3px solid #F09595; display: block; margin-left: -3px; }
+
+#code {
+  position: absolute;
+  top: 0; left: 0;
+  padding: 12px 40px 200px 48px;
+  background: transparent; color: transparent;
+  font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75;
+  border: none; resize: none; outline: none; tab-size: 2; z-index: 2;
+  caret-color: #fff; white-space: pre;
+  overflow: hidden;
+  -webkit-text-fill-color: transparent;
+  width: 100%; height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  cursor: text;
+  box-sizing: border-box;
+}
+#code::selection { background: rgba(100,120,255,0.35); }
+#code::-moz-selection { background: rgba(100,120,255,0.35); }
+
+/* TOKEN COLORS — mais vivos e legíveis */
+.t-str    { color: #2EE8A0; font-weight: 700; }
+.t-num    { color: #FFD080; font-weight: 700; }
+.t-op     { color: #60D4FF; font-weight: 600; }
+.t-punct  { color: #A0A0D0; }
+.t-plain  { color: #A0A0D0; }
+.t-assign { color: #A8C8FF; font-weight: 700; }
+.t-var    { color: #E8EEFF; font-weight: 600; }
+.t-show   { color: #B0C0E8; font-style: italic; }
+.t-read   { color: #B0C0E8; font-style: italic; }
+.t-type   { color: #90A8D8; font-weight: 600; }
+.t-kw     { color: #C0A8F0; font-weight: 700; }
+.t-cmt    { color: #8898C8; font-style: italic; }
+
+/* OUTPUT SECTION */
+.output-section {
+  background: #141428;
+  border-top: 2px solid #3a3a60;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 200px;
+  min-height: 80px;
+  max-height: 60vh;
+  position: relative;
+}
+
+/* drag handle */
+.output-resize {
+  height: 6px;
+  background: #3a3a60;
+  cursor: ns-resize;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+.output-resize::after {
+  content: '';
+  width: 32px; height: 3px;
+  border-radius: 2px;
+  background: #5a5a90;
+}
+.output-resize:hover { background: #4a4a80; }
+
+.output-bar {
+  background: #141428;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 1px solid #2e2e50;
+}
+.output-label { font-size: 10px; color: #8090b8; text-transform: uppercase; letter-spacing: .7px; font-family: 'Courier New', monospace; }
+.status-txt { font-size: 12px; color: #8090b8; font-family: 'Courier New', monospace; }
+.status-ok  { color: #00C896; font-weight: 700; }
+.status-err { color: #F09595; font-weight: 700; }
+
+.output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 2;
+  -webkit-overflow-scrolling: touch;
+}
+
+.o-line { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
+
+/* Saída normal do mostrar() */
+.o-out {
+  background: #252550;
+  border-left: 4px solid #2EE8A0;
+  border-radius: 0 10px 10px 0;
+  padding: 6px 14px;
+  color: #F0F8FF;
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.5;
+}
+.o-out::before { content: '💬 '; }
+
+/* Erro */
+.o-err {
+  background: rgba(255,100,100,.15);
+  border-left: 4px solid #FF8080;
+  border-radius: 0 10px 10px 0;
+  padding: 6px 14px;
+  color: #FFB0B0;
+  font-size: 13px;
+  flex: 1;
+  line-height: 1.5;
+}
+.o-err-line {
+  color: #FF8080; font-size: 11px;
+  background: rgba(255,128,128,.2);
+  border-radius: 6px; padding: 2px 8px;
+  flex-shrink: 0; margin-top: 7px;
+  font-weight: 700; white-space: nowrap;
+}
+
+/* Aguardando entrada */
+.o-ask {
+  background: rgba(255,208,100,.12);
+  border-left: 4px solid #FFD080;
+  border-radius: 0 10px 10px 0;
+  padding: 6px 14px;
+  color: #FFE0A0;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.5;
+}
+.o-ask::before { content: '⌨️ '; }
+
+/* Info (resposta digitada) */
+.o-info {
+  background: rgba(100,200,255,.1);
+  border-left: 4px solid #60D4FF;
+  border-radius: 0 10px 10px 0;
+  padding: 5px 14px;
+  color: #A0D8FF;
+  font-size: 13px;
+  flex: 1;
+  line-height: 1.5;
+}
+.o-info::before { content: '✏️ '; }
+
+.o-empty {
+  color: #4a5a7a; font-style: italic; font-size: 13px;
+  text-align: center; margin-top: 20px; display: block;
+}
+
+.o-typed {
+  color: #A0D8FF;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 4px;
+}
+
+/* INPUT INLINE NA SAÍDA */
+.o-input-wrap {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 4px;
+}
+.o-ask-inline {
+  color: #FFD080; font-size: 16px; font-weight: 700; flex-shrink: 0;
+}
+.o-input-field {
+  flex: 1;
+  background: #2a2a55;
+  border: 2px solid #FFD080;
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: #F0F8FF;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  outline: none;
+  caret-color: #FFD080;
+}
+.o-input-field::placeholder { color: #6070a0; }
+.o-input-field:focus { border-color: #2EE8A0; box-shadow: 0 0 0 3px rgba(46,232,160,.2); }
+.o-input-btn {
+  background: #FFD080; color: #1a1a2e;
+  border: none; border-radius: 8px;
+  padding: 7px 14px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit; flex-shrink: 0;
+}
+.o-input-btn:hover { background: #2EE8A0; }
+
+/* SUCCESS BANNER */
+.o-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(46,232,160,.15), rgba(100,120,255,.15));
+  border: 1px solid rgba(46,232,160,.4);
+  border-radius: 12px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  animation: popIn .3s cubic-bezier(.175,.885,.32,1.275);
+}
+.o-success-icon { font-size: 18px; line-height: 1; }
+.o-success-title { font-size: 13px; font-weight: 700; color: #2EE8A0; }
+.o-success-sub   { font-size: 11px; color: #90D8C0; margin-left: 4px; }
+
+/* FOOTER */
+.footer-credit {
+  background: var(--accent3);
+  padding: 4px 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.footer-credit span { font-size: 10px; color: #7F77DD; }
+.footer-credit strong { color: var(--gold); }
+
+/* INPUT MODAL */
+.input-overlay { display: none; position: fixed; inset: 0; background: rgba(10,10,20,.85); align-items: center; justify-content: center; z-index: 100; }
+.input-overlay.show { display: flex; }
+.input-box { background: var(--surface); border-radius: var(--radius); padding: 24px 24px; max-width: 300px; width: 92%; text-align: center; border: 1px solid var(--border); }
+.input-box h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+.input-box p  { font-size: 13px; color: var(--text2); margin-bottom: 14px; }
+.input-box input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; background: var(--surface2); color: var(--text); margin-bottom: 12px; text-align: center; font-family: 'Courier New', monospace; outline: none; }
+.input-box input:focus { border-color: var(--accent); }
+.input-box button { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.input-box button:hover { background: var(--accent2); }
+
+/* PANELS */
+.examples-panel { display: none; flex-direction: column; gap: 6px; padding: 10px; flex: 1; width: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.examples-panel.show { display: flex; }
+.ex-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; cursor: pointer; transition: border-color .15s, transform .12s; }
+.ex-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.ex-card:active { transform: scale(.98); }
+.ex-title { font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ex-desc  { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.ex-badge { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+.badge-easy  { background: #E1F5EE; color: #085041; }
+.badge-med   { background: #FAEEDA; color: #633806; }
+.badge-lucas { background: #EEEDFE; color: #3C3489; }
+
+.ref-panel { display: none; flex-direction: column; gap: 0; padding: 14px 16px 30px; flex: 1; width: 100%; overflow-y: auto; overflow-x: hidden; font-size: 14px; line-height: 1.9; color: var(--text2); -webkit-overflow-scrolling: touch; }
+.ref-panel.show { display: flex; }
+.ref-panel p { color: var(--text2); font-size: 13px; margin-bottom: 6px; }
+.ref-panel strong { color: var(--text); font-weight: 600; }
+.ref-panel h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 18px 0 6px; border-left: 3px solid var(--accent); padding-left: 10px; }
+.ref-panel h3:first-child { margin-top: 0; }
+pre.ref-block {
+  background: none;
+  border: none;
+  border-left: 3px solid var(--accent);
+  border-radius: 0;
+  padding: 6px 0 6px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--text);
+  -webkit-text-fill-color: var(--text);
+  margin: 4px 0 16px;
+  line-height: 2;
+  white-space: pre-wrap;
+  word-break: break-word;
+  height: auto;
+}
+
+.legend { display: flex; flex-wrap: wrap; gap: 5px; margin: 5px 0 10px; }
+.leg { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-family: 'Courier New', monospace; font-weight: 600; }
+.leg-str   { background: #00E5A0; color: #00271c; }
+.leg-num   { background: #FFB347; color: #3a2000; }
+.leg-var   { background: #CDD6FF; color: #1a2060; }
+.leg-assign { background: #82AAFF; color: #0a1540; }
+.leg-op    { background: #40C4FF; color: #00222e; }
+.leg-show  { background: #2a3050; color: #7B8FC0; font-style: italic; }
+.leg-read  { background: #2a3050; color: #7B8FC0; font-style: italic; }
+.leg-type  { background: #232840; color: #6A7BAA; }
+.leg-kw    { background: #232840; color: #8090B8; }
+
+/* FILE TOOLBAR */
+.toolbar-file { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 5px 12px; display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+.file-name-display { font-size: 12px; color: var(--text2); font-family: 'Courier New', monospace; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 4px; }
+.file-name-display span { color: var(--accent); font-weight: 600; }
+.btn-file { background: none; border: 1px solid var(--border); color: var(--text2); border-radius: 8px; padding: 5px 11px; font-size: 11px; cursor: pointer; font-family: inherit; transition: background .12s; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+.btn-file:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+.btn-file:active { transform: scale(.97); }
+
+/* CONFIRM MODAL */
+.confirm-box { background: var(--surface); border-radius: var(--radius); padding: 24px; max-width: 300px; width: 92%; text-align: center; border: 1px solid var(--border); }
+.confirm-box h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.confirm-box p { font-size: 13px; color: var(--text2); margin-bottom: 18px; line-height: 1.5; }
+.confirm-btns { display: flex; gap: 8px; justify-content: center; }
+.btn-confirm-ok  { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 9px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn-confirm-ok:hover { background: var(--accent2); }
+.btn-confirm-cancel { background: none; color: var(--text2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 20px; font-size: 14px; cursor: pointer; font-family: inherit; }
+.btn-confirm-cancel:hover { background: var(--surface2); }
+
+/* EXAMPLE SECTION LABEL */
+.ex-section-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .7px; color: var(--accent); padding: 10px 4px 4px;
+  border-bottom: 1px solid var(--border); margin-bottom: 2px;
+}
+
+/* TUTORIAL PANEL */
+.tutorial-panel {
+  display: none; flex-direction: column; gap: 0;
+  flex: 1; width: 100%; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 40px;
+}
+.tutorial-panel.show { display: flex; }
+
+.tut-step {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 18px 20px;
+}
+.tut-step:last-child { border-bottom: none; }
+
+.tut-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+  margin-right: 10px;
+}
+.tut-header {
+  display: flex; align-items: center; margin-bottom: 10px;
+}
+.tut-title {
+  font-size: 15px; font-weight: 700; color: var(--text);
+}
+.tut-emoji { font-size: 20px; margin-right: 8px; }
+.tut-body {
+  font-size: 13px; color: var(--text2); line-height: 1.8;
+}
+.tut-body strong { color: var(--text); }
+.tut-body p { margin-bottom: 8px; }
+.tut-body p:last-child { margin-bottom: 0; }
+
+.tut-code {
+  background: #1a1a2e;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 10px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #CDD6FF;
+  overflow-x: auto;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+}
+.tut-code .c-kw   { color: #8090B8; }
+.tut-code .c-str  { color: #00E5A0; font-weight: 600; }
+.tut-code .c-num  { color: #FFB347; font-weight: 600; }
+.tut-code .c-var  { color: #CDD6FF; }
+.tut-code .c-op   { color: #40C4FF; }
+.tut-code .c-type { color: #6A7BAA; }
+.tut-code .c-cmt  { color: #444E6E; font-style: italic; }
+.tut-code .c-fn   { color: #7B8FC0; font-style: italic; }
+
+.tut-tip {
+  background: #F0EEFF;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 10px;
+  line-height: 1.7;
+}
+.tut-tip strong { color: var(--accent); }
+
+.tut-try-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 12px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 999px;
+  padding: 7px 18px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: background .15s;
+}
+.tut-try-btn:hover { background: var(--accent2); }
+
+.tut-analogy {
+  background: #FFF8ED;
+  border: 1px solid #F5D99A;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #7A5C10;
+  margin: 10px 0;
+  line-height: 1.7;
+}
+.tut-analogy .tut-analogy-icon { font-size: 18px; margin-right: 6px; }
+
+/* CONFETTI */
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  z-index: 99;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(220px) rotate(720deg); opacity: 0; }
+}
+
+/* NOTAS / AVALIAÇÕES */
+.notas-panel {
+  display: none; flex-direction: column;
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 60px; background: #F9F8FF;
+}
+.notas-panel.show { display: flex; }
+
+.notas-header {
+  background: linear-gradient(135deg, #534AB7, #3C3489);
+  padding: 20px 18px 16px;
+  color: #fff;
+}
+.notas-titulo { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.notas-sub { font-size: 12px; opacity: .85; }
+
+.notas-form {
+  background: #fff;
+  margin: 14px 12px 0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(83,74,183,.12);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.notas-stars-label { font-size: 13px; font-weight: 700; color: #534AB7; }
+.star-picker { display: flex; gap: 6px; }
+.star-btn {
+  font-size: 32px; cursor: pointer; color: #DDD;
+  transition: color .15s, transform .1s;
+  line-height: 1; user-select: none;
+}
+.star-btn.on  { color: #FFD080; }
+.star-btn:hover { transform: scale(1.2); }
+
+.notas-input {
+  border: 1.5px solid #E0DCF8; border-radius: 10px;
+  padding: 9px 12px; font-size: 13px; font-family: inherit;
+  outline: none; color: #333;
+}
+.notas-input:focus { border-color: #534AB7; }
+
+.notas-textarea {
+  border: 1.5px solid #E0DCF8; border-radius: 10px;
+  padding: 9px 12px; font-size: 13px; font-family: inherit;
+  outline: none; resize: none; color: #333;
+}
+.notas-textarea:focus { border-color: #534AB7; }
+.notas-chars { font-size: 11px; color: #aaa; text-align: right; margin-top: -6px; }
+
+.notas-btn {
+  background: linear-gradient(135deg, #534AB7, #3C3489);
+  color: #fff; border: none; border-radius: 999px;
+  padding: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: opacity .15s;
+}
+.notas-btn:hover { opacity: .88; }
+.notas-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.notas-status { font-size: 13px; text-align: center; min-height: 18px; }
+.notas-status.ok  { color: #2EB87A; font-weight: 700; }
+.notas-status.err { color: #E04A4A; }
+
+.notas-media-box {
+  background: #fff;
+  margin: 12px 12px 0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(83,74,183,.1);
+  text-align: center;
+}
+.notas-media-num { font-size: 42px; font-weight: 900; color: #534AB7; line-height: 1; }
+.notas-media-stars { font-size: 22px; color: #FFD080; margin: 4px 0 2px; }
+.notas-media-label { font-size: 12px; color: #888; }
+
+.notas-lista-titulo {
+  font-size: 13px; font-weight: 700; color: #534AB7;
+  padding: 14px 14px 6px;
+}
+.notas-lista { display: flex; flex-direction: column; gap: 8px; padding: 0 12px; }
+.notas-loading { color: #aaa; font-size: 13px; text-align: center; padding: 20px; }
+
+.nota-card {
+  background: #fff; border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 6px rgba(83,74,183,.09);
+  animation: popIn .3s ease;
+}
+.nota-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.nota-card-nome { font-size: 13px; font-weight: 700; color: #333; }
+.nota-card-stars { font-size: 14px; color: #FFD080; }
+.nota-card-msg { font-size: 13px; color: #555; line-height: 1.5; }
+.nota-card-data { font-size: 10px; color: #bbb; margin-top: 4px; }
+
+/* MOBILE ADJUSTMENTS */
+@media (max-width: 600px) {
+  .sidebar { width: 110px; }
+  .blk-hint { display: none; }
+  #code, .highlight-layer { font-size: 12px; }
+  .output { font-size: 13px; }
+  .output-section { height: 180px; }
+  .header-sub { display: block; font-size: 10px; }
+}
+
+@media (max-width: 420px) {
+  .sidebar { display: none; }
+  .editor-col { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header-bg" id="headerBg">
+  <img src="logo_cKid.png" alt="CKid code" class="header-logo" />
+  <div class="header-text">
+    <div class="header-title">CKid <span class="tag">code</span></div>
+    <div class="header-sub">Compilador educativo — criado com 💜</div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab active" onclick="switchTab('editor')">✏️ Editor</button>
+  <button class="tab" onclick="switchTab('examples')">📚 Exemplos</button>
+  <button class="tab" onclick="switchTab('tutorial')">🎓 Tutorial</button>
+  <button class="tab" onclick="switchTab('ref')">📖 Referência</button>
+  <button class="tab" onclick="switchTab('notas')">⭐ Avaliações</button>
+</div>
+
+<div class="toolbar">
+  <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">◀ Ocultar</button>
+  <button class="btn-run" onclick="runCode()">▶ Executar</button>
+  <button class="btn-sec" onclick="SFX.play('click');clearCode()">🗑 Limpar</button>
+  <button class="btn-sec" onclick="SFX.play('click');clearOut()">🧹 Saída</button>
+</div>
+
+<div class="toolbar-file">
+  <button class="btn-file" onclick="SFX.play('click');newFile()">📄 Novo</button>
+  <button class="btn-file" onclick="SFX.play('click');openFile()">📂 Abrir</button>
+  <button class="btn-file" onclick="SFX.play('click');saveFile()">💾 Salvar</button>
+  <div class="file-name-display" id="fileNameDisplay">arquivo: <span id="currentFileName">sem título.ckid</span></div>
+</div>
+<!-- input oculto para abrir arquivo -->
+<input type="file" id="fileInput" accept=".ckid,.txt" style="display:none" onchange="onFileSelected(event)">
+
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sec-label">Saída / Entrada</div>
+    <button class="blk b-show" onclick="insSnippet('mostrar')">
+      <span class="blk-icon">🖨️</span>
+      <div><span class="blk-name">mostrar</span><span class="blk-hint">imprime na tela</span></div>
+    </button>
+    <button class="blk b-read" onclick="ins('ler(variavel);')">
+      <span class="blk-icon">⌨️</span>
+      <div><span class="blk-name">ler</span><span class="blk-hint">lê do teclado</span></div>
+    </button>
+
+    <div class="sec-label">Variáveis</div>
+    <button class="blk b-int"  onclick="ins('int contador;')">
+      <span class="blk-icon">🔢</span>
+      <div><span class="blk-name">int</span><span class="blk-hint">número inteiro</span></div>
+    </button>
+    <button class="blk b-real" onclick="ins('real preco := 3.50;')">
+      <span class="blk-icon">💲</span>
+      <div><span class="blk-name">real</span><span class="blk-hint">número decimal</span></div>
+    </button>
+    <button class="blk b-text" onclick="insSnippet('texto')">
+      <span class="blk-icon">🔤</span>
+      <div><span class="blk-name">texto</span><span class="blk-hint">palavras/frases</span></div>
+    </button>
+
+    <div class="sec-label">Repetição</div>
+    <button class="blk b-while" onclick="ins('enquanto (x < 5) {\n  mostrar(x);\n  x := x + 1;\n}')">
+      <span class="blk-icon">🔄</span>
+      <div><span class="blk-name">enquanto</span><span class="blk-hint">repete enquanto</span></div>
+    </button>
+    <button class="blk b-do" onclick="insSnippet('faca')">
+      <span class="blk-icon">🔁</span>
+      <div><span class="blk-name">faça...enq</span><span class="blk-hint">executa 1x antes</span></div>
+    </button>
+    <button class="blk b-for" onclick="ins('para (i := 1; i <= 5; i := i + 1) {\n  mostrar(i);\n}')">
+      <span class="blk-icon">🔂</span>
+      <div><span class="blk-name">para</span><span class="blk-hint">conta de X a Y</span></div>
+    </button>
+
+    <div class="sec-label">Decisão</div>
+    <button class="blk b-if" onclick="insSnippet('se')">
+      <span class="blk-icon">❓</span>
+      <div><span class="blk-name">se...senao</span><span class="blk-hint">decisão</span></div>
+    </button>
+  </div>
+
+  <!-- EDITOR + OUTPUT COLUMN -->
+  <div class="editor-col" id="editorCol">
+
+    <div class="editor-wrap">
+      <div class="editor-scroll" id="editorScroll">
+        <div class="editor-inner" id="editorInner">
+          <div class="line-nums" id="lineNums"></div>
+          <div class="highlight-layer" id="hlLayer" aria-hidden="true"></div>
+          <textarea id="code" spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" inputmode="text"
+            oninput="SFX.play('type');onEdit()" onkeydown="handleTab(event)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT SECTION with drag-to-resize -->
+    <div class="output-section" id="outputSection">
+      <div class="output-resize" id="resizeHandle"></div>
+      <div class="output-bar">
+        <span class="output-label">📟 Saída do programa</span>
+        <span class="status-txt" id="status">pronto</span>
+      </div>
+      <div class="output" id="output">
+        <span class="o-empty">▶ Clique em Executar para ver o resultado do seu programa aqui!</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EXEMPLOS -->
+  <div class="examples-panel" id="exPanel">
+    <p style="font-size:13px;color:var(--text2);padding:4px 2px 8px;line-height:1.6;">
+      👇 Clique em qualquer exemplo para abrir no editor e executar!
+    </p>
+
+    <div class="ex-section-label">🌱 Para começar</div>
+
+    <div class="ex-card" onclick="loadEx('ola')">
+      <div class="ex-title"><span>👋</span> Olá, mundo! <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">Seu <strong>primeiro programa</strong>! O computador vai te perguntar seu nome e te dar uma saudação. Você vai aprender a usar <code>mostrar</code> e <code>ler</code>.</div>
+    </div>
+
+    <div class="ex-card" onclick="loadEx('soma')">
+      <div class="ex-title"><span>➕</span> Soma de dois números <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">Digite dois números e veja a soma na tela. Você vai aprender a guardar números em <strong>variáveis</strong> e fazer contas.</div>
+    </div>
+
+    <div class="ex-section-label">🔁 Repetição (loops)</div>
+
+    <div class="ex-card" onclick="loadEx('contagem')">
+      <div class="ex-title"><span>🔢</span> Contagem 1 até 10 <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">O computador conta sozinho de 1 até 10 usando o comando <code>para</code>. É como dar uma ordem: <em>"repita isso 10 vezes!"</em></div>
+    </div>
+
+    <div class="ex-card" onclick="loadEx('regressiva')">
+      <div class="ex-title"><span>🚀</span> Contagem regressiva <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">Conta de 10 até 1 e lança o foguete! Usa o <code>enquanto</code> — o computador repete <em>enquanto</em> a condição for verdadeira.</div>
+    </div>
+
+    <div class="ex-card" onclick="loadEx('tabuada')">
+      <div class="ex-title"><span>✖️</span> Tabuada <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">Você digita um número e o programa mostra a tabuada completa. Ótimo exemplo de <code>para</code> com multiplicação!</div>
+    </div>
+
+    <div class="ex-section-label">❓ Decisões (se/senão)</div>
+
+    <div class="ex-card" onclick="loadEx('par_impar')">
+      <div class="ex-title"><span>⚖️</span> Par ou Ímpar <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">Digite um número e o programa descobre se é par ou ímpar. Aprenda o <code>se...senao</code> — é como uma bifurcação no caminho: ou vai por um lado, ou pelo outro!</div>
+    </div>
+
+    <div class="ex-card" onclick="loadEx('media')">
+      <div class="ex-title"><span>📊</span> Média de notas <span class="ex-badge badge-med">Médio</span></div>
+      <div class="ex-desc">Digite 3 notas e descubra se está aprovado, em recuperação ou reprovado. Usa <code>se</code> dentro de <code>se</code> — decisões dentro de decisões!</div>
+    </div>
+
+    <div class="ex-card" onclick="loadEx('calculadora')">
+      <div class="ex-title"><span>🧮</span> Calculadora <span class="ex-badge badge-easy">Fácil</span></div>
+      <div class="ex-desc">Digite dois números e escolha a operação: soma, subtração, multiplicação, divisão ou resto. Aprende a usar <code>se...senao</code> em cascata e trata divisão por zero!</div>
+    </div>
+
+    <div class="ex-section-label">🏆 Desafios</div>
+
+    <div class="ex-card" onclick="loadEx('fatorial')">
+      <div class="ex-title"><span>🧮</span> Fatorial <span class="ex-badge badge-med">Médio</span></div>
+      <div class="ex-desc">Calcula o fatorial de um número (ex: 5! = 5×4×3×2×1 = 120). Usa o <code>faca...enquanto</code>, que executa pelo menos uma vez antes de checar a condição.</div>
+    </div>
+
+    <div class="ex-card" onclick="loadEx('adivinhar')">
+      <div class="ex-title"><span>🎯</span> Adivinhe o número <span class="ex-badge badge-med">Médio</span></div>
+      <div class="ex-desc">Um jogo completo! O programa sorteia um número e você tenta adivinhar. Ele dá dicas: "muito alto!" ou "muito baixo!". Combina loops e decisões!</div>
+    </div>
+
+  </div>
+
+  <!-- TUTORIAL -->
+  <div class="tutorial-panel" id="tutPanel">
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">1</span>
+        <span class="tut-emoji">🤔</span>
+        <span class="tut-title">O que é programar?</span>
+      </div>
+      <div class="tut-body">
+        <p>Programar é dar <strong>ordens para o computador</strong>. O computador faz exatamente o que você mandar — nem mais, nem menos!</p>
+        <div class="tut-analogy">
+          <span class="tut-analogy-icon">🍳</span>
+          <strong>Pensa assim:</strong> é como uma receita de bolo. Você escreve os passos, e o computador segue um por um, na ordem certa.
+        </div>
+        <p>No CKid, você escreve as ordens em <strong>português</strong>, usando comandos simples como <code>mostrar</code> e <code>ler</code>.</p>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">2</span>
+        <span class="tut-emoji">🖨️</span>
+        <span class="tut-title">Mostrando texto na tela</span>
+      </div>
+      <div class="tut-body">
+        <p>O comando <strong>mostrar</strong> exibe uma mensagem na tela do programa. Coloque o texto entre aspas <code>"assim"</code>:</p>
+        <div class="tut-code"><span class="c-fn">mostrar</span>(<span class="c-str">"Olá, mundo!"</span>);
+<span class="c-fn">mostrar</span>(<span class="c-str">"Eu sei programar!"</span>);</div>
+        <p>Cada <code>mostrar</code> aparece em uma linha diferente na saída. O <strong>ponto e vírgula</strong> <code>;</code> no final é obrigatório — ele avisa que a ordem acabou!</p>
+        <div class="tut-tip"><strong>💡 Dica:</strong> Você pode mostrar várias coisas de uma vez separando com vírgula:<br><code>mostrar("Meu nome é ", nome, "!");</code></div>
+        <button class="tut-try-btn" onclick="loadTutEx('mostrar_simples')">▶ Experimentar no editor</button>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">3</span>
+        <span class="tut-emoji">📦</span>
+        <span class="tut-title">Variáveis — guardando informações</span>
+      </div>
+      <div class="tut-body">
+        <p>Uma <strong>variável</strong> é como uma caixinha com um nome. Você guarda um valor dentro dela e pode usar depois.</p>
+        <div class="tut-analogy">
+          <span class="tut-analogy-icon">📦</span>
+          <strong>Imagina:</strong> uma caixa chamada "idade" com o número 10 dentro. Sempre que você falar "idade", o computador pega o 10 da caixa!
+        </div>
+        <p>No CKid existem 3 tipos de variável:</p>
+        <div class="tut-code"><span class="c-type">int</span>   <span class="c-var">pontos</span>, <span class="c-var">nivel</span>;          <span class="c-cmt">// dois inteiros, ambos começam em 0</span>
+<span class="c-type">real</span>  <span class="c-var">preco</span>   <span class="c-op">:=</span> <span class="c-num">9.99</span>;   <span class="c-cmt">// números com vírgula (3.14, 9.99...)</span>
+<span class="c-type">texto</span> <span class="c-var">nome</span>    <span class="c-op">:=</span> <span class="c-str">"Ana"</span>;  <span class="c-cmt">// palavras e frases</span></div>
+        <p>O símbolo <code>:=</code> significa <strong>"recebe"</strong>. Leia como: <em>"a variável pontos recebe o valor 0"</em>.</p>
+        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">pontos</span> <span class="c-op">:=</span> <span class="c-num">0</span>;
+<span class="c-var">pontos</span> <span class="c-op">:=</span> <span class="c-var">pontos</span> <span class="c-op">+</span> <span class="c-num">10</span>;  <span class="c-cmt">// soma 10 aos pontos</span>
+<span class="c-fn">mostrar</span>(<span class="c-str">"Pontos: "</span>, <span class="c-var">pontos</span>);  <span class="c-cmt">// mostra: Pontos: 10</span></div>
+        <button class="tut-try-btn" onclick="loadTutEx('variaveis')">▶ Experimentar no editor</button>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">4</span>
+        <span class="tut-emoji">⌨️</span>
+        <span class="tut-title">Lendo o que o usuário digita</span>
+      </div>
+      <div class="tut-body">
+        <p>O comando <strong>ler</strong> pausa o programa e espera você digitar algo. O que você digitar fica guardado numa variável:</p>
+        <div class="tut-code"><span class="c-type">texto</span> <span class="c-var">nome</span> <span class="c-op">:=</span> <span class="c-str">""</span>;
+<span class="c-fn">mostrar</span>(<span class="c-str">"Qual é o seu nome?"</span>);
+<span class="c-fn">ler</span>(<span class="c-var">nome</span>);
+<span class="c-fn">mostrar</span>(<span class="c-str">"Olá, "</span>, <span class="c-var">nome</span>, <span class="c-str">"! Seja bem-vindo!"</span>);</div>
+        <div class="tut-tip"><strong>💡 Ordem importa!</strong> Sempre declare a variável antes de usar o <code>ler</code>. E sempre use <code>mostrar</code> antes para avisar o usuário o que digitar!</div>
+        <button class="tut-try-btn" onclick="loadTutEx('ler_nome')">▶ Experimentar no editor</button>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">5</span>
+        <span class="tut-emoji">❓</span>
+        <span class="tut-title">Decisões com se...senão</span>
+      </div>
+      <div class="tut-body">
+        <p>O <strong>se</strong> faz o programa tomar uma decisão. Se a condição for verdadeira, executa um bloco; senão, executa outro:</p>
+        <div class="tut-analogy">
+          <span class="tut-analogy-icon">🌧️</span>
+          <strong>Na vida real:</strong> "SE estiver chovendo, pego o guarda-chuva. SENÃO, vou sem ele."
+        </div>
+        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">idade</span> <span class="c-op">:=</span> <span class="c-num">0</span>;
+<span class="c-fn">mostrar</span>(<span class="c-str">"Quantos anos você tem?"</span>);
+<span class="c-fn">ler</span>(<span class="c-var">idade</span>);
+
+<span class="c-kw">se</span> (<span class="c-var">idade</span> <span class="c-op">>=</span> <span class="c-num">10</span>) {
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Você tem 10 anos ou mais!"</span>);
+} <span class="c-kw">senao</span> {
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Você tem menos de 10 anos!"</span>);
+}</div>
+        <p>As <strong>chaves</strong> <code>{ }</code> marcam o início e o fim de cada bloco de código. Tudo que estiver dentro delas pertence àquele bloco.</p>
+        <div class="tut-tip">
+          <strong>🔍 Operadores de comparação:</strong><br>
+          <code>==</code> igual a &nbsp;|&nbsp; <code>!=</code> diferente de<br>
+          <code>&gt;</code> maior que &nbsp;|&nbsp; <code>&lt;</code> menor que<br>
+          <code>&gt;=</code> maior ou igual &nbsp;|&nbsp; <code>&lt;=</code> menor ou igual
+        </div>
+        <button class="tut-try-btn" onclick="loadTutEx('se_senao')">▶ Experimentar no editor</button>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">6</span>
+        <span class="tut-emoji">🔄</span>
+        <span class="tut-title">Repetição com enquanto</span>
+      </div>
+      <div class="tut-body">
+        <p>O <strong>enquanto</strong> repete um bloco de código várias vezes, enquanto uma condição for verdadeira:</p>
+        <div class="tut-analogy">
+          <span class="tut-analogy-icon">🎮</span>
+          <strong>No jogo:</strong> "ENQUANTO o jogador tiver vidas, continue jogando."
+        </div>
+        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">x</span> <span class="c-op">:=</span> <span class="c-num">1</span>;
+
+<span class="c-kw">enquanto</span> (<span class="c-var">x</span> <span class="c-op">&lt;=</span> <span class="c-num">5</span>) {
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Repetição número "</span>, <span class="c-var">x</span>);
+  <span class="c-var">x</span> <span class="c-op">:=</span> <span class="c-var">x</span> <span class="c-op">+</span> <span class="c-num">1</span>;  <span class="c-cmt">// IMPORTANTE: avança x!</span>
+}</div>
+        <div class="tut-tip"><strong>⚠️ Cuidado!</strong> Sempre lembre de mudar a variável da condição dentro do loop. Se você esquecer o <code>x := x + 1</code>, o programa vai ficar repetindo para sempre!</div>
+        <button class="tut-try-btn" onclick="loadTutEx('enquanto_simples')">▶ Experimentar no editor</button>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">7</span>
+        <span class="tut-emoji">🔂</span>
+        <span class="tut-title">Contando com para</span>
+      </div>
+      <div class="tut-body">
+        <p>O <strong>para</strong> é perfeito quando você sabe exatamente quantas vezes quer repetir. Ele tem 3 partes:</p>
+        <div class="tut-code"><span class="c-cmt">// para (início; condição; passo)</span>
+<span class="c-kw">para</span> (<span class="c-var">i</span> <span class="c-op">:=</span> <span class="c-num">1</span>; <span class="c-var">i</span> <span class="c-op">&lt;=</span> <span class="c-num">5</span>; <span class="c-var">i</span> <span class="c-op">:=</span> <span class="c-var">i</span> <span class="c-op">+</span> <span class="c-num">1</span>) {
+  <span class="c-fn">mostrar</span>(<span class="c-str">"Número: "</span>, <span class="c-var">i</span>);
+}</div>
+        <div class="tut-tip">
+          <strong>📖 Leia assim:</strong> "Para i começando em 1, enquanto i for menor ou igual a 5, some 1 ao i a cada repetição."<br><br>
+          <strong>1️⃣ início:</strong> <code>i := 1</code> — começa aqui<br>
+          <strong>2️⃣ condição:</strong> <code>i &lt;= 5</code> — para quando isso for falso<br>
+          <strong>3️⃣ passo:</strong> <code>i := i + 1</code> — o que muda a cada volta
+        </div>
+        <button class="tut-try-btn" onclick="loadTutEx('para_simples')">▶ Experimentar no editor</button>
+      </div>
+    </div>
+
+    <div class="tut-step">
+      <div class="tut-header">
+        <span class="tut-num">8</span>
+        <span class="tut-emoji">🏆</span>
+        <span class="tut-title">Juntando tudo — seu primeiro jogo!</span>
+      </div>
+      <div class="tut-body">
+        <p>Agora que você conhece variáveis, <code>se</code>, <code>ler</code> e <code>enquanto</code>, dá para fazer um jogo de adivinhação!</p>
+        <div class="tut-code"><span class="c-type">int</span> <span class="c-var">secreto</span> <span class="c-op">:=</span> <span class="c-num">7</span>;    <span class="c-cmt">// número a adivinhar</span>
+<span class="c-type">int</span> <span class="c-var">chute</span>   <span class="c-op">:=</span> <span class="c-num">0</span>;    <span class="c-cmt">// palpite do jogador</span>
+
+<span class="c-fn">mostrar</span>(<span class="c-str">"Adivinhe de 1 a 10!"</span>);
+
+<span class="c-kw">enquanto</span> (<span class="c-var">chute</span> <span class="c-op">!=</span> <span class="c-var">secreto</span>) {
+  <span class="c-fn">ler</span>(<span class="c-var">chute</span>);
+  <span class="c-kw">se</span> (<span class="c-var">chute</span> <span class="c-op">&gt;</span> <span class="c-var">secreto</span>) {
+    <span class="c-fn">mostrar</span>(<span class="c-str">"Muito alto! Tente menos."</span>);
+  } <span class="c-kw">senao</span> {
+    <span class="c-kw">se</span> (<span class="c-var">chute</span> <span class="c-op">&lt;</span> <span class="c-var">secreto</span>) {
+      <span class="c-fn">mostrar</span>(<span class="c-str">"Muito baixo! Tente mais."</span>);
+    }
+  }
+}
+<span class="c-fn">mostrar</span>(<span class="c-str">"🎉 Acertou!"</span>);</div>
+        <div class="tut-tip"><strong>🚀 Próximos passos:</strong> Tente modificar o número secreto, ou adicionar um contador de tentativas. A programação é sobre experimentar!</div>
+        <button class="tut-try-btn" onclick="loadEx('adivinhar')">▶ Abrir exemplo completo</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="ref-panel" id="refPanel">
+    <h3>🎨 Cores do editor</h3>
+    <p style="font-size:11px;margin-bottom:6px;color:var(--text2);">Os <strong>dados</strong> têm destaque vivo. Os comandos ficam discretos.</p>
+    <div class="legend">
+      <span class="leg leg-str">"texto"</span>
+      <span class="leg leg-num">número</span>
+      <span class="leg leg-var">variável</span>
+      <span class="leg leg-assign">:= recebe</span>
+      <span class="leg leg-op">== != &gt; &lt;</span>
+      <span class="leg leg-show">mostrar</span>
+      <span class="leg leg-read">ler</span>
+      <span class="leg leg-type">int · real · texto</span>
+      <span class="leg leg-kw">se · enquanto · para</span>
+    </div>
+
+    <h3>🖨️ mostrar</h3>
+<pre class="ref-block">mostrar("Olá!");
+mostrar(variavel);
+mostrar("Nome: ", nome, "!");</pre>
+
+    <h3>⌨️ ler</h3>
+<pre class="ref-block">ler(variavel);</pre>
+
+    <h3>📦 Variáveis</h3>
+<pre class="ref-block">int  contador;          // número inteiro (1, 2, 10...)
+int  a, b, resultado;   // várias de uma vez
+real nota := 7.5;       // decimal (notas, preços...)
+texto nome := "Ana";    // palavras e frases
+x := x + 1;
+x == 10</pre>
+
+    <h3>📋 Arrays (vetores)</h3>
+<pre class="ref-block">int  notas[5];          // array de 5 inteiros
+real precos[10];        // array de 10 decimais
+texto nomes[3];         // array de 3 textos
+
+notas[0] := 10;        // atribui valor (índice começa em 0)
+mostrar(notas[0]);     // acessa valor
+ler(notas[1]);         // lê valor do teclado
+
+// Percorrer com para:
+int i;
+para (i := 0; i < tamanho(notas); i := i + 1) {
+  mostrar(notas[i]);
+}
+
+tamanho(notas)         // retorna o tamanho do array</pre>
+
+    <h3>🔄 enquanto</h3>
+<pre class="ref-block">enquanto (x &lt; 10) {
+  mostrar(x);
+  x = x + 1;
+}</pre>
+
+    <h3>🔁 faça...enquanto</h3>
+<pre class="ref-block">faca {
+  mostrar("Oi!");
+  x = x + 1;
+} enquanto (x &lt; 3);</pre>
+
+    <h3>🔂 para</h3>
+<pre class="ref-block">para (i = 1; i &lt;= 5; i = i + 1) {
+  mostrar(i);
+}</pre>
+
+    <h3>🎲 Funções</h3>
+<pre class="ref-block">sortear(1, 10)     // número aleatório entre 1 e 10
+tamanho(array)     // tamanho do array ou texto</pre>
+
+    <h3>❓ se...senao</h3>
+<pre class="ref-block">se (x > 5) {
+  mostrar("maior!");
+} senao {
+  mostrar("menor!");
+}</pre>
+
+    <h3>➕ Operadores</h3>
+<pre class="ref-block">+  -  *  /  %
+>  &lt;  >=  &lt;=  ==  !=</pre>
+  </div>
+
+  <!-- AVALIAÇÕES -->
+  <div class="notas-panel" id="notasPanel">
+
+    <div class="notas-header">
+      <div class="notas-titulo">⭐ Avalie o CKid code!</div>
+      <div class="notas-sub">Sua opinião ajuda a melhorar o compilador para todos 💜</div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="notas-form" id="notasForm">
+      <div class="notas-stars-label">Sua nota:</div>
+      <div class="star-picker" id="starPicker">
+        <span class="star-btn" data-v="1" onclick="pickStar(1)">★</span>
+        <span class="star-btn" data-v="2" onclick="pickStar(2)">★</span>
+        <span class="star-btn" data-v="3" onclick="pickStar(3)">★</span>
+        <span class="star-btn" data-v="4" onclick="pickStar(4)">★</span>
+        <span class="star-btn" data-v="5" onclick="pickStar(5)">★</span>
+      </div>
+      <input id="notasNome" class="notas-input" placeholder="Seu nome (opcional)" maxlength="30" autocomplete="off" autocorrect="off" autocapitalize="words" />
+      <textarea id="notasMsg" class="notas-textarea" placeholder="Deixe um comentário... (opcional)" maxlength="200" rows="3"></textarea>
+      <div class="notas-chars"><span id="notasCount">0</span>/200</div>
+      <button class="notas-btn" onclick="enviarNota()">Enviar avaliação ✨</button>
+      <div class="notas-status" id="notasStatus"></div>
+    </div>
+
+    <!-- Média geral -->
+    <div class="notas-media-box" id="notasMediaBox">
+      <div class="notas-media-num" id="notasMediaNum">—</div>
+      <div class="notas-media-stars" id="notasMediaStars"></div>
+      <div class="notas-media-label" id="notasMediaLabel">Carregando avaliações...</div>
+    </div>
+
+    <!-- Lista de avaliações -->
+    <div class="notas-lista-titulo">💬 O que estão dizendo:</div>
+    <div class="notas-lista" id="notasLista">
+      <div class="notas-loading">Carregando...</div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer-credit">
+  <span>CKid code v1.0 · criado por <strong>Lucas Coelho</strong> 💜</span>
+</div>
+
+<!-- INPUT INLINE — aparece direto na saída -->
+<div class="input-overlay" id="inputOverlay" style="display:none;"></div>
+
+<!-- SALVAR COMO MODAL -->
+<div class="input-overlay" id="saveOverlay">
+  <div class="input-box">
+    <h3>💾 Salvar arquivo</h3>
+    <p>Digite o nome do arquivo:</p>
+    <input id="saveNameIn" placeholder="meu_programa" autocapitalize="none" autocorrect="off" autocomplete="off"
+      onkeydown="if(event.key==='Enter')confirmSave()" />
+    <div style="display:flex;gap:8px;justify-content:center;">
+      <button class="btn-confirm-cancel" onclick="closeSave()" style="padding:9px 16px;font-size:13px;">Cancelar</button>
+      <button onclick="confirmSave()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Salvar ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL (novo arquivo) -->
+<div class="input-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>📄 Novo arquivo</h3>
+    <p id="confirmMsg">O código atual será perdido. Deseja continuar?</p>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn-confirm-ok" id="confirmOkBtn" onclick="confirmOk()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*!
+ * CKid code — Compilador Educativo
+ * © 2025 Lucas Coelho — https://coelhosite.github.io
+ * Licença: Todos os direitos reservados.
+ * Proibida a cópia ou redistribuição sem autorização.
+ */
+/* ══ SONS ══ */
+const SFX = (() => {
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+
+  function play(type, vol=0.18) {
+    try {
+      const ac = getCtx();
+      const g = ac.createGain();
+      g.gain.setValueAtTime(vol, ac.currentTime);
+      g.connect(ac.destination);
+
+      if (type === 'run') {
+        // bip ascendente — "iniciando!"
+        [440, 554, 659].forEach((f, i) => {
+          const o = ac.createOscillator();
+          o.type = 'sine'; o.frequency.value = f;
+          o.connect(g);
+          o.start(ac.currentTime + i * 0.08);
+          o.stop(ac.currentTime + i * 0.08 + 0.12);
+        });
+      }
+      else if (type === 'success') {
+        // fanfarra de vitória!
+        const notes = [523, 659, 784, 1047];
+        notes.forEach((f, i) => {
+          const o = ac.createOscillator();
+          o.type = 'triangle'; o.frequency.value = f;
+          const gi = ac.createGain();
+          gi.gain.setValueAtTime(0.22, ac.currentTime + i*0.12);
+          gi.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i*0.12 + 0.25);
+          o.connect(gi); gi.connect(ac.destination);
+          o.start(ac.currentTime + i * 0.12);
+          o.stop(ac.currentTime + i * 0.12 + 0.28);
+        });
+      }
+      else if (type === 'error') {
+        // bip descendente — "ops!"
+        const o = ac.createOscillator();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(300, ac.currentTime);
+        o.frequency.exponentialRampToValueAtTime(100, ac.currentTime + 0.3);
+        g.gain.setValueAtTime(0.15, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.3);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.32);
+      }
+      else if (type === 'type') {
+        // clique suave ao digitar
+        const o = ac.createOscillator();
+        o.type = 'sine'; o.frequency.value = 800 + Math.random() * 200;
+        g.gain.setValueAtTime(0.06, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.06);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.07);
+      }
+      else if (type === 'input') {
+        // ping ao aparecer campo de input
+        const o = ac.createOscillator();
+        o.type = 'sine'; o.frequency.value = 660;
+        g.gain.setValueAtTime(0.12, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.2);
+      }
+      else if (type === 'confirm') {
+        // confirmação ao pressionar OK/Enter
+        [440, 550].forEach((f, i) => {
+          const o = ac.createOscillator();
+          o.type = 'sine'; o.frequency.value = f;
+          const gi = ac.createGain();
+          gi.gain.setValueAtTime(0.12, ac.currentTime + i*0.07);
+          gi.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i*0.07 + 0.12);
+          o.connect(gi); gi.connect(ac.destination);
+          o.start(ac.currentTime + i*0.07);
+          o.stop(ac.currentTime + i*0.07 + 0.14);
+        });
+      }
+      else if (type === 'click') {
+        // clique de botão
+        const o = ac.createOscillator();
+        o.type = 'sine'; o.frequency.value = 520;
+        g.gain.setValueAtTime(0.1, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.08);
+        o.connect(g);
+        o.start(ac.currentTime); o.stop(ac.currentTime + 0.09);
+      }
+    } catch(e) {}
+  }
+  return { play };
+})();
+const EXAMPLES = {
+  // ── TUTORIAL EXAMPLES ──────────────────────────────────────
+  mostrar_simples:
+`// 🖨️ Passo 2 — Mostrando texto na tela
+// O comando mostrar() exibe uma mensagem na saída.
+// O texto deve ficar entre aspas "assim".
+// Não esqueça o ponto e vírgula ; no final!
+
+mostrar("Olá, mundo!");
+mostrar("Eu sei programar!");
+mostrar("CKid é demais! 🐰");`,
+
+  variaveis:
+`// 📦 Passo 3 — Guardando informações em variáveis
+// Variáveis são "caixinhas" com um nome que guardam um valor.
+// int  → números inteiros (sem vírgula)
+// real → números decimais (com vírgula)
+// texto → palavras e frases
+
+// Você pode declarar várias do mesmo tipo de uma vez:
+int   pontos, nivel;      // dois inteiros, começam em 0
+real  preco := 9.99;      // preço com centavos
+texto nome  := "Maria";   // uma palavra ou frase
+
+mostrar("Nome: ", nome);
+mostrar("Pontos iniciais: ", pontos);
+mostrar("Nível: ", nivel);
+
+// Mudando o valor da variável
+pontos := pontos + 10;    // soma 10
+nivel  := 1;
+mostrar("Após ganhar pontos: ", pontos);
+mostrar("Nível atual: ", nivel);
+mostrar("Preço do produto: R$ ", preco);`,
+
+  ler_nome:
+`// ⌨️ Passo 4 — Lendo o que o usuário digita
+// O comando ler() pausa o programa e espera uma entrada.
+// Sempre avise o usuário o que digitar com mostrar() antes!
+
+texto nome := "";  // variável vazia para guardar o nome
+int   idade;       // variável para guardar a idade (começa em 0)
+
+mostrar("Qual é o seu nome?");
+ler(nome);                // lê e guarda em 'nome'
+
+mostrar("Quantos anos você tem?");
+ler(idade);               // lê e guarda em 'idade'
+
+mostrar("Olá, ", nome, "!");
+mostrar("Você tem ", idade, " anos.");
+mostrar("Que legal te conhecer! 😊");`,
+
+  se_senao:
+`// ❓ Passo 5 — Tomando decisões com se...senao
+// O 'se' executa um bloco SE a condição for verdadeira.
+// O 'senao' executa quando a condição for falsa.
+
+real nota;  // aceita decimais como 7.5, 8.0...
+
+mostrar("Qual foi sua nota? (0 a 10)");
+ler(nota);
+
+se (nota >= 7) {
+  // Este bloco executa quando nota >= 7
+  mostrar("✅ Parabéns! Você foi aprovado!");
+} senao {
+  se (nota >= 5) {
+    // Este bloco: nota entre 5 e 6
+    mostrar("⚠️ Recuperação. Você pode melhorar!");
+  } senao {
+    // Este bloco: nota abaixo de 5
+    mostrar("❌ Reprovado. Não desista, estude mais!");
+  }
+}`,
+
+  enquanto_simples:
+`// 🔄 Passo 6 — Repetindo com enquanto
+// O 'enquanto' repete o bloco { } enquanto a condição for verdadeira.
+// IMPORTANTE: sempre mude a variável da condição dentro do loop!
+
+int x := 1;  // começa em 1
+
+enquanto (x <= 5) {
+  // Este bloco repete enquanto x for menor ou igual a 5
+  mostrar("Repetição número ", x);
+  x := x + 1;  // aumenta x — sem isso, loop infinito!
+}
+
+mostrar("Fim! x chegou a ", x);`,
+
+  para_simples:
+`// 🔂 Passo 7 — Contando com para
+// O 'para' é ideal quando você sabe quantas vezes repetir.
+// Estrutura: para (início; condição; passo)
+
+int i, r;  // i = contador, r = resultado da tabuada
+
+// Conta de 1 até 5
+para (i := 1; i <= 5; i := i + 1) {
+  mostrar("Contando: ", i);
+}
+
+mostrar("--- Pronto! ---");
+
+// Outro exemplo: tabuada do 3
+mostrar("Tabuada do 3:");
+para (i := 1; i <= 10; i := i + 1) {
+  r := 3 * i;
+  mostrar("3 x ", i, " = ", r);
+}`,
+  calculadora:
+`// 🧮 Calculadora
+// Escolha a operação e calcule!
+
+real a, b, resultado;
+int opcao;
+
+mostrar("╔══════════════════════╗");
+mostrar("║     🧮 CALCULADORA   ║");
+mostrar("╚══════════════════════╝");
+
+mostrar("Digite o primeiro número:");
+ler(a);
+
+mostrar("Digite o segundo número:");
+ler(b);
+
+mostrar("Escolha a operação:");
+mostrar("1 - Soma          (+)");
+mostrar("2 - Subtração     (-)");
+mostrar("3 - Multiplicação (x)");
+mostrar("4 - Divisão       (/)");
+mostrar("5 - Resto         (%)");
+ler(opcao);
+
+se (opcao == 1) {
+  resultado := a + b;
+  mostrar(a, " + ", b, " = ", resultado);
+} senao {
+  se (opcao == 2) {
+    resultado := a - b;
+    mostrar(a, " - ", b, " = ", resultado);
+  } senao {
+    se (opcao == 3) {
+      resultado := a * b;
+      mostrar(a, " x ", b, " = ", resultado);
+    } senao {
+      se (opcao == 4) {
+        se (b == 0) {
+          mostrar("❌ Erro: não é possível dividir por zero!");
+        } senao {
+          resultado := a / b;
+          mostrar(a, " ÷ ", b, " = ", resultado);
+        }
+      } senao {
+        se (opcao == 5) {
+          resultado := a % b;
+          mostrar(a, " % ", b, " = ", resultado);
+        } senao {
+          mostrar("❌ Opção inválida! Escolha entre 1 e 5.");
+        }
+      }
+    }
+  }
+}`,
+
+  lucas:`// ★ Homenagem ao criador do CKid ★
+texto nome := "Lucas Coelho";
+int ano := 2025;
+mostrar("╔══════════════════════════════╗");
+mostrar("  🐰 HALL DA FAMA — CKID");
+mostrar("╠══════════════════════════════╣");
+mostrar("  Criador : ", nome);
+mostrar("  Versão  : CKid code v1.0");
+mostrar("  Ano     : ", ano);
+mostrar("╠══════════════════════════════╣");
+mostrar("  Missão: tornar a programação");
+mostrar("  simples e divertida! 💜");
+mostrar("╚══════════════════════════════╝");
+mostrar("Obrigado, ", nome, "! ⭐");`,
+
+  soma:
+`// ➕ Soma de dois números
+// Aqui vamos usar 'ler' para pegar dois números do usuário
+// e guardar em variáveis para fazer a soma depois.
+
+// Você pode declarar várias variáveis do mesmo tipo numa linha só!
+int a, b, resultado;  // três inteiros, todos começam em 0
+
+mostrar("Digite o primeiro número:");
+ler(a);            // o usuário digita e vai para 'a'
+
+mostrar("Digite o segundo número:");
+ler(b);            // o usuário digita e vai para 'b'
+
+resultado := a + b; // faz a soma e guarda em 'resultado'
+mostrar("Resultado: ", a, " + ", b, " = ", resultado);`,
+
+  ola:
+`// 👋 Olá, mundo! — seu primeiro programa!
+// Este é o programa mais clássico da programação.
+// Vamos pedir o nome do usuário e dar uma saudação!
+
+texto nome := "";  // variável do tipo texto, começa vazia
+
+mostrar("Qual é o seu nome?");
+ler(nome);         // pausa e espera o usuário digitar
+
+// Agora mostramos uma mensagem usando o nome digitado
+mostrar("Olá, ", nome, "! Bem-vindo ao CKid! 🐰");`,
+
+  contagem:
+`// 🔢 Contagem de 1 até 10 com 'para'
+// O 'para' é perfeito para repetir algo um número fixo de vezes.
+// Estrutura: para (início; condição de parada; passo)
+
+int i;  // variável de controle do loop (começa em 0)
+
+mostrar("Contando de 1 até 10:");
+
+para (i := 1; i <= 10; i := i + 1) {
+  // Este bloco repete 10 vezes (i vai de 1 a 10)
+  mostrar(i);
+}
+
+mostrar("Fim! Contei até 10! 🎉");`,
+
+  regressiva:
+`// 🚀 Contagem regressiva com 'enquanto'
+// O 'enquanto' repete ENQUANTO uma condição for verdadeira.
+// Aqui vai repetindo enquanto x for maior que 0.
+
+int x := 10;  // começa em 10
+
+mostrar("Contagem regressiva:");
+
+enquanto (x > 0) {
+  mostrar(x);       // mostra o número atual
+  x := x - 1;      // diminui 1 — sem isso nunca para!
+}
+
+mostrar("🚀 LANÇAR!");`,
+
+  tabuada:
+`// ✖️ Tabuada de qualquer número
+// O usuário escolhe o número e o 'para' calcula a tabuada completa.
+
+int n, i, r;  // n = número escolhido, i = contador, r = resultado
+
+mostrar("Qual tabuada você quer ver?");
+ler(n);
+
+mostrar("--- Tabuada do ", n, " ---");
+
+para (i := 1; i <= 10; i := i + 1) {
+  r := n * i;  // multiplica n por i
+  mostrar(n, " x ", i, " = ", r);
+}`,
+
+  par_impar:
+`// ⚖️ Par ou Ímpar
+// Usamos o operador % (resto da divisão) para descobrir.
+// Todo número par dividido por 2 tem resto 0!
+
+int num, resto;  // num = número digitado, resto = resultado do %
+
+mostrar("Digite um número:");
+ler(num);
+
+resto := num % 2;  // % dá o resto da divisão (ex: 7 % 2 = 1)
+
+se (resto == 0) {
+  // resto == 0 significa que divide exato → é par
+  mostrar(num, " é PAR! ✅");
+} senao {
+  // qualquer outro resto → é ímpar
+  mostrar(num, " é ÍMPAR! ❌");
+}`,
+
+  media:
+`// 📊 Média de notas — aprovado ou não?
+// Calculamos a média de 3 notas e usamos 'se' para decidir.
+// Repare no 'se' dentro de 'se' — isso se chama 'aninhamento'!
+
+real n1, n2, n3, media;  // quatro decimais declarados de uma vez
+
+mostrar("Nota 1:"); ler(n1);
+mostrar("Nota 2:"); ler(n2);
+mostrar("Nota 3:"); ler(n3);
+
+media := (n1 + n2 + n3) / 3;  // soma e divide por 3
+mostrar("Sua média foi: ", media);
+
+// Decisão em cascata: uma condição dentro da outra
+se (media >= 7) {
+  mostrar("✅ Aprovado! Parabéns!");
+} senao {
+  se (media >= 5) {
+    mostrar("⚠️ Recuperação. Você pode melhorar!");
+  } senao {
+    mostrar("❌ Reprovado. Não desista, continue estudando!");
+  }
+}`,
+
+  fatorial:
+`// 🧮 Fatorial com 'faca...enquanto'
+// O fatorial de 5 é: 5 × 4 × 3 × 2 × 1 = 120
+// O 'faca...enquanto' executa o bloco PELO MENOS UMA VEZ
+// antes de verificar a condição — diferente do 'enquanto' normal!
+
+int n, i;       // n = número, i = contador
+int fat := 1;   // resultado (começa em 1, neutro na multiplicação)
+
+mostrar("Qual número você quer calcular o fatorial?");
+ler(n);
+
+i := 1;  // contador começa em 1
+faca {
+  fat := fat * i;  // multiplica pelo contador atual
+  i := i + 1;      // avança o contador
+} enquanto (i <= n); // continua enquanto não passar de n
+
+mostrar("Fatorial de ", n, " = ", fat);`,
+
+  adivinhar:
+`// 🎯 Jogo: Adivinhe o número!
+// sortear(min, max) gera um número aleatório!
+
+int secreto := sortear(1, 10); // número aleatório entre 1 e 10
+int chute, tentativas;
+
+mostrar("🎯 Adivinhe o número de 1 a 10!");
+mostrar("Boa sorte! 🍀");
+
+enquanto (chute != secreto) {
+  mostrar("Qual é o seu palpite?");
+  ler(chute);
+  tentativas := tentativas + 1;
+
+  se (chute == secreto) {
+    mostrar("🎉 ACERTOU em ", tentativas, " tentativa(s)!");
+  } senao {
+    se (chute > secreto) {
+      mostrar("📉 Muito alto! Tente um número menor.");
+    } senao {
+      mostrar("📈 Muito baixo! Tente um número maior.");
+    }
+  }
+}`,
+
+  lotofacil:
+`// 🍀 Gerador de números da Lotofácil
+// A Lotofácil sorteia 15 números de 1 a 25, sem repetição.
+// Usamos um array para guardar os sorteados e checar repetição.
+
+int numeros[15];  // os 15 números sorteados
+int total, i, j, novo, repetido;
+
+mostrar("🍀 ========================");
+mostrar("   GERADOR - LOTOFÁCIL   ");
+mostrar("🍀 ========================");
+mostrar("Sorteando 15 números de 1 a 25...");
+
+total := 0;
+
+enquanto (total < 15) {
+  novo := sortear(1, 25);
+
+  // verifica se o número já foi sorteado
+  repetido := 0;
+  para (j := 0; j < total; j := j + 1) {
+    se (numeros[j] == novo) {
+      repetido := 1;
+    }
+  }
+
+  // só adiciona se não repetiu
+  se (repetido == 0) {
+    numeros[total] := novo;
+    total := total + 1;
+  }
+}
+
+// ordena os números (bubble sort)
+int aux, trocou;
+para (i := 0; i < 14; i := i + 1) {
+  trocou := 0;
+  para (j := 0; j < 14 - i; j := j + 1) {
+    se (numeros[j] > numeros[j + 1]) {
+      aux := numeros[j];
+      numeros[j] := numeros[j + 1];
+      numeros[j + 1] := aux;
+      trocou := 1;
+    }
+  }
+}
+
+mostrar("Seus números:");
+mostrar(
+  numeros[0], " - ", numeros[1], " - ", numeros[2], " - ",
+  numeros[3], " - ", numeros[4]
+);
+mostrar(
+  numeros[5], " - ", numeros[6], " - ", numeros[7], " - ",
+  numeros[8], " - ", numeros[9]
+);
+mostrar(
+  numeros[10], " - ", numeros[11], " - ", numeros[12], " - ",
+  numeros[13], " - ", numeros[14]
+);
+mostrar("🍀 Boa sorte!"`
+};
+
+const DEFAULT_CODE =
+`// Soma de dois números 🐰
+int a, b, resultado;
+
+mostrar("Digite o primeiro número:");
+ler(a);
+mostrar("Digite o segundo número:");
+ler(b);
+
+resultado := a + b;
+mostrar("Resultado: ", a, " + ", b, " = ", resultado);`;
+
+/* ══ STATE ══ */
+let inputResolve = null;
+let errorLines   = new Set();
+
+/* ══ HIGHLIGHT ══ */
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function highlightTokens(s) {
+  const KW_CTRL = ['se','senao','senão','enquanto','faca','faça','para'];
+  const KW_TYPE = ['int','real','texto'];
+  let result = '', i = 0;
+  while (i < s.length) {
+    if (s[i] === '"') {
+      let str = '"'; i++;
+      while (i < s.length && s[i] !== '"' && s[i] !== '\n') str += s[i++];
+      if (i < s.length && s[i] === '"') { str += '"'; i++; }
+      result += `<span class="t-str">${escHtml(str)}</span>`;
+      continue;
+    }
+    if (/\d/.test(s[i])) {
+      let n = '';
+      while (i < s.length && /[\d.]/.test(s[i])) n += s[i++];
+      result += `<span class="t-num">${escHtml(n)}</span>`;
+      continue;
+    }
+    if (/[a-záéíóúàãõâêîôûçA-Z_ã]/.test(s[i])) {
+      let w = '';
+      while (i < s.length && /[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(s[i])) w += s[i++];
+      if      (w === 'mostrar')         result += `<span class="t-show">${escHtml(w)}</span>`;
+      else if (w === 'tamanho')         result += `<span class="t-show">${escHtml(w)}</span>`;
+      else if (w === 'sortear')         result += `<span class="t-show">${escHtml(w)}</span>`;
+      else if (w === 'ler')             result += `<span class="t-read">${escHtml(w)}</span>`;
+      else if (KW_TYPE.includes(w))     result += `<span class="t-type">${escHtml(w)}</span>`;
+      else if (KW_CTRL.includes(w))     result += `<span class="t-kw">${escHtml(w)}</span>`;
+      else                              result += `<span class="t-var">${escHtml(w)}</span>`;
+      continue;
+    }
+    const two = s.slice(i, i+2);
+    if (two === ':=') { result += `<span class="t-assign">${escHtml(two)}</span>`; i+=2; continue; }
+    if (['==','!=','>=','<='].includes(two)) { result += `<span class="t-op">${escHtml(two)}</span>`; i+=2; continue; }
+    if (['+','-','*','/','%','>','<','=','!'].includes(s[i])) { result += `<span class="t-op">${escHtml(s[i])}</span>`; i++; continue; }
+    result += `<span class="t-plain">${escHtml(s[i++])}</span>`;
+  }
+  return result;
+}
+function highlightLine(line) {
+  const ci = line.indexOf('//');
+  if (ci !== -1) return highlightTokens(line.slice(0,ci)) + `<span class="t-cmt">${escHtml(line.slice(ci))}</span>`;
+  return highlightTokens(line);
+}
+function renderHighlight() {
+  const lines = document.getElementById('code').value.split('\n');
+  document.getElementById('hlLayer').innerHTML = lines.map((l,i) => {
+    const n=i+1, hl=highlightLine(l);
+    return errorLines.has(n) ? `<span class="err-line">${hl}\n</span>` : hl+'\n';
+  }).join('');
+}
+function updateLineNums() {
+  const count = document.getElementById('code').value.split('\n').length;
+  document.getElementById('lineNums').innerHTML =
+    Array.from({length:count},(_,i)=>{
+      const n=i+1, cls=errorLines.has(n)?'ln has-err':'ln';
+      return `<span class="${cls}">${n}</span>`;
+    }).join('');
+}
+function syncScroll() {
+  const sc=document.getElementById('editorScroll');
+  const hl=document.getElementById('hlLayer');
+  const ln=document.getElementById('lineNums');
+  hl.scrollTop=sc.scrollTop; ln.scrollTop=sc.scrollTop;
+}
+function onEdit() {
+  errorLines.clear();
+  renderHighlight();
+  updateLineNums();
+  requestAnimationFrame(() => {
+    const ta  = document.getElementById('code');
+    const inner = document.getElementById('editorInner');
+    const sc  = document.getElementById('editorScroll');
+    const lines = ta.value.split('\n').length;
+    const lineH = 1.75 * 13;
+    const minH  = Math.max(lines * lineH + 220, sc.clientHeight);
+    inner.style.minHeight = minH + 'px';
+    ta.style.height = minH + 'px';
+    syncScroll();
+  });
+}
+
+/* ══ KEYBOARD ══ */
+function handleTab(e) {
+  if (e.key==='Tab') {
+    e.preventDefault();
+    const ta=e.target, s=ta.selectionStart, e2=ta.selectionEnd;
+    const before=ta.value.slice(0,s), after=ta.value.slice(e2);
+    ta.value=before+'  '+after;
+    ta.selectionStart=ta.selectionEnd=s+2;
+    onEdit();
+  }
+}
+
+/* ══ UI ══ */
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['editor','examples','tutorial','ref','notas'][i]===tab);
+  });
+  const isEditor = tab==='editor';
+  document.getElementById('editorCol').style.display = isEditor ? 'flex' : 'none';
+  document.querySelector('.sidebar').style.display   = isEditor ? 'flex' : 'none';
+  document.getElementById('code').style.display = isEditor ? '' : 'none';
+  document.getElementById('exPanel').classList.toggle('show', tab==='examples');
+  document.getElementById('tutPanel').classList.toggle('show', tab==='tutorial');
+  document.getElementById('refPanel').classList.toggle('show', tab==='ref');
+  document.getElementById('notasPanel').classList.toggle('show', tab==='notas');
+  if(tab==='notas') carregarNotas();
+}
+const SNIPPETS = {
+  mostrar: 'mostrar("Olá!");',
+  texto:   'texto nome := "";',
+  faca:    'faca {\n  mostrar("Oi!");\n  x := x + 1;\n} enquanto (x < 3);',
+  se:      'se (pontos > 5) {\n  mostrar("Ganhou!");\n} senao {\n  mostrar("Tente mais!");\n}',
+};
+function insSnippet(name) { ins(SNIPPETS[name]); }
+
+function ins(code) {
+  const ta=document.getElementById('code');
+  ta.value+=(ta.value&&!ta.value.endsWith('\n')?'\n':'')+code+'\n';
+  switchTab('editor'); ta.focus(); ta.scrollTop=ta.scrollHeight; onEdit();
+}
+function loadEx(name) {
+  document.getElementById('code').value=EXAMPLES[name];
+  switchTab('editor'); clearOut(); onEdit();
+}
+function loadTutEx(name) {
+  document.getElementById('code').value=EXAMPLES[name];
+  switchTab('editor'); clearOut(); onEdit();
+}
+function clearCode() {
+  document.getElementById('code').value='';
+  errorLines.clear(); renderHighlight(); updateLineNums();
+}
+function clearOut() {
+  document.getElementById('output').innerHTML='<span class="o-empty">▶ Clique em Executar para ver o resultado do seu programa aqui!</span>';
+  setStatus('pronto','');
+  errorLines.clear(); renderHighlight(); updateLineNums();
+}
+function setStatus(txt, cls) {
+  const el=document.getElementById('status');
+  el.textContent=txt;
+  el.className='status-txt '+(cls||'');
+}
+function log(text, type, lineNum) {
+  const out=document.getElementById('output');
+  out.querySelector('.o-empty')?.remove();
+  const d=document.createElement('div'); d.className='o-line';
+  if (type==='err'&&lineNum) {
+    d.innerHTML=`<span class="o-err-line">linha ${lineNum}</span><span class="o-err">🔍 Ops! ${escHtml(String(text))}</span>`;
+  } else {
+    const span=document.createElement('span');
+    span.className='o-'+type; span.textContent=String(text); d.appendChild(span);
+  }
+  out.appendChild(d); out.scrollTop=out.scrollHeight;
+}
+function logSuccess() {
+  const out=document.getElementById('output');
+  const d=document.createElement('div'); d.className='o-success';
+  d.innerHTML=`
+    <span class="o-success-icon">🎉</span>
+    <span class="o-success-title">Programa concluído!</span>
+    <span class="o-success-sub">Sem erros. Incrível! 🚀</span>
+  `;
+  out.appendChild(d); out.scrollTop=out.scrollHeight;
+  SFX.play('success');
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const out = document.getElementById('outputSection');
+  const colors = ['#2EE8A0','#FFD080','#C0A8F0','#60D4FF','#FF8EC0','#FFB347'];
+  for (let i = 0; i < 28; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.cssText = `
+      left: ${Math.random()*100}%;
+      background: ${colors[Math.floor(Math.random()*colors.length)]};
+      width: ${6+Math.random()*6}px;
+      height: ${6+Math.random()*6}px;
+      border-radius: ${Math.random()>.5?'50%':'3px'};
+      animation-delay: ${Math.random()*.5}s;
+      animation-duration: ${1+Math.random()*.8}s;
+    `;
+    out.appendChild(c);
+    c.addEventListener('animationend', ()=>c.remove());
+  }
+}
+function askInput() {
+  return new Promise(res => {
+    const out = document.getElementById('output');
+    out.querySelector('.o-empty')?.remove();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'o-line o-input-wrap';
+    wrap.innerHTML = `
+      <span class="o-ask-inline">▶</span>
+      <input class="o-input-field" id="userIn" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="digite e pressione Enter..." />
+      <button class="o-input-btn" onclick="okInput()">OK</button>
+    `;
+    out.appendChild(wrap);
+    out.scrollTop = out.scrollHeight;
+    SFX.play('input');
+
+    const field = document.getElementById('userIn');
+    field.onkeydown = e => { if (e.key === 'Enter') okInput(); };
+    setTimeout(() => field.focus(), 50);
+
+    inputResolve = v => {
+      // substitui o campo pelo valor digitado
+      wrap.outerHTML = '';
+      const d = document.createElement('div');
+      d.className = 'o-line';
+      const s = document.createElement('span');
+      s.className = 'o-typed'; s.textContent = v;
+      d.appendChild(s); out.appendChild(d);
+      out.scrollTop = out.scrollHeight;
+      res(v);
+    };
+  });
+}
+function okInput() {
+  SFX.play('confirm');
+  const v = document.getElementById('userIn')?.value ?? '';
+  if (inputResolve) { inputResolve(v); inputResolve = null; }
+}
+
+/* ══ RUN ══ */
+async function runCode() {
+  SFX.play('run');
+  clearOut(); setStatus('executando...','');
+  try {
+    await interpret(document.getElementById('code').value);
+    logSuccess();
+    setStatus('✅ concluído! 🎉','status-ok');
+  } catch(e) {
+    const msg=e.message||String(e);
+    const m=msg.match(/linha\s+(\d+)/i);
+    const ln=m?parseInt(m[1]):null;
+    if(ln){
+      errorLines.add(ln); renderHighlight(); updateLineNums();
+      const ta=document.getElementById('code');
+      const lines=ta.value.split('\n');
+      let offset=0;
+      for(let i=0;i<ln-1;i++) offset+=lines[i].length+1;
+      ta.selectionStart=ta.selectionEnd=offset;
+      ta.scrollTop=Math.max(0,(ln-3)*(parseFloat(getComputedStyle(ta).lineHeight)||22));
+      syncScroll();
+    }
+    log(msg,'err',ln);
+    SFX.play('error');
+    setStatus('❌ erro'+(ln?` na linha ${ln}`:''),'status-err');
+  }
+}
+
+/* ══ TOKENIZER ══ */
+function tokenize(src) {
+  const tokens=[]; let i=0, lineNum=1;
+  while(i<src.length){
+    if(src[i]==='\n'){lineNum++;i++;continue;}
+    if(/\s/.test(src[i])){i++;continue;}
+    if(src[i]==='/'&&src[i+1]==='/'){while(i<src.length&&src[i]!=='\n')i++;continue;}
+    if(src[i]==='"'){
+      let s='';i++;
+      while(i<src.length&&src[i]!=='"'&&src[i]!=='\n')s+=src[i++];
+      if(src[i]==='"')i++;
+      tokens.push({t:'STR',v:s,ln:lineNum});continue;
+    }
+    if(/\d/.test(src[i])){
+      let n='',ln=lineNum;
+      while(i<src.length&&/[\d.]/.test(src[i]))n+=src[i++];
+      tokens.push({t:'NUM',v:parseFloat(n),ln});continue;
+    }
+    if(/[a-záéíóúàãõâêîôûçA-Z_ã]/.test(src[i])){
+      let w='',ln=lineNum;
+      while(i<src.length&&/[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(src[i]))w+=src[i++];
+      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto'];
+      tokens.push({t:KW.includes(w)?'KW':'ID',v:w,ln});continue;
+    }
+    const two=src.slice(i,i+2);
+    if(['==','!=','>=','<=',':='].includes(two)){tokens.push({t:'OP',v:two,ln:lineNum});i+=2;continue;}
+    tokens.push({t:'SYM',v:src[i++],ln:lineNum});
+  }
+  return tokens;
+}
+
+/* ══ INTERPRETER ══ */
+async function interpret(src){
+  const toks=tokenize(src);let p=0;
+  const vars={},types={},arrays={},arrTypes={};let steps=0;
+  const peek=(o=0)=>toks[p+o]||{t:'EOF',v:'',ln:0};
+  const eat=()=>toks[p++]||{t:'EOF',v:'',ln:0};
+  function expect(v){const tok=eat();if(tok.v!==v)throw new Error(`linha ${tok.ln}: esperava "${v}", encontrei "${tok.v}"`);return tok;}
+  function requireSemi(ln){if(peek().v===';'){eat();}else{throw new Error(`linha ${ln}: faltou ponto e vírgula ";" no final`);}}
+  function errAt(ln,msg){throw new Error(`linha ${ln}: ${msg}`);}
+
+  // Resolve array index: nome[expr]
+  function parseArrayAccess(nome, ln){
+    eat(); // consume '['
+    const idx = Math.trunc(+parseExpr()||0);
+    expect(']');
+    if(!(nome in arrays)) errAt(ln, `"${nome}" não é um array`);
+    if(idx < 0 || idx >= arrays[nome].length) errAt(ln, `índice ${idx} fora do limite do array "${nome}" (tamanho ${arrays[nome].length})`);
+    return {arr:nome, idx};
+  }
+
+  function parseExpr(){return parseOr();}
+  function parseOr(){
+    let left=parseAnd();
+    while(peek().v==='ou'||peek().v==='||'){eat();const r=parseAnd();left=left||r;}
+    return left;
+  }
+  function parseAnd(){
+    let left=parseCmp();
+    while(peek().v==='e'||peek().v==='&&'){eat();const r=parseCmp();left=left&&r;}
+    return left;
+  }
+  function parseCmp(){
+    let left=parseAddSub();
+    const ops=['==','!=','>','<','>=','<='];
+    while(ops.includes(peek().v)||(peek().t==='OP'&&ops.includes(peek().v))){
+      if(!ops.includes(peek().v))break;
+      const op=eat().v,right=parseAddSub();
+      const l=typeof left==='number'?left:parseFloat(left)||0;
+      const r=typeof right==='number'?right:parseFloat(right)||0;
+      if(op==='==')left=(typeof left==='string'||typeof right==='string')?String(left)===String(right):l===r;
+      else if(op==='!=')left=(typeof left==='string'||typeof right==='string')?String(left)!==String(right):l!==r;
+      else if(op==='>')left=l>r;else if(op==='<')left=l<r;
+      else if(op==='>=')left=l>=r;else left=l<=r;
+    }
+    return left;
+  }
+  function parseAddSub(){
+    let left=parseMulDiv();
+    while(peek().v==='+'||peek().v==='-'){
+      const op=eat().v,right=parseMulDiv();
+      if(op==='+') left=(typeof left==='number'&&typeof right==='number')?left+right:String(left)+String(right);
+      else left=(typeof left==='number'?left:parseFloat(left)||0)-(typeof right==='number'?right:parseFloat(right)||0);
+    }
+    return left;
+  }
+  function parseMulDiv(){
+    let left=parseUnary();
+    while(['*','/','%'].includes(peek().v)){
+      const op=eat().v,right=parseUnary();
+      const l=typeof left==='number'?left:parseFloat(left)||0,r=typeof right==='number'?right:parseFloat(right)||0;
+      if(op==='*')left=l*r;else if(op==='/')left=r!==0?l/r:0;else left=l%r;
+    }
+    return left;
+  }
+  function parseUnary(){
+    if(peek().v==='nao'||peek().v==='!'){eat();return !parseUnary();}
+    if(peek().v==='-'){eat();return -(parseFloat(parseUnary())||0);}
+    return parsePrimary();
+  }
+  function parsePrimary(){
+    const tok=peek();
+    if(tok.t==='NUM'){eat();return tok.v;}
+    if(tok.t==='STR'){eat();return tok.v;}
+    if(tok.t==='ID'){
+      // tamanho(arr)
+      if(tok.v==='tamanho'&&peek(1).v==='('){
+        eat();eat();
+        const nome=eat().v; expect(')');
+        if(nome in arrays) return arrays[nome].length;
+        if(nome in vars) return String(vars[nome]).length;
+        return 0;
+      }
+      // sortear(min, max)
+      if(tok.v==='sortear'&&peek(1).v==='('){
+        eat();eat();
+        const mn=parseExpr(); expect(',');
+        const mx=parseExpr(); expect(')');
+        const a=Math.ceil(+mn), b=Math.floor(+mx);
+        return Math.floor(Math.random()*(b-a+1))+a;
+      }
+      eat();
+      // array access: nome[idx]
+      if(peek().v==='['){
+        const {arr,idx}=parseArrayAccess(tok.v,tok.ln);
+        return arrays[arr][idx];
+      }
+      return tok.v in vars ? vars[tok.v] : 0;
+    }
+    if(tok.v==='('){eat();const v=parseExpr();expect(')');return v;}
+    eat();return 0;
+  }
+  function parseArgList(){
+    const parts=[];
+    while(peek().v!==')'&&peek().t!=='EOF'){parts.push(parseExpr());if(peek().v===',')eat();}
+    return parts;
+  }
+
+  // skip a block without executing
+  function skipBlock(){
+    let d=1;
+    while(p<toks.length&&d>0){
+      if(toks[p].v==='{')d++;
+      if(toks[p].v==='}')d--;
+      if(d>0)p++;
+    }
+    if(peek().v==='}')p++; // consume '}'
+  }
+  // find end of block (returns index AFTER closing '}')
+  function findBlockEnd(start){
+    let d=1,i=start;
+    while(i<toks.length&&d>0){if(toks[i].v==='{')d++;if(toks[i].v==='}')d--;if(d>0)i++;}
+    return i+1;
+  }
+
+  async function execBlock(){
+    while(p<toks.length){
+      if(++steps>500000)throw new Error('linha 1: loop infinito detectado! Verifique suas condições.');
+      const tok=peek();
+      if(tok.t==='EOF'||tok.v==='}')break;
+
+      // ── Declaração de variável simples: int/real/texto nome, nome2 := val; ──
+      if(tok.t==='KW'&&['int','real','texto'].includes(tok.v)){
+        const tipo=eat().v;
+        // verifica se é array: int nome[tamanho];
+        const ntok=peek();
+        if(ntok.t==='ID'&&peek(1).v==='['){
+          const nome=eat().v; eat(); // consume '['
+          const tam=Math.trunc(+parseExpr()||0); expect(']');
+          arrTypes[nome]=tipo;
+          const def=tipo==='texto'?'':0;
+          arrays[nome]=Array(tam).fill(null).map(()=>def);
+          requireSemi(ntok.ln); continue;
+        }
+        // variável simples (pode ser múltipla: int a, b, c)
+        do{
+          const nt=peek(),nome=eat().v;
+          if(nt.t!=='ID')errAt(nt.ln,`esperava nome de variável após "${tipo}"`);
+          types[nome]=tipo;
+          if(peek().v===':='||peek().v==='='){
+            eat();let val=parseExpr();
+            if(tipo==='int')val=Math.trunc(+val||0);
+            else if(tipo==='real')val=+val||0;
+            else val=String(val);
+            vars[nome]=val;
+          } else { vars[nome]=tipo==='texto'?'':0; }
+        }while(peek().v===','&&eat());
+        requireSemi(tok.ln);continue;
+      }
+
+      // ── mostrar ──
+      if(tok.t==='ID'&&tok.v==='mostrar'&&peek(1).v==='('){
+        eat();eat();const parts=parseArgList();expect(')');requireSemi(tok.ln);
+        log(parts.map(v=>v===true?'verdadeiro':v===false?'falso':String(v)).join(''),'out');continue;
+      }
+
+      // ── ler ──
+      if(tok.t==='ID'&&tok.v==='ler'&&peek(1).v==='('){
+        const ln=tok.ln;eat();eat();
+        const vname=eat().v;
+        // ler(arr[idx])
+        if(peek().v==='['){
+          const {arr,idx}=parseArrayAccess(vname,ln);
+          expect(')');requireSemi(ln);
+          const resp=await askInput();
+          const respNorm=resp.replace(',','.');
+          const tipo=arrTypes[arr]||'auto';
+          if(tipo==='int')arrays[arr][idx]=Math.trunc(parseFloat(respNorm)||0);
+          else if(tipo==='real')arrays[arr][idx]=parseFloat(respNorm)||0;
+          else arrays[arr][idx]=resp;
+          continue;
+        }
+        expect(')');requireSemi(ln);
+        if(!(vname in vars))errAt(ln,`variável "${vname}" não foi declarada`);
+        const resp=await askInput();
+        const respNorm=resp.replace(',','.');
+        const tipo=types[vname]||'auto';
+        if(tipo==='int')vars[vname]=Math.trunc(parseFloat(respNorm)||0);
+        else if(tipo==='real')vars[vname]=parseFloat(respNorm)||0;
+        else if(tipo==='texto')vars[vname]=resp;
+        else{const n=parseFloat(respNorm);vars[vname]=isNaN(n)?resp:n;}
+        continue;
+      }
+
+      // ── atribuição: nome := expr  ou  nome[idx] := expr ──
+      if(tok.t==='ID'&&(peek(1).v===':='||peek(1).v==='='||peek(1).v==='[')){
+        const nome=eat().v;
+        if(peek().v==='['){
+          // array[idx] := val
+          const {arr,idx}=parseArrayAccess(nome,tok.ln);
+          if(peek().v===':='||peek().v==='=') eat(); else errAt(tok.ln,'esperava := após índice');
+          let val=parseExpr();
+          const tipo=arrTypes[arr]||'auto';
+          if(tipo==='int')val=Math.trunc(+val||0);
+          else if(tipo==='real')val=+val||0;
+          arrays[arr][idx]=val;
+          requireSemi(tok.ln);continue;
+        }
+        eat(); // consume := or =
+        let val=parseExpr();
+        const tipo=types[nome];
+        if(tipo==='int')val=Math.trunc(+val||0);else if(tipo==='real')val=+val||0;
+        vars[nome]=val;requireSemi(tok.ln);continue;
+      }
+
+      // ── enquanto ──
+      if(tok.t==='KW'&&tok.v==='enquanto'){
+        eat();expect('(');const cp=p;
+        let cond=parseExpr();expect(')');expect('{');
+        const bp=p; const be=findBlockEnd(bp)-1; // index of '}'
+        let lim=100000;
+        while(cond&&lim-->0){p=bp;await execBlock();p=cp;cond=parseExpr();expect(')');expect('{');}
+        if(!lim)throw new Error('linha '+tok.ln+': loop infinito!');
+        p=be+1;if(peek().v===';')eat();continue;
+      }
+
+      // ── faca...enquanto ──
+      if(tok.t==='KW'&&(tok.v==='faca'||tok.v==='faça')){
+        eat();expect('{');const bp=p;
+        const be=findBlockEnd(bp)-1;
+        let lim=100000,cond=true;
+        while(cond&&lim-->0){
+          p=bp;await execBlock();p=be+1;
+          if(peek().t==='KW'&&peek().v==='enquanto')eat();
+          expect('(');cond=parseExpr();expect(')');if(peek().v===';')eat();
+        }
+        if(!lim)throw new Error('linha '+tok.ln+': loop infinito!');
+        continue;
+      }
+
+      // ── para ──
+      if(tok.t==='KW'&&tok.v==='para'){
+        eat();expect('(');
+        // init
+        if(peek().t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){
+          const n=eat().v;eat();
+          vars[n]=parseExpr();
+          if(!(n in types))types[n]='int';
+        }
+        expect(';');
+        const cp=p;let cond=parseExpr();expect(';');
+        // step tokens
+        const sp=p;let pd=0,se2=p;
+        while(se2<toks.length){
+          if(toks[se2].v==='(')pd++;
+          if(toks[se2].v===')'){if(pd===0)break;pd--;}
+          se2++;
+        }
+        const stepToks=toks.slice(sp,se2);
+        p=se2+1;expect('{');
+        const bp=p;const be=findBlockEnd(bp)-1;
+        let lim=100000;
+        while(cond&&lim-->0){
+          p=bp;await execBlock();
+          // execute step
+          const saved=[...toks];toks.splice(0,toks.length,...stepToks);p=0;
+          if(peek().t==='ID'&&(peek(1).v===':='||peek(1).v==='=')){
+            const n=eat().v;eat();let val=parseExpr();
+            const tipo=types[n];
+            if(tipo==='int')val=Math.trunc(+val||0);else if(tipo==='real')val=+val||0;
+            vars[n]=val;
+          }
+          toks.splice(0,toks.length,...saved);
+          p=cp;cond=parseExpr();expect(';');
+          p=se2+1;if(peek().v==='{')eat();p=bp;if(!cond)break;
+        }
+        if(!lim)throw new Error('linha '+tok.ln+': loop infinito!');
+        p=be+1;continue;
+      }
+
+      // ── se...senao ──
+      if(tok.t==='KW'&&tok.v==='se'){
+        eat();expect('(');const cond=parseExpr();expect(')');expect('{');
+        const bs=p;const be=findBlockEnd(bs)-1;
+        if(cond){p=bs;await execBlock();}
+        p=be+1;
+        if(peek().t==='KW'&&(peek().v==='senao'||peek().v==='senão')){
+          eat();expect('{');const es=p;const ee=findBlockEnd(es)-1;
+          if(!cond){p=es;await execBlock();}
+          p=ee+1;
+        }
+        continue;
+      }
+
+      eat(); // skip unknown token
+    }
+    if(peek().v==='}')eat();
+  }
+  await execBlock();
+}
+
+/* ══ RESIZE OUTPUT (drag handle) ══ */
+(function(){
+  const handle=document.getElementById('resizeHandle');
+  const section=document.getElementById('outputSection');
+  const editorCol=document.getElementById('editorCol');
+  let startY, startH;
+  function onMove(clientY){
+    const delta=startY-clientY;
+    const newH=Math.min(Math.max(startH+delta,80),editorCol.clientHeight*0.8);
+    section.style.height=newH+'px';
+  }
+  handle.addEventListener('mousedown',e=>{
+    startY=e.clientY; startH=section.offsetHeight;
+    document.addEventListener('mousemove',onMouse);
+    document.addEventListener('mouseup',()=>document.removeEventListener('mousemove',onMouse),{once:true});
+  });
+  function onMouse(e){onMove(e.clientY);}
+  handle.addEventListener('touchstart',e=>{
+    startY=e.touches[0].clientY; startH=section.offsetHeight; e.preventDefault();
+  },{passive:false});
+  handle.addEventListener('touchmove',e=>{
+    onMove(e.touches[0].clientY); e.preventDefault();
+  },{passive:false});
+})();
+
+/* ══ SIDEBAR TOGGLE ══ */
+let sidebarVisible = true;
+function toggleSidebar() {
+  sidebarVisible = !sidebarVisible;
+  const sb = document.querySelector('.sidebar');
+  const btn = document.getElementById('sidebarToggle');
+  if (sidebarVisible) {
+    sb.classList.remove('hidden');
+    btn.classList.remove('hidden-state');
+    btn.textContent = '◀ Ocultar';
+  } else {
+    sb.classList.add('hidden');
+    btn.classList.add('hidden-state');
+    btn.textContent = '▶ Mostrar';
+  }
+}
+
+/* ══ FILE MANAGEMENT ══ */
+let currentFileName = 'sem título.ckid';
+let confirmCallback = null;
+
+function setFileName(name) {
+  currentFileName = name;
+  document.getElementById('currentFileName').textContent = name;
+}
+
+function showConfirm(msg, cb) {
+  document.getElementById('confirmMsg').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  confirmCallback = null;
+}
+function confirmOk() {
+  closeConfirm();
+  if (confirmCallback) confirmCallback();
+}
+
+function newFile() {
+  const ta = document.getElementById('code');
+  const doNew = () => {
+    ta.value = '';
+    setFileName('sem título.ckid');
+    clearOut(); errorLines.clear(); renderHighlight(); updateLineNums();
+    switchTab('editor'); ta.focus();
+  };
+  if (ta.value.trim() === '') { doNew(); return; }
+  showConfirm('O código atual será perdido. Deseja criar um novo arquivo?', doNew);
+}
+
+function openFile() {
+  // Dispara o input direto — sem passar por callback assíncrono
+  // pois browsers bloqueiam .click() fora de evento direto do usuário
+  document.getElementById('fileInput').click();
+}
+
+function onFileSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('code').value = e.target.result;
+    setFileName(file.name);
+    clearOut(); errorLines.clear(); renderHighlight(); updateLineNums();
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function saveFile() {
+  // pré-preenche com o nome atual sem extensão
+  const base = currentFileName.replace(/\.(ckid|txt)$/i, '');
+  document.getElementById('saveNameIn').value = base === 'sem título' ? '' : base;
+  document.getElementById('saveOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('saveNameIn').focus(), 80);
+}
+function closeSave() {
+  document.getElementById('saveOverlay').classList.remove('show');
+}
+function confirmSave() {
+  let name = document.getElementById('saveNameIn').value.trim();
+  if (!name) name = 'meu_programa';
+  if (!name.endsWith('.ckid') && !name.endsWith('.txt')) name += '.ckid';
+  closeSave();
+  setFileName(name);
+  const code = document.getElementById('code').value;
+  const blob = new Blob([code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ══ INIT ══ */
+document.getElementById('code').value=DEFAULT_CODE;
+onEdit();
+
+// sincroniza scroll do wrapper com highlight e line-nums
+document.getElementById('editorScroll').addEventListener('scroll', function() {
+  const hl=document.getElementById('hlLayer');
+  const ln=document.getElementById('lineNums');
+  hl.scrollTop=this.scrollTop;
+  ln.scrollTop=this.scrollTop;
+});
+
+const codeTA = document.getElementById('code');
+codeTA.addEventListener('input', onEdit);
+
+const hdr=document.getElementById('headerBg');
+for(let i=0;i<14;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()*3+1;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${2+Math.random()*2}s`;
+  hdr.appendChild(s);
+}
+/* ══ FIREBASE + AVALIAÇÕES ══ */
+let db = null;
+
+// Carrega Firebase dinamicamente
+(async function initFirebase() {
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp }
+      = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBz6IFbVGk_xHL8FPkgExbYxHSlqASRV2U",
+      authDomain: "ckid-code.firebaseapp.com",
+      projectId: "ckid-code",
+      storageBucket: "ckid-code.firebasestorage.app",
+      messagingSenderId: "966892371093",
+      appId: "1:966892371093:web:e2ce7c965dcaf243aa6f9c"
+    });
+
+    db = getFirestore(app);
+    window._fbCol        = () => collection(db, 'avaliacoes');
+    window._fbAddDoc     = addDoc;
+    window._fbGetDocs    = getDocs;
+    window._fbQuery      = query;
+    window._fbOrderBy    = orderBy;
+    window._fbTimestamp  = serverTimestamp;
+  } catch(e) {
+    console.warn('Firebase não carregou:', e);
+  }
+})();
+
+// ── estrelas ──
+let starValue = 0;
+function pickStar(v) {
+  starValue = v;
+  document.querySelectorAll('.star-btn').forEach((s,i) => {
+    s.classList.toggle('on', i < v);
+  });
+}
+
+// ── contador de chars ──
+document.addEventListener('DOMContentLoaded', () => {
+  const ta = document.getElementById('notasMsg');
+  if(ta) ta.addEventListener('input', () => {
+    document.getElementById('notasCount').textContent = ta.value.length;
+  });
+});
+
+// ── enviar avaliação ──
+async function enviarNota() {
+  const status = document.getElementById('notasStatus');
+  const btn    = document.querySelector('.notas-btn');
+
+  if(!starValue) {
+    status.textContent = '⚠️ Escolha uma nota de 1 a 5 estrelas!';
+    status.className = 'notas-status err'; return;
+  }
+  if(!db) {
+    status.textContent = '❌ Sem conexão com o servidor. Tente novamente.';
+    status.className = 'notas-status err'; return;
+  }
+
+  const nome = (document.getElementById('notasNome').value.trim() || 'Anônimo');
+  const msg  = document.getElementById('notasMsg').value.trim();
+
+  btn.disabled = true;
+  status.textContent = 'Enviando...';
+  status.className = 'notas-status';
+
+  try {
+    await window._fbAddDoc(window._fbCol(), {
+      nome, msg, estrelas: starValue,
+      data: window._fbTimestamp()
+    });
+    status.textContent = '🎉 Obrigado pela avaliação!';
+    status.className = 'notas-status ok';
+    // reset form
+    document.getElementById('notasNome').value = '';
+    document.getElementById('notasMsg').value  = '';
+    document.getElementById('notasCount').textContent = '0';
+    starValue = 0;
+    document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('on'));
+    SFX.play('success');
+    carregarNotas();
+  } catch(e) {
+    status.textContent = '❌ Erro ao enviar. Tente novamente.';
+    status.className = 'notas-status err';
+  }
+  btn.disabled = false;
+}
+
+// ── carregar avaliações ──
+let notasCarregadas = false;
+async function carregarNotas() {
+  if(!db) return;
+  const lista = document.getElementById('notasLista');
+  const mediaNum = document.getElementById('notasMediaNum');
+  const mediaStars = document.getElementById('notasMediaStars');
+  const mediaLabel = document.getElementById('notasMediaLabel');
+
+  lista.innerHTML = '<div class="notas-loading">Carregando...</div>';
+
+  try {
+    const q = window._fbQuery(window._fbCol(), window._fbOrderBy('data','desc'));
+    const snap = await window._fbGetDocs(q);
+    const docs = [];
+    snap.forEach(d => docs.push(d.data()));
+
+    // Média
+    if(docs.length === 0) {
+      mediaNum.textContent = '—';
+      mediaStars.textContent = '';
+      mediaLabel.textContent = 'Nenhuma avaliação ainda. Seja o primeiro! 🚀';
+      lista.innerHTML = '<div class="notas-loading">Nenhuma avaliação ainda.</div>';
+      return;
+    }
+
+    const avg = docs.reduce((s,d) => s + d.estrelas, 0) / docs.length;
+    mediaNum.textContent = avg.toFixed(1);
+    mediaStars.textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+    mediaLabel.textContent = `${docs.length} avaliação${docs.length > 1 ? 'ões' : ''}`;
+
+    // Lista
+    lista.innerHTML = '';
+    docs.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'nota-card';
+      const data = d.data?.toDate ? d.data.toDate().toLocaleDateString('pt-BR') : '';
+      card.innerHTML = `
+        <div class="nota-card-top">
+          <span class="nota-card-nome">👤 ${escHtml(d.nome||'Anônimo')}</span>
+          <span class="nota-card-stars">${'★'.repeat(d.estrelas)}${'☆'.repeat(5-d.estrelas)}</span>
+        </div>
+        ${d.msg ? `<div class="nota-card-msg">${escHtml(d.msg)}</div>` : ''}
+        ${data ? `<div class="nota-card-data">${data}</div>` : ''}
+      `;
+      lista.appendChild(card);
+    });
+  } catch(e) {
+    lista.innerHTML = '<div class="notas-loading">Erro ao carregar avaliações.</div>';
+  }
+}
+</script>
+</body>
+</html>
