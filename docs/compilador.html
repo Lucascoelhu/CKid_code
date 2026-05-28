@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <!--
   ╔══════════════════════════════════════════════════════╗
   ║              CKid code — Compilador Educativo        ║
@@ -1552,6 +1552,20 @@ fim`,
 
 fim`,
 
+  aleatorio:
+`inicio
+
+  // 🎲 Número aleatório
+  int sorteado := aleatorio(1, 100);
+  mostrar("Número sorteado: ", sorteado);
+
+  se (sorteado > 50) {
+    mostrar("É maior que 50!");
+  } senao {
+    mostrar("É menor ou igual a 50!");
+  }
+
+fim`,
   lucas:
 `inicio
 
@@ -1870,6 +1884,7 @@ function escHtml(s) {
 }
 function highlightTokens(s) {
   const KW_CTRL = ['se','senao','senão','enquanto','faca','faça','para','inicio','fim'];
+  const KW_FN   = ['aleatorio','sortear','tamanho'];
   const KW_TYPE = ['int','real','texto'];
   let result = '', i = 0;
   while (i < s.length) {
@@ -2143,7 +2158,7 @@ function tokenize(src) {
     if(/[a-záéíóúàãõâêîôûçA-Z_ã]/.test(src[i])){
       let w='',ln=lineNum;
       while(i<src.length&&/[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(src[i]))w+=src[i++];
-      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim'];
+      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim','aleatorio','sortear'];
       tokens.push({t:KW.includes(w)?'KW':'ID',v:w,ln});continue;
     }
     const two=src.slice(i,i+2);
@@ -2250,8 +2265,8 @@ async function interpret(src){
         if(nome in vars) return String(vars[nome]).length;
         return 0;
       }
-      // sortear(min, max)
-      if(tok.v==='sortear'&&peek(1).v==='('){
+      // sortear(min, max) / aleatorio(min, max)
+      if((tok.v==='sortear'||tok.v==='aleatorio')&&peek(1).v==='('){
         eat();eat();
         const mn=parseExpr(); expect(',');
         const mx=parseExpr(); expect(')');
