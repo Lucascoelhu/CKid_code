@@ -87,7 +87,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(38,33,92,.9)
 .demo-blk.highlight{transform:scale(1.06);box-shadow:0 2px 12px rgba(255,255,255,.15)}
 .demo-editor{flex:1;position:relative;overflow:hidden;background:#1e1e3a}
 .demo-ln{position:absolute;left:0;top:0;width:32px;padding:14px 4px 14px 0;text-align:right;font-family:'Fira Code',monospace;font-size:11px;line-height:1.75;color:#5a5a90;background:#181830;border-right:1px solid #2a2a50;z-index:2}
-.demo-code-area{position:absolute;left:32px;right:0;top:0;bottom:0;padding:14px 12px;font-family:'Fira Code',monospace;font-size:12px;line-height:1.75;color:#A0A0D0;overflow:hidden}
+.demo-code-area{position:absolute;left:32px;right:0;top:0;bottom:0;padding:14px 12px;font-family:'Fira Code',monospace;font-size:12px;line-height:1.75;color:#A0A0D0;overflow:hidden;white-space:pre}
 .err-highlight{background:rgba(240,100,100,.15);border-left:2px solid #F09595;display:block;margin-left:-12px;padding-left:12px}
 .demo-output{background:#141428;border-top:2px solid #2a2a50;padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:48px}
 .out-lbl{font-size:9px;color:#6070a0;text-transform:uppercase;letter-spacing:.7px;font-family:'Fira Code',monospace;flex-shrink:0}
@@ -405,7 +405,7 @@ footer span{color:var(--teal-light)}
     <h3>CKid code</h3>
     <p>Instalador para Windows 10/11 · 64-bit</p>
     <a class="btn-primary" href="https://ckid-code.vercel.app/compilador.html" target="_blank" style="display:block;font-size:17px;padding:14px;margin-bottom:12px">🌐 Acessar online</a>
-    <a class="btn-outline" href="https://github.com/Lucascoelhu/CKid_code/releases/download/v1.0.1/CKid.code.Setup.1.0.1.exe" style="display:block;font-size:16px;padding:13px;text-align:center;border-radius:999px">⬇ Baixar para Windows</a> <!-- Alterar -->
+    <a class="btn-outline" href="https://github.com/Lucascoelhu/CKid_code/releases/download/v1.0.0/CKid.code.Setup.1.0.0.exe" style="display:block;font-size:16px;padding:13px;text-align:center;border-radius:999px">⬇ Baixar para Windows</a>
   </div>
 </section>
 
@@ -463,14 +463,59 @@ fragments.forEach((f,i)=>{
 // ── DEMO ANIMATION ──
 const KW=['mostrar','ler','se','senao','senão','enquanto','para','int','real','texto','faca','faça'];
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function colorizeLine(raw){
-  var s=esc(raw);
-  s=s.replace(/(\/\/[^\n]*)/g,'<span style="color:#6878A8;font-style:italic">$1</span>');
-  KW.forEach(function(k){s=s.replace(new RegExp('\\b'+k+'\\b','g'),'<span style="color:#C0A8F0;font-weight:700">'+k+'</span>');});
-  s=s.replace(/&quot;([^&]*)&quot;/g,'<span style="color:#2EE8A0;font-weight:600">&quot;$1&quot;</span>');
-  s=s.replace(/\b(\d+)\b/g,'<span style="color:#FFD080">$1</span>');
-  s=s.replace(/(:=|==|!=|&lt;=|&gt;=|&lt;|&gt;|\+|-|\*|\/)/g,'<span style="color:#60D4FF">$1</span>');
-  return '<span style="color:#A0A0D0">'+s+'</span>';
+  var KEYWORDS=['inicio','fim','mostrar','ler','se','senao','enquanto','para','int','real','texto','faca','aleatorio'];
+  var out='';
+  var i=0;
+  while(i<raw.length){
+    // comentário
+    if(raw[i]==='/'&&raw[i+1]==='/'){
+      out+='<span style="color:#8898C8;font-style:italic">'+esc(raw.slice(i))+'</span>';
+      break;
+    }
+    // string
+    if(raw[i]==='"'){
+      var j=i+1;
+      while(j<raw.length&&raw[j]!=='"')j++;
+      out+='<span style="color:#2EE8A0;font-weight:600">'+esc(raw.slice(i,j+1))+'</span>';
+      i=j+1; continue;
+    }
+    // número
+    if(/\d/.test(raw[i])&&(i===0||!/\w/.test(raw[i-1]))){
+      var j=i;
+      while(j<raw.length&&/[\d.]/.test(raw[j]))j++;
+      out+='<span style="color:#FFD080">'+raw.slice(i,j)+'</span>';
+      i=j; continue;
+    }
+    // operador 2 chars
+    var op2=raw.slice(i,i+2);
+    if([':=','==','!=','<=','>='].indexOf(op2)>=0){
+      out+='<span style="color:#60D4FF">'+esc(op2)+'</span>';
+      i+=2; continue;
+    }
+    // operador 1 char
+    if(['+','-','*','/','<','>'].indexOf(raw[i])>=0){
+      out+='<span style="color:#60D4FF">'+esc(raw[i])+'</span>';
+      i++; continue;
+    }
+    // identificador ou keyword
+    if(/[a-zA-ZÀ-ú_]/.test(raw[i])){
+      var j=i;
+      while(j<raw.length&&/[a-zA-ZÀ-ú0-9_]/.test(raw[j]))j++;
+      var word=raw.slice(i,j);
+      if(KEYWORDS.indexOf(word)>=0){
+        out+='<span style="color:#C0A8F0;font-weight:700">'+word+'</span>';
+      } else {
+        out+='<span style="color:#E8EEFF">'+word+'</span>';
+      }
+      i=j; continue;
+    }
+    out+=esc(raw[i]);
+    i++;
+  }
+  return out;
 }
 
 const demos=[
@@ -478,14 +523,18 @@ const demos=[
     file:'saudacao.ckid',
     blk:'blk-texto',
     lines:[
-      '// 🐰 Olá, CKid!',
-      'texto nome := "Lucas";',
-      'int idade := 11;',
-      'mostrar("Olá, ", nome, "!");',
-      'mostrar("Você tem ", idade, " anos.");',
-      'se (idade >= 10) {',
-      '  mostrar("Já é um programador! 🚀");',
-      '}'
+      'inicio',
+      '',
+      '  // Saudação personalizada',
+      '  texto nome := "Lucas";',
+      '  int idade := 11;',
+      '  mostrar("Olá, ", nome, "!");',
+      '  mostrar("Você tem ", idade, " anos.");',
+      '  se (idade >= 10) {',
+      '    mostrar("Já é um programador! 🚀");',
+      '  }',
+      '',
+      'fim'
     ],
     outputs:['💬 Olá, Lucas!','💬 Você tem 11 anos.','💬 Já é um programador! 🚀'],
     success:true
@@ -494,47 +543,56 @@ const demos=[
     file:'tabuada.ckid',
     blk:'blk-para',
     lines:[
-      '// 🔢 Tabuada do 7',
-      'int n := 7;',
-      'mostrar("=== Tabuada do ", n, " ===");',
-      'para (i := 1; i <= 5; i := i + 1) {',
-      '  int res := n * i;',
-      '  mostrar(n, " x ", i, " = ", res);',
-      '}',
-      'mostrar("Concluído! ✅");'
+      'inicio',
+      '',
+      '  // Tabuada do 7',
+      '  int n := 7;',
+      '  mostrar("Tabuada do ", n);',
+      '  para (i := 1; i <= 5; i := i + 1) {',
+      '    int res := n * i;',
+      '    mostrar(n, " x ", i, " = ", res);',
+      '  }',
+      '  mostrar("Concluído! ✅");',
+      '',
+      'fim'
     ],
-    outputs:['💬 === Tabuada do 7 ===','💬 7 x 1 = 7','💬 7 x 2 = 14','💬 7 x 3 = 21','💬 7 x 4 = 28','💬 Concluído! ✅'],
+    outputs:['💬 Tabuada do 7','💬 7 x 1 = 7','💬 7 x 2 = 14','💬 7 x 3 = 21','💬 Concluído! ✅'],
     success:true
   },
   {
     file:'adivinha.ckid',
     blk:'blk-enquanto',
     lines:[
-      '// 🎮 Jogo de adivinhação',
-      'int secreto := 7;',
-      'int chute := 0;',
-      'int tentativas := 0;',
-      'mostrar("Adivinhe de 1 a 10! 🎯");',
-      'enquanto (chute != secreto) {',
-      '  ler(chute);',
-      '  tentativas := tentativas + 1;',
-      '}',
-      'mostrar("🎉 Acertou em ", tentativas, " tentativas!");'
+      'inicio',
+      '',
+      '  // Jogo de adivinhação',
+      '  int secreto := 7;',
+      '  int chute := 0;',
+      '  mostrar("Adivinhe de 1 a 10! 🎯");',
+      '  enquanto (chute != secreto) {',
+      '    ler(chute);',
+      '  }',
+      '  mostrar("🎉 Acertou!");',
+      '',
+      'fim'
     ],
-    outputs:['💬 Adivinhe de 1 a 10! 🎯','💬 🎉 Acertou em 3 tentativas!'],
+    outputs:['💬 Adivinhe de 1 a 10! 🎯','💬 🎉 Acertou!'],
     success:true
   },
   {
     file:'erro_demo.ckid',
     blk:'blk-mostrar',
     lines:[
-      '// ⚠️ Exemplo de erro',
-      'int pontos := 100;',
-      'mostrar("Pontos: ", pontos)',
-      'mostrar("Fim!")'
+      'inicio',
+      '',
+      '  int pontos := 100;',
+      '  mostrar("Pontos: ", pontos)',
+      '  mostrar("Fim!")',
+      '',
+      'fim'
     ],
-    errorLine:2,
-    errorMsg:'linha 3: faltou ponto e vírgula ";" no final',
+    errorLine:3,
+    errorMsg:'linha 4: faltou ponto e vírgula ";" no final',
     outputs:[],
     success:false
   }
@@ -554,18 +612,21 @@ function highlightBlk(id){
   if(id){var el=document.getElementById(id);if(el)el.classList.add('highlight');}
 }
 
-function updateLn(n){
-  var html='';for(var i=1;i<=n;i++)html+=i+'<br>';
-  lnEl.innerHTML=html;
-}
-
-function renderLines(lines, errorLine){
-  return lines.map(function(l,i){
-    var colored=colorizeLine(l);
-    if(errorLine!==undefined && i===errorLine)
-      return '<span class="err-highlight">'+colored+'</span>';
-    return colored;
-  }).join('\n');
+function renderCode(lines, curLine, curText, errorLine){
+  var html='';
+  for(var i=0;i<lines.length;i++){
+    var lineHtml;
+    if(i===curLine){
+      // linha sendo digitada — texto puro sem colorir
+      lineHtml=esc(curText)+'<span class="cursor"></span>';
+    } else if(errorLine!==undefined&&i===errorLine){
+      lineHtml='<span class="err-highlight">'+colorizeLine(lines[i])+'</span>';
+    } else {
+      lineHtml=colorizeLine(lines[i]);
+    }
+    html+=lineHtml+(i<lines.length-1?'\n':'');
+  }
+  return html;
 }
 
 async function runDemo(){
@@ -581,55 +642,62 @@ async function runDemo(){
   await sleep(600);
 
   // Digita linha por linha
-  var typed=[];
   for(var li=0;li<d.lines.length;li++){
     var line=d.lines[li];
+    var typed=d.lines.slice(0,li);
+
+    if(line.trim()===''){
+      // linha vazia — só avança
+      var allTyped=d.lines.slice(0,li+1);
+      codeEl.innerHTML=allTyped.map(colorizeLine).join('\n')+'<span class="cursor"></span>';
+      var ln='';for(var n=1;n<=allTyped.length;n++)ln+=n+'<br>';
+      lnEl.innerHTML=ln;
+      await sleep(80);
+      continue;
+    }
+
     // digita char a char
     for(var ci=1;ci<=line.length;ci++){
-      var cur=esc(line.slice(0,ci));
-      var rendered=renderLines(typed)+(typed.length?'\n':'')+
-        '<span style="color:#A0A0D0">'+cur+'</span>'+
-        '<span class="cursor"></span>';
-      codeEl.innerHTML=rendered;
-      updateLn(typed.length+1);
-      await sleep(ci===1?80:28);
+      codeEl.innerHTML=renderCode(d.lines.slice(0,li+1), li, line.slice(0,ci));
+      var ln='';for(var n=1;n<=li+1;n++)ln+=n+'<br>';
+      lnEl.innerHTML=ln;
+      await sleep(32);
     }
-    typed.push(line);
-    codeEl.innerHTML=renderLines(typed)+'<span class="cursor"></span>';
-    updateLn(typed.length);
-    await sleep(line.startsWith('//')?180:90);
+
+    // linha completa — coloriza
+    var allTyped=d.lines.slice(0,li+1);
+    codeEl.innerHTML=allTyped.map(colorizeLine).join('\n')+'<span class="cursor"></span>';
+    var ln='';for(var n=1;n<=allTyped.length;n++)ln+=n+'<br>';
+    lnEl.innerHTML=ln;
+    await sleep(90);
   }
 
-  await sleep(400);
-
-  // Executar
+  await sleep(500);
   statusEl.textContent='⚙ compilando...';
-  statusEl.className='demo-status idle';
-  await sleep(600);
+  await sleep(700);
 
   if(d.success){
     statusEl.textContent='✔ executado com sucesso';
     statusEl.className='demo-status running';
-    codeEl.innerHTML=renderLines(typed);
-    updateLn(typed.length);
+    codeEl.innerHTML=d.lines.map(colorizeLine).join('\n');
     for(var oi=0;oi<d.outputs.length;oi++){
       var span=document.createElement('span');
       span.className='out-item';
       span.textContent=d.outputs[oi];
       outEl.appendChild(span);
-      await sleep(320);
+      await sleep(350);
     }
   } else {
     statusEl.textContent='✖ erro encontrado';
     statusEl.className='demo-status error';
-    codeEl.innerHTML=renderLines(typed, d.errorLine)+'<span class="cursor"></span>';
+    codeEl.innerHTML=renderCode(d.lines, -1, '', d.errorLine);
     var errSpan=document.createElement('span');
     errSpan.className='out-err';
     errSpan.textContent=d.errorMsg;
     outEl.appendChild(errSpan);
   }
 
-  await sleep(3200);
+  await sleep(3500);
   highlightBlk(null);
   demoIdx=(demoIdx+1)%demos.length;
   runDemo();
