@@ -2048,7 +2048,7 @@ function switchTab(tab) {
   document.getElementById('tutPanel').classList.toggle('show', tab==='tutorial');
   document.getElementById('refPanel').classList.toggle('show', tab==='ref');
   document.getElementById('notasPanel').classList.toggle('show', tab==='notas');
-  if(tab==='notas') carregarNotas();
+  if(tab==='notas') { carregarNotas(); verificarAvaliou(); }
 }
 const SNIPPETS = {
   mostrar: 'mostrar("Olá!");',
@@ -2833,6 +2833,15 @@ async function enviarNota() {
   const status = document.getElementById('notasStatus');
   const btn    = document.querySelector('.notas-btn');
 
+  // Verifica se já avaliou neste computador
+  if(localStorage.getItem('ckid_avaliou') === '1') {
+    status.textContent = '✅ Você já enviou sua avaliação. Obrigado! 💜';
+    status.className = 'notas-status ok';
+    btn.disabled = true;
+    btn.textContent = 'Já avaliado ✓';
+    return;
+  }
+
   if(!starValue) {
     status.textContent = '⚠️ Escolha uma nota de 1 a 5 estrelas!';
     status.className = 'notas-status err'; return;
@@ -2854,25 +2863,40 @@ async function enviarNota() {
       nome, msg, estrelas: starValue,
       data: window._fbTimestamp()
     });
+    // Marca que já avaliou neste computador
+    localStorage.setItem('ckid_avaliou', '1');
     status.textContent = '🎉 Obrigado pela avaliação!';
     status.className = 'notas-status ok';
-    // reset form
-    document.getElementById('notasNome').value = '';
-    document.getElementById('notasMsg').value  = '';
-    document.getElementById('notasCount').textContent = '0';
-    starValue = 0;
-    document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('on'));
+    // Esconde o formulário e mostra mensagem
+    document.getElementById('notasForm').style.display = 'none';
     SFX.play('success');
     carregarNotas();
   } catch(e) {
     status.textContent = '❌ Erro ao enviar. Tente novamente.';
     status.className = 'notas-status err';
+    btn.disabled = false;
   }
-  btn.disabled = false;
 }
 
 // ── carregar avaliações ──
 let notasCarregadas = false;
+function verificarAvaliou() {
+  if(localStorage.getItem('ckid_avaliou') === '1') {
+    const form = document.getElementById('notasForm');
+    const btn = document.querySelector('.notas-btn');
+    const status = document.getElementById('notasStatus');
+    if(form) form.style.display = 'none';
+    // Mostra mensagem no lugar do formulário
+    const jaAvaliou = document.createElement('div');
+    jaAvaliou.style.cssText = 'background:#fff;margin:14px 12px 0;border-radius:14px;padding:20px;text-align:center;box-shadow:0 2px 12px rgba(83,74,183,.1);';
+    jaAvaliou.innerHTML = '<div style="font-size:32px;margin-bottom:8px">💜</div><div style="font-size:15px;font-weight:700;color:#534AB7;">Obrigado pela avaliação!</div><div style="font-size:13px;color:#888;margin-top:6px;">Você já avaliou o CKid neste dispositivo.</div>';
+    if(form && form.parentNode && !document.getElementById('jaAvaliouMsg')) {
+      jaAvaliou.id = 'jaAvaliouMsg';
+      form.parentNode.insertBefore(jaAvaliou, form.nextSibling);
+    }
+  }
+}
+
 async function carregarNotas() {
   if(!db) return;
   const lista = document.getElementById('notasLista');
