@@ -276,6 +276,19 @@ body {
 
 .o-line { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
 
+/* Canvas de desenho */
+.o-canvas-wrap {
+  margin: 8px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #3a3a60;
+  display: inline-block;
+  background: #fff;
+}
+.o-canvas-wrap canvas {
+  display: block;
+}
+
 /* Saída normal do mostrar() */
 .o-out {
   background: #252550;
@@ -745,6 +758,18 @@ pre.ref-block {
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sec-label">Saída / Entrada</div>
+    <button class="blk b-show" onclick="ins('canvas(300, 300);')" style="background:#1a2a4a;color:#5a8ae0;border-left:3px solid #4A8FE0;margin-bottom:2px;width:100%;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;border:none">
+      <span>🎨</span><span>canvas</span>
+    </button>
+    <button class="blk b-show" onclick="ins('desenharLinha(0, 0, 100, 100);')" style="background:#1a2a4a;color:#5a8ae0;border-left:3px solid #4A8FE0;margin-bottom:2px;width:100%;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;border:none">
+      <span>📏</span><span>desenharLinha</span>
+    </button>
+    <button class="blk b-show" onclick="ins('desenharCirculo(150, 150, 50);')" style="background:#1a2a4a;color:#5a8ae0;border-left:3px solid #4A8FE0;margin-bottom:2px;width:100%;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;border:none">
+      <span>⭕</span><span>desenharCirculo</span>
+    </button>
+    <button class="blk b-show" onclick="ins('corDesenho(\"#FF0000\");')" style="background:#1a2a4a;color:#5a8ae0;border-left:3px solid #4A8FE0;margin-bottom:4px;width:100%;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;border:none">
+      <span>🎨</span><span>corDesenho</span>
+    </button>
     <button class="blk b-show" onclick="ins('inicio\n\n  // seu código aqui\n\nfim')" style="background:#D6F5EC;color:#1A6B4A;border-left:3px solid #1D9E75;margin-bottom:4px;width:100%;padding:8px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px">
       <span>🟢</span><span>inicio / fim</span>
     </button>
@@ -1577,6 +1602,34 @@ fim`,
   }
 
 fim`,
+  jogo_velha:
+`inicio
+
+  // 🎮 Jogo da Velha - Tabuleiro
+  canvas(300, 300);
+
+  corDesenho("#5a3ab7");
+
+  // Linhas verticais
+  desenharLinha(100, 10, 100, 290);
+  desenharLinha(200, 10, 200, 290);
+
+  // Linhas horizontais
+  desenharLinha(10, 100, 290, 100);
+  desenharLinha(10, 200, 290, 200);
+
+  // X no centro
+  corDesenho("#E04A4A");
+  desenharLinha(120, 120, 180, 180);
+  desenharLinha(180, 120, 120, 180);
+
+  // O no canto superior esquerdo
+  corDesenho("#2EB87A");
+  desenharCirculo(50, 50, 30);
+
+  escreverCanvas("X venceu!", 100, 280);
+
+fim`,
   lucas:
 `inicio
 
@@ -1887,6 +1940,30 @@ fim`;
 
 /* ══ STATE ══ */
 let inputResolve = null;
+let _canvas = null;
+let _ctx = null;
+let _drawColor = '#222222';
+
+function getCanvas() {
+  if (!_canvas) {
+    const out = document.getElementById('output');
+    out.querySelector('.o-empty')?.remove();
+    const wrap = document.createElement('div');
+    wrap.className = 'o-line o-canvas-wrap';
+    _canvas = document.createElement('canvas');
+    _canvas.width = 300; _canvas.height = 300;
+    wrap.appendChild(_canvas);
+    out.appendChild(wrap);
+    out.scrollTop = out.scrollHeight;
+    _ctx = _canvas.getContext('2d');
+    _ctx.fillStyle = '#ffffff';
+    _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
+    _ctx.strokeStyle = _drawColor;
+    _ctx.fillStyle = _drawColor;
+    _ctx.lineWidth = 2;
+  }
+  return _ctx;
+}
 let errorLines   = new Set();
 
 /* ══ HIGHLIGHT ══ */
@@ -1895,6 +1972,7 @@ function escHtml(s) {
 }
 function highlightTokens(s) {
   const KW_CTRL = ['se','senao','senão','enquanto','faca','faça','para','inicio','fim'];
+  const KW_DRAW  = ['canvas','desenharLinha','desenharCirculo','preencherRetangulo','desenharRetangulo','corDesenho','limparCanvas','escreverCanvas'];
   const KW_FN   = ['aleatorio','sortear','tamanho'];
   const KW_TYPE = ['int','real','texto'];
   let result = '', i = 0;
@@ -2122,6 +2200,7 @@ function okInput() {
 
 /* ══ RUN ══ */
 async function runCode() {
+  _canvas = null; _ctx = null; _drawColor = '#222222';
   SFX.play('run');
   clearOut(); setStatus('executando...','');
   try {
@@ -2169,7 +2248,7 @@ function tokenize(src) {
     if(/[a-záéíóúàãõâêîôûçA-Z_ã]/.test(src[i])){
       let w='',ln=lineNum;
       while(i<src.length&&/[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(src[i]))w+=src[i++];
-      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim','aleatorio','sortear'];
+      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim','aleatorio','sortear','canvas','desenharLinha','desenharCirculo','preencherRetangulo','desenharRetangulo','corDesenho','limparCanvas','escreverCanvas'];
       tokens.push({t:KW.includes(w)?'KW':'ID',v:w,ln});continue;
     }
     const two=src.slice(i,i+2);
@@ -2484,6 +2563,101 @@ async function interpret(src){
           eat();expect('{');const es=p;const ee=findBlockEnd(es)-1;
           if(!cond){p=es;await execBlock();}
           p=ee+1;
+        }
+        continue;
+      }
+
+      // ── canvas ──
+      if(tok.t==='ID'&&tok.v==='canvas'&&peek(1).v==='('){
+        eat();eat();
+        const w=parseExpr();expect(',');const h=parseExpr();expect(')');requireSemi(tok.ln);
+        const out=document.getElementById('output');
+        out.querySelector('.o-empty')?.remove();
+        const wrap=document.createElement('div');
+        wrap.className='o-line o-canvas-wrap';
+        _canvas=document.createElement('canvas');
+        _canvas.width=Math.trunc(+w||300);
+        _canvas.height=Math.trunc(+h||300);
+        wrap.appendChild(_canvas);
+        out.appendChild(wrap);
+        out.scrollTop=out.scrollHeight;
+        _ctx=_canvas.getContext('2d');
+        _ctx.fillStyle='#ffffff';
+        _ctx.fillRect(0,0,_canvas.width,_canvas.height);
+        _ctx.strokeStyle=_drawColor;
+        _ctx.fillStyle=_drawColor;
+        _ctx.lineWidth=2;
+        continue;
+      }
+
+      // ── corDesenho ──
+      if(tok.t==='ID'&&tok.v==='corDesenho'&&peek(1).v==='('){
+        eat();eat();const cor=String(parseExpr());expect(')');requireSemi(tok.ln);
+        _drawColor=cor;
+        if(_ctx){_ctx.strokeStyle=cor;_ctx.fillStyle=cor;}
+        continue;
+      }
+
+      // ── desenharLinha ──
+      if(tok.t==='ID'&&tok.v==='desenharLinha'&&peek(1).v==='('){
+        eat();eat();
+        const x1=parseExpr();expect(',');const y1=parseExpr();expect(',');
+        const x2=parseExpr();expect(',');const y2=parseExpr();expect(')');requireSemi(tok.ln);
+        const c=getCanvas();
+        c.strokeStyle=_drawColor;c.lineWidth=2;
+        c.beginPath();c.moveTo(+x1,+y1);c.lineTo(+x2,+y2);c.stroke();
+        continue;
+      }
+
+      // ── desenharCirculo ──
+      if(tok.t==='ID'&&tok.v==='desenharCirculo'&&peek(1).v==='('){
+        eat();eat();
+        const cx=parseExpr();expect(',');const cy=parseExpr();expect(',');
+        const r=parseExpr();expect(')');requireSemi(tok.ln);
+        const c=getCanvas();
+        c.strokeStyle=_drawColor;c.lineWidth=2;
+        c.beginPath();c.arc(+cx,+cy,+r,0,Math.PI*2);c.stroke();
+        continue;
+      }
+
+      // ── preencherRetangulo ──
+      if(tok.t==='ID'&&tok.v==='preencherRetangulo'&&peek(1).v==='('){
+        eat();eat();
+        const rx=parseExpr();expect(',');const ry=parseExpr();expect(',');
+        const rw=parseExpr();expect(',');const rh=parseExpr();expect(')');requireSemi(tok.ln);
+        const c=getCanvas();
+        c.fillStyle=_drawColor;
+        c.fillRect(+rx,+ry,+rw,+rh);
+        continue;
+      }
+
+      // ── desenharRetangulo ──
+      if(tok.t==='ID'&&tok.v==='desenharRetangulo'&&peek(1).v==='('){
+        eat();eat();
+        const rx=parseExpr();expect(',');const ry=parseExpr();expect(',');
+        const rw=parseExpr();expect(',');const rh=parseExpr();expect(')');requireSemi(tok.ln);
+        const c=getCanvas();
+        c.strokeStyle=_drawColor;c.lineWidth=2;
+        c.strokeRect(+rx,+ry,+rw,+rh);
+        continue;
+      }
+
+      // ── escreverCanvas ──
+      if(tok.t==='ID'&&tok.v==='escreverCanvas'&&peek(1).v==='('){
+        eat();eat();
+        const txt=parseExpr();expect(',');const ex=parseExpr();expect(',');const ey=parseExpr();expect(')');requireSemi(tok.ln);
+        const c=getCanvas();
+        c.fillStyle=_drawColor;c.font='bold 16px Nunito,sans-serif';
+        c.fillText(String(txt),+ex,+ey);
+        continue;
+      }
+
+      // ── limparCanvas ──
+      if(tok.t==='ID'&&tok.v==='limparCanvas'&&peek(1).v==='('){
+        eat();eat();expect(')');requireSemi(tok.ln);
+        if(_ctx&&_canvas){
+          _ctx.fillStyle='#ffffff';
+          _ctx.fillRect(0,0,_canvas.width,_canvas.height);
         }
         continue;
       }
