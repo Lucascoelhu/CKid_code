@@ -2048,7 +2048,7 @@ function switchTab(tab) {
   document.getElementById('tutPanel').classList.toggle('show', tab==='tutorial');
   document.getElementById('refPanel').classList.toggle('show', tab==='ref');
   document.getElementById('notasPanel').classList.toggle('show', tab==='notas');
-  if(tab==='notas') { carregarNotas(); verificarAvaliou(); }
+  if(tab==='notas') carregarNotas();
 }
 const SNIPPETS = {
   mostrar: 'mostrar("Olá!");',
@@ -2218,7 +2218,7 @@ function tokenize(src) {
     if(/[a-záéíóúàãõâêîôûçA-Z_ã]/.test(src[i])){
       let w='',ln=lineNum;
       while(i<src.length&&/[a-záéíóúàãõâêîôûçA-Z_0-9ã]/.test(src[i]))w+=src[i++];
-      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim','aleatorio','sortear','canvas','desenharLinha','desenharCirculo','preencherRetangulo','desenharRetangulo','corDesenho','limparCanvas','escreverCanvas'];
+      const KW=['se','senao','senão','enquanto','faca','faça','para','int','real','texto','inicio','fim','aleatorio','sortear','canvas','desenharLinha','desenharCirculo','preencherRetangulo','desenharRetangulo','corDesenho','limparCanvas','escreverCanvas','contem','maiuscula','minuscula'];
       tokens.push({t:KW.includes(w)?'KW':'ID',v:w,ln});continue;
     }
     const two=src.slice(i,i+2);
@@ -2325,6 +2325,25 @@ async function interpret(src){
         if(nome in vars) return String(vars[nome]).length;
         return 0;
       }
+      // contem(texto, letra) — retorna 1 se texto contém letra, 0 se não
+      if(tok.v==='contem'&&peek(1).v==='('){
+        eat();eat();
+        const t=String(parseExpr()); expect(',');
+        const l=String(parseExpr()); expect(')');
+        return t.includes(l)?1:0;
+      }
+      // maiuscula(texto) — converte para maiúsculas
+      if(tok.v==='maiuscula'&&peek(1).v==='('){
+        eat();eat();
+        const t=String(parseExpr()); expect(')');
+        return t.toUpperCase();
+      }
+      // minuscula(texto) — converte para minúsculas
+      if(tok.v==='minuscula'&&peek(1).v==='('){
+        eat();eat();
+        const t=String(parseExpr()); expect(')');
+        return t.toLowerCase();
+      }
       // sortear(min, max) / aleatorio(min, max)
       if((tok.v==='sortear'||tok.v==='aleatorio')&&peek(1).v==='('){
         eat();eat();
@@ -2334,8 +2353,23 @@ async function interpret(src){
         return Math.floor(Math.random()*(b-a+1))+a;
       }
       eat();
-      // array access: nome[idx]
+      // array access ou char access: nome[idx]
       if(peek().v==='['){
+        // Se é array normal
+        if(tok.v in arrays){
+          const {arr,idx}=parseArrayAccess(tok.v,tok.ln);
+          return arrays[arr][idx];
+        }
+        // Se é variável texto — acessa o caractere
+        if(tok.v in vars && typeof vars[tok.v]==='string'){
+          eat(); // consume '['
+          const idx=Math.trunc(+parseExpr()||0);
+          expect(']');
+          const str=String(vars[tok.v]||'');
+          if(idx<0||idx>=str.length) return '';
+          return str[idx];
+        }
+        // Caso genérico
         const {arr,idx}=parseArrayAccess(tok.v,tok.ln);
         return arrays[arr][idx];
       }
@@ -2833,15 +2867,6 @@ async function enviarNota() {
   const status = document.getElementById('notasStatus');
   const btn    = document.querySelector('.notas-btn');
 
-  // Verifica se já avaliou neste computador
-  if(localStorage.getItem('ckid_avaliou') === '1') {
-    status.textContent = '✅ Você já enviou sua avaliação. Obrigado! 💜';
-    status.className = 'notas-status ok';
-    btn.disabled = true;
-    btn.textContent = 'Já avaliado ✓';
-    return;
-  }
-
   if(!starValue) {
     status.textContent = '⚠️ Escolha uma nota de 1 a 5 estrelas!';
     status.className = 'notas-status err'; return;
@@ -2863,40 +2888,25 @@ async function enviarNota() {
       nome, msg, estrelas: starValue,
       data: window._fbTimestamp()
     });
-    // Marca que já avaliou neste computador
-    localStorage.setItem('ckid_avaliou', '1');
     status.textContent = '🎉 Obrigado pela avaliação!';
     status.className = 'notas-status ok';
-    // Esconde o formulário e mostra mensagem
-    document.getElementById('notasForm').style.display = 'none';
+    // reset form
+    document.getElementById('notasNome').value = '';
+    document.getElementById('notasMsg').value  = '';
+    document.getElementById('notasCount').textContent = '0';
+    starValue = 0;
+    document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('on'));
     SFX.play('success');
     carregarNotas();
   } catch(e) {
     status.textContent = '❌ Erro ao enviar. Tente novamente.';
     status.className = 'notas-status err';
-    btn.disabled = false;
   }
+  btn.disabled = false;
 }
 
 // ── carregar avaliações ──
 let notasCarregadas = false;
-function verificarAvaliou() {
-  if(localStorage.getItem('ckid_avaliou') === '1') {
-    const form = document.getElementById('notasForm');
-    const btn = document.querySelector('.notas-btn');
-    const status = document.getElementById('notasStatus');
-    if(form) form.style.display = 'none';
-    // Mostra mensagem no lugar do formulário
-    const jaAvaliou = document.createElement('div');
-    jaAvaliou.style.cssText = 'background:#fff;margin:14px 12px 0;border-radius:14px;padding:20px;text-align:center;box-shadow:0 2px 12px rgba(83,74,183,.1);';
-    jaAvaliou.innerHTML = '<div style="font-size:32px;margin-bottom:8px">💜</div><div style="font-size:15px;font-weight:700;color:#534AB7;">Obrigado pela avaliação!</div><div style="font-size:13px;color:#888;margin-top:6px;">Você já avaliou o CKid neste dispositivo.</div>';
-    if(form && form.parentNode && !document.getElementById('jaAvaliouMsg')) {
-      jaAvaliou.id = 'jaAvaliouMsg';
-      form.parentNode.insertBefore(jaAvaliou, form.nextSibling);
-    }
-  }
-}
-
 async function carregarNotas() {
   if(!db) return;
   const lista = document.getElementById('notasLista');
