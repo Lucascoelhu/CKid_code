@@ -728,6 +728,7 @@ pre.ref-block {
   <button class="btn-run" onclick="runCode()">▶ Executar</button>
   <button class="btn-sec" onclick="SFX.play('click');clearCode()">🗑 Limpar</button>
   <button class="btn-sec" onclick="SFX.play('click');clearOut()">🧹 Saída</button>
+  <button class="btn-sec" id="btnMute" onclick="toggleMute()" title="Mutar/Desmutar sons">🔊</button>
 </div>
 
 <div class="toolbar-file">
@@ -1264,6 +1265,15 @@ tamanho(array)     // tamanho do array ou texto</pre>
  * Proibida a cópia ou redistribuição sem autorização.
  */
 /* ══ SONS ══ */
+let sfxMuted = false;
+
+function toggleMute() {
+  sfxMuted = !sfxMuted;
+  const btn = document.getElementById('btnMute');
+  btn.textContent = sfxMuted ? '🔇' : '🔊';
+  btn.style.opacity = sfxMuted ? '0.5' : '1';
+}
+
 const SFX = (() => {
   let ctx = null;
   function getCtx() {
@@ -1272,6 +1282,7 @@ const SFX = (() => {
   }
 
   function play(type, vol=0.18) {
+    if (sfxMuted) return;
     try {
       const ac = getCtx();
       const g = ac.createGain();
