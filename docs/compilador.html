@@ -1946,6 +1946,7 @@ let _drawColor = '#222222';
 
 function getCanvas() {
   if (!_canvas) {
+    // canvas não foi criado com canvas() — cria automaticamente
     const out = document.getElementById('output');
     out.querySelector('.o-empty')?.remove();
     const wrap = document.createElement('div');
@@ -1958,10 +1959,10 @@ function getCanvas() {
     _ctx = _canvas.getContext('2d');
     _ctx.fillStyle = '#ffffff';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
-    _ctx.strokeStyle = _drawColor;
-    _ctx.fillStyle = _drawColor;
-    _ctx.lineWidth = 2;
   }
+  _ctx.strokeStyle = _drawColor;
+  _ctx.fillStyle = _drawColor;
+  _ctx.lineWidth = 2;
   return _ctx;
 }
 let errorLines   = new Set();
@@ -2568,7 +2569,7 @@ async function interpret(src){
       }
 
       // ── canvas ──
-      if(tok.t==='ID'&&tok.v==='canvas'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='canvas'&&peek(1).v==='('){
         eat();eat();
         const w=parseExpr();expect(',');const h=parseExpr();expect(')');requireSemi(tok.ln);
         const out=document.getElementById('output');
@@ -2587,11 +2588,12 @@ async function interpret(src){
         _ctx.strokeStyle=_drawColor;
         _ctx.fillStyle=_drawColor;
         _ctx.lineWidth=2;
+        await new Promise(r=>setTimeout(r,0)); // força renderização
         continue;
       }
 
       // ── corDesenho ──
-      if(tok.t==='ID'&&tok.v==='corDesenho'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='corDesenho'&&peek(1).v==='('){
         eat();eat();const cor=String(parseExpr());expect(')');requireSemi(tok.ln);
         _drawColor=cor;
         if(_ctx){_ctx.strokeStyle=cor;_ctx.fillStyle=cor;}
@@ -2599,7 +2601,7 @@ async function interpret(src){
       }
 
       // ── desenharLinha ──
-      if(tok.t==='ID'&&tok.v==='desenharLinha'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='desenharLinha'&&peek(1).v==='('){
         eat();eat();
         const x1=parseExpr();expect(',');const y1=parseExpr();expect(',');
         const x2=parseExpr();expect(',');const y2=parseExpr();expect(')');requireSemi(tok.ln);
@@ -2610,7 +2612,7 @@ async function interpret(src){
       }
 
       // ── desenharCirculo ──
-      if(tok.t==='ID'&&tok.v==='desenharCirculo'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='desenharCirculo'&&peek(1).v==='('){
         eat();eat();
         const cx=parseExpr();expect(',');const cy=parseExpr();expect(',');
         const r=parseExpr();expect(')');requireSemi(tok.ln);
@@ -2621,7 +2623,7 @@ async function interpret(src){
       }
 
       // ── preencherRetangulo ──
-      if(tok.t==='ID'&&tok.v==='preencherRetangulo'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='preencherRetangulo'&&peek(1).v==='('){
         eat();eat();
         const rx=parseExpr();expect(',');const ry=parseExpr();expect(',');
         const rw=parseExpr();expect(',');const rh=parseExpr();expect(')');requireSemi(tok.ln);
@@ -2632,7 +2634,7 @@ async function interpret(src){
       }
 
       // ── desenharRetangulo ──
-      if(tok.t==='ID'&&tok.v==='desenharRetangulo'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='desenharRetangulo'&&peek(1).v==='('){
         eat();eat();
         const rx=parseExpr();expect(',');const ry=parseExpr();expect(',');
         const rw=parseExpr();expect(',');const rh=parseExpr();expect(')');requireSemi(tok.ln);
@@ -2643,7 +2645,7 @@ async function interpret(src){
       }
 
       // ── escreverCanvas ──
-      if(tok.t==='ID'&&tok.v==='escreverCanvas'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='escreverCanvas'&&peek(1).v==='('){
         eat();eat();
         const txt=parseExpr();expect(',');const ex=parseExpr();expect(',');const ey=parseExpr();expect(')');requireSemi(tok.ln);
         const c=getCanvas();
@@ -2653,7 +2655,7 @@ async function interpret(src){
       }
 
       // ── limparCanvas ──
-      if(tok.t==='ID'&&tok.v==='limparCanvas'&&peek(1).v==='('){
+      if((tok.t==='ID'||tok.t==='KW')&&tok.v==='limparCanvas'&&peek(1).v==='('){
         eat();eat();expect(')');requireSemi(tok.ln);
         if(_ctx&&_canvas){
           _ctx.fillStyle='#ffffff';
